@@ -18,9 +18,11 @@ let canvasHeight = canvas.height;
 console.log("canvas height = ", canvasHeight);
 
 let shapes = [];
+let isDragging = false;
+let currentShapesIndex = null;
 // x and y declare where in the canvas the shapes are going to be drawn
 shapes.push({x:100, y:100, width: 200, height: 300, color: 'green'});
-shapes.push({x:0, y:0, width: 200, height: 200, color: 'blue'});
+// shapes.push({x:0, y:0, width: 200, height: 200, color: 'blue'});
 // shapes.push({x:100, y:100, width: 3, height: 500, color: 'black'});
 
 let vertGridLines = [];
@@ -57,6 +59,70 @@ function drawHorizGrid() {
 }
 drawHorizGrid();
 
+function isMouseInShape (x, y, shape) {
+    let shapeLeft = shape.x;
+    let shapeRight = shape.x + shape.width;
+    let shapeTop = shape.y;
+    let shapeBottom = shape.y + shape.height;
+
+    if (x > shapeLeft && x < shapeRight && y > shapeTop && y < shapeBottom) {
+        //console.log("is inside shape");
+        return true;
+    } else {
+        // console.log("not inside shape");
+        return false; 
+    }
+}
+
+//onmousedown this function is triggered
+function mouseDown (e) {
+    e.preventDefault();
+    // 
+    let startX = parseInt(e.clientX);
+    let startY = parseInt(e.clientY); 
+
+    let index =0;
+    for (let shape of shapes ) {
+        if (isMouseInShape(startX, startY, shape)) {
+            console.log("in shape === yes");
+            currentShapesIndex = index;
+            isDragging = true;
+            return;
+        } else {
+        console.log("in shape === no");
+        }    
+        index++;
+  }
+};
+
+function mouseUp (e) {
+    if (!isDragging) {
+        return;
+    } else {
+        e.preventDefault();
+        isDragging = false; 
+    }
+}
+
+function mouseOut (e) {
+    if (!isDragging) {
+        return;
+    } else {
+        e.preventDefault();
+        isDragging = false;
+    }
+}
+
+function mouseMove (e) {
+    
+    // console.log("move");
+}
+
+//listens for the mousedown event on the canvas
+canvas.onmousedown = mouseDown;
+canvas.onmouseup = mouseUp;
+canvas.onmouseout = mouseOut;
+canvas.onmousemove = mouseMove;
 
 //let drawShapes = function(), this an alternative way of declaring this function.
 function drawShapes() {
@@ -67,7 +133,10 @@ function drawShapes() {
 
     }
 }
-
 drawShapes();
+
+
+
+
 
 // https://www.youtube.com/watch?v=7PYvx8u_9Sk&ab_channel=BananaCoding
