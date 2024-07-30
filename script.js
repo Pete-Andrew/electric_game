@@ -16,9 +16,23 @@ let canvasWidth = canvas.width;
 console.log("canvas width = ", canvasWidth);
 let canvasHeight = canvas.height;
 console.log("canvas height = ", canvasHeight);
+let offsetX;
+let offsetY;
+
+function getOffset() {
+    let canvasOffset = canvas.getBoundingClientRect();
+    offsetX = canvasOffset.left;
+    offsetY = canvasOffset.top;
+}
+
+
 
 let shapes = [];
 let isDragging = false;
+
+let startX;
+let startY;
+
 let currentShapesIndex = null;
 // x and y declare where in the canvas the shapes are going to be drawn
 shapes.push({x:100, y:100, width: 200, height: 300, color: 'green'});
@@ -78,8 +92,8 @@ function isMouseInShape (x, y, shape) {
 function mouseDown (e) {
     e.preventDefault();
     // 
-    let startX = parseInt(e.clientX);
-    let startY = parseInt(e.clientY); 
+    startX = parseInt(e.clientX);
+    startY = parseInt(e.clientY); 
 
     let index =0;
     for (let shape of shapes ) {
@@ -114,7 +128,26 @@ function mouseOut (e) {
 }
 
 function mouseMove (e) {
-    
+    if(!isDragging) {
+        return;
+    } else {
+        // console.log("move with dragging");
+        e.preventDefault();
+        let mouseX = parseInt(e.clientX);
+        let mouseY = parseInt(e.clientY);
+
+        let mouseMoveDistanceX = mouseX - startX;
+        let mouseMoveDistanceY = mouseY - startY;
+        // console.log("distance from click, mouse X and mouse Y ", mouseMoveDistanceX, mouseMoveDistanceY)
+        let currentShape = shapes[currentShapesIndex];
+        // console.log(currentShape);
+        currentShape.x += mouseMoveDistanceX;
+        currentShape.y += mouseMoveDistanceY;
+
+        drawShapes();
+        startX = mouseX;
+        startY = mouseY;
+    }
     // console.log("move");
 }
 
@@ -126,7 +159,7 @@ canvas.onmousemove = mouseMove;
 
 //let drawShapes = function(), this an alternative way of declaring this function.
 function drawShapes() {
-    // context.clearRect(0,0, canvasWidth, canvasHeight);
+    context.clearRect(0,0, canvasWidth, canvasHeight);
     for (let shape of shapes) {
         context.fillStyle = shape.color;
         context.fillRect(shape.x, shape.y, shape.width, shape.height)
