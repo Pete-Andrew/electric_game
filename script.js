@@ -1,6 +1,18 @@
 let canvas = document.getElementById("canvas");
 // 
+
 let context = canvas.getContext("2d");
+
+//for using an image rather than a js drawn grid
+function backgroundCanvasImg () {
+    base_image = new Image();
+    base_image.src = 'img/fiveByFiveGrid.gif'
+    base_image.onload = function() {
+        context.drawImage(base_image, 0, 0);
+    }
+}
+// backgroundCanvasImg(); 
+
 
 //fills the screen:
 // canvas.width = window.innerWidth - 15;
@@ -25,7 +37,10 @@ function getOffset() {
     offsetY = canvasOffset.top;
 }
 
-
+getOffset();
+window.onscroll = function() { getOffset();}
+window.onresize = function() { getOffset();}
+canvas.onresize = function() { getOffset();}
 
 let shapes = [];
 let isDragging = false;
@@ -35,7 +50,7 @@ let startY;
 
 let currentShapesIndex = null;
 // x and y declare where in the canvas the shapes are going to be drawn
-shapes.push({x:100, y:100, width: 200, height: 300, color: 'green'});
+shapes.push({x:100, y:100, width: 200, height: 200, color: 'green'});
 // shapes.push({x:0, y:0, width: 200, height: 200, color: 'blue'});
 // shapes.push({x:100, y:100, width: 3, height: 500, color: 'black'});
 
@@ -48,7 +63,7 @@ vertGridLines.push({x:800, y:0, width: 4, height:canvasHeight, color: 'blacK'});
 
 //
 function drawVertGrid() {
-    context.clearRect(0,0, canvasWidth, canvasHeight);
+    // context.clearRect(0,0, canvasWidth, canvasHeight);
     for (let vertGridLine of vertGridLines) {
         context.fillStyle = vertGridLine.color;
         context.fillRect(vertGridLine.x, vertGridLine.y, vertGridLine.width, vertGridLine.height)
@@ -92,8 +107,8 @@ function isMouseInShape (x, y, shape) {
 function mouseDown (e) {
     e.preventDefault();
     // 
-    startX = parseInt(e.clientX);
-    startY = parseInt(e.clientY); 
+    startX = parseInt(e.clientX - offsetX);
+    startY = parseInt(e.clientY - offsetY); 
 
     let index =0;
     for (let shape of shapes ) {
@@ -133,8 +148,8 @@ function mouseMove (e) {
     } else {
         // console.log("move with dragging");
         e.preventDefault();
-        let mouseX = parseInt(e.clientX);
-        let mouseY = parseInt(e.clientY);
+        let mouseX = parseInt(e.clientX - offsetX);
+        let mouseY = parseInt(e.clientY - offsetY);
 
         let mouseMoveDistanceX = mouseX - startX;
         let mouseMoveDistanceY = mouseY - startY;
@@ -143,7 +158,7 @@ function mouseMove (e) {
         // console.log(currentShape);
         currentShape.x += mouseMoveDistanceX;
         currentShape.y += mouseMoveDistanceY;
-
+        
         drawShapes();
         startX = mouseX;
         startY = mouseY;
@@ -160,6 +175,8 @@ canvas.onmousemove = mouseMove;
 //let drawShapes = function(), this an alternative way of declaring this function.
 function drawShapes() {
     context.clearRect(0,0, canvasWidth, canvasHeight);
+    drawHorizGrid();
+    drawVertGrid();
     for (let shape of shapes) {
         context.fillStyle = shape.color;
         context.fillRect(shape.x, shape.y, shape.width, shape.height)
@@ -167,7 +184,6 @@ function drawShapes() {
     }
 }
 drawShapes();
-
 
 
 
