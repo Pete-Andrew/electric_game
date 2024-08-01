@@ -33,11 +33,10 @@ function backgroundCanvasImg () {
 
 // set co-ordinates for the grid squares
 let zones = [];
-
-//set bounding areas for squares 
+ 
 // zones.push({x:0, y:0, width: 200, height: 200, zoneName: "a1"})
 // OR put in a for loop to set each zone. 
-
+//set bounding areas for squares
 let zoneWidth = 200;
 let zoneHeight = 200;
 let numRows = 5; // Number of rows
@@ -62,8 +61,26 @@ for (let row = 0; row < numRows; row++) {
         zones.push(zone);
     }
 }
-
 console.log("zones ", zones);
+
+//find the middle point of the moving object
+function findMiddlePoint() {
+    let middlePointLocation = {x:0, y:0};
+    middlePointLocation.x = shapes[0].x + 100;
+    middlePointLocation.y = shapes[0].y +100;
+    // console.log("middlePointLocation.x ", middlePointLocation.x);
+    //console.log("middlePointLocation.y ", middlePointLocation.y);
+    console.log("middle point location = ", middlePointLocation);
+    snapTo(middlePointLocation);
+}
+
+function snapTo (middlePointLocation) { 
+    
+    // console.log(middlePointLocation);
+}
+//snap square to the nearest mid point - this can be found mathematically 
+// if y < 50 interval, round up nearest 100, else round down to nearest 100
+// if x < 50 interval, round up to nearest 100, else round down to nearest 100
 
 
 // console.log("zones ", zones);
@@ -81,7 +98,7 @@ function isMouseInZone (x, y, zone) {
         console.log(`is inside zone ${zone.zoneName}`);
         return true;
     } else {
-        console.log("not inside zone");
+        // console.log("not inside zone");
         return false; 
     }
 }
@@ -193,6 +210,7 @@ function isMouseInShape (x, y, shape) {
 function mouseDown (e) {
     e.preventDefault();
     mouseDownInZone(e);
+    
 
     startX = parseInt(e.clientX - offsetX);
     startY = parseInt(e.clientY - offsetY); 
@@ -200,12 +218,12 @@ function mouseDown (e) {
     let index =0;
     for (let shape of shapes ) {
         if (isMouseInShape(startX, startY, shape)) {
-            console.log("in shape === yes");
+            // console.log("in shape === yes");
             currentShapesIndex = index;
             isDragging = true;
             return;
         } else {
-        console.log("in shape === no");
+        // console.log("in shape === no");
         }    
         index++;
   }
@@ -216,6 +234,7 @@ function mouseUp (e) {
         return;
     } else {
         e.preventDefault();
+        findMiddlePoint(e);
         isDragging = false; 
     }
 }
