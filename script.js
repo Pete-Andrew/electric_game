@@ -1,9 +1,27 @@
 let canvas = document.getElementById("canvas");
-// 
-
+// .getContent Returns a static collection of nodes representing the flow's source content.
 let context = canvas.getContext("2d");
+//to set it to a px size you don't need speech marks or 'px' at the end.
+canvas.width = 1000;
+canvas.height = 1000;
 
-//for using an image rather than a js drawn grid
+canvas.style.border = "5px solid black"
+
+let canvasWidth = canvas.width;
+// console.log("canvas width = ", canvasWidth);
+let canvasHeight = canvas.height;
+// console.log("canvas height = ", canvasHeight);
+
+let startX;
+let startY;
+//holds values that apply when the page is scaled (?)
+let offsetX;
+let offsetY;
+
+let zoneStartX;
+let zoneStartY;
+
+//for using an image rather than a js drawn grid NOT IN USE CURRENTLY
 function backgroundCanvasImg () {
     base_image = new Image();
     base_image.src = 'img/fiveByFiveGrid.gif'
@@ -13,40 +31,80 @@ function backgroundCanvasImg () {
 }
 // backgroundCanvasImg(); 
 
+// set co-ordinates for the grid squares
+let zones = [];
+
+//set bounding areas for squares 
+zones.push({x:0, y:0, width: 200, height: 200, zoneName: "a1"})
+zones.push({x:200, y:0, width: 200, height: 200, zoneName: "a2"})
+
+// put in a for loop to set each zone. 
+
+// console.log("zones ", zones);
+
+//zones functions do not work
+//is mouse in zone?
+function isMouseInZone (x, y, zone) {
+    // console.log("mouseInZone has been called");
+    let zoneLeft = zone.x;
+    let zoneRight = zone.x + zone.width;
+    let zoneTop = zone.y;
+    let zoneBottom = zone.y + zone.height;
+
+    if (x > zoneLeft && x < zoneRight && y > zoneTop && y < zoneBottom) {
+        console.log(`is inside zone ${zone.zoneName}`);
+        return true;
+    } else {
+        console.log("not inside zone");
+        return false; 
+    }
+}
+
+//onmousedown this function is triggered
+function mouseDownInZone (e) {
+     
+    // console.log("mouseDownInZone func clicked");
+    zoneStartX = parseInt(e.clientX);
+    zoneStartY = parseInt(e.clientY); 
+
+    let zoneIndex = 0;
+    for (let zone of zones) {
+        if (isMouseInZone(zoneStartX, zoneStartY, zone)) {
+            // console.log("in zone === yes");
+            currentZoneIndex = zoneIndex;
+            return;
+        } else {
+        // console.log("in zone === no");
+        }    
+        zoneIndex++;
+  }
+};
+
+// check to see if the square overlaps
+
+// on un-click drop the coloured square in the nearest box
 
 //fills the screen:
 // canvas.width = window.innerWidth - 15;
 // canvas.height = window.innerHeight;
 
-//to set it to a px size you don't need speech marks or 'px' at the end.
-canvas.width = 1000;
-canvas.height = 1000;
 
-canvas.style.border = "5px solid black"
 
-let canvasWidth = canvas.width;
-console.log("canvas width = ", canvasWidth);
-let canvasHeight = canvas.height;
-console.log("canvas height = ", canvasHeight);
-let offsetX;
-let offsetY;
-
+// getBoundingClientRect returns the size of an element and its position relative to the viewport, deals with screen re-sizing
 function getOffset() {
     let canvasOffset = canvas.getBoundingClientRect();
     offsetX = canvasOffset.left;
     offsetY = canvasOffset.top;
 }
-
 getOffset();
+
 window.onscroll = function() { getOffset();}
 window.onresize = function() { getOffset();}
 canvas.onresize = function() { getOffset();}
 
+//holds shapes as an array
 let shapes = [];
 let isDragging = false;
-
-let startX;
-let startY;
 
 let currentShapesIndex = null;
 // x and y declare where in the canvas the shapes are going to be drawn
@@ -54,14 +112,14 @@ shapes.push({x:100, y:100, width: 200, height: 200, color: 'green'});
 shapes.push({x:0, y:0, width: 200, height: 200, color: 'blue'});
 // shapes.push({x:100, y:100, width: 3, height: 500, color: 'black'});
 
+// creates the vertical grid lines array
 let vertGridLines = [];
 vertGridLines.push({x:200, y:0, width: 4, height:canvasHeight, color: 'blacK'});
 vertGridLines.push({x:400, y:0, width: 4, height:canvasHeight, color: 'blacK'});
 vertGridLines.push({x:600, y:0, width: 4, height:canvasHeight, color: 'blacK'});
 vertGridLines.push({x:800, y:0, width: 4, height:canvasHeight, color: 'blacK'});
 
-
-//
+// draws the vert grid
 function drawVertGrid() {
     // context.clearRect(0,0, canvasWidth, canvasHeight);
     for (let vertGridLine of vertGridLines) {
@@ -72,6 +130,7 @@ function drawVertGrid() {
 }
 drawVertGrid();
 
+// creates the horizontal grid lines array
 let horizGridLines = [];
 horizGridLines.push({x:0, y:200, width:canvasWidth, height: 4, color: 'black'})
 horizGridLines.push({x:0, y:400, width:canvasWidth, height: 4, color: 'black'})
@@ -88,6 +147,7 @@ function drawHorizGrid() {
 }
 drawHorizGrid();
 
+//checks to see if the mouse is inside a shape
 function isMouseInShape (x, y, shape) {
     let shapeLeft = shape.x;
     let shapeRight = shape.x + shape.width;
@@ -106,7 +166,8 @@ function isMouseInShape (x, y, shape) {
 //onmousedown this function is triggered
 function mouseDown (e) {
     e.preventDefault();
-    // 
+    mouseDownInZone(e);
+
     startX = parseInt(e.clientX - offsetX);
     startY = parseInt(e.clientY - offsetY); 
 
@@ -171,6 +232,10 @@ canvas.onmousedown = mouseDown;
 canvas.onmouseup = mouseUp;
 canvas.onmouseout = mouseOut;
 canvas.onmousemove = mouseMove;
+
+function itIsAlive() {
+    console.log("it is alive");
+}
 
 //let drawShapes = function(), this an alternative way of declaring this function.
 function drawShapes() {
