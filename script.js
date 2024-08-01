@@ -35,10 +35,36 @@ function backgroundCanvasImg () {
 let zones = [];
 
 //set bounding areas for squares 
-zones.push({x:0, y:0, width: 200, height: 200, zoneName: "a1"})
-zones.push({x:200, y:0, width: 200, height: 200, zoneName: "a2"})
+// zones.push({x:0, y:0, width: 200, height: 200, zoneName: "a1"})
+// OR put in a for loop to set each zone. 
 
-// put in a for loop to set each zone. 
+let zoneWidth = 200;
+let zoneHeight = 200;
+let numRows = 5; // Number of rows
+let numCols = 5; // Number of columns
+
+// nested for loops, goes along the top row first
+for (let row = 0; row < numRows; row++) {
+    for (let col = 0; col < numCols; col++) {
+        let zone = {
+            //creates the values for the zones start points
+            x: col * zoneWidth,
+            y: row * zoneHeight,
+            // width and height are always the same as they are square. 
+            width: zoneWidth,
+            height: zoneHeight,
+            //String.fromCharCode is a method that converts Unicode values into characters.
+            //97 is the Unicode value for the lowercase letter 'a'.
+            //Adding row to 97 shifts the character code to generate subsequent letters.
+            zoneName: `${String.fromCharCode(97 + row)}${col + 1}` // For example, "a1", "a2", ..., "b1", "b2", ...
+        };
+        //pushes the new object to the array
+        zones.push(zone);
+    }
+}
+
+console.log("zones ", zones);
+
 
 // console.log("zones ", zones);
 
