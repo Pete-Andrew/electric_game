@@ -5,6 +5,9 @@ let context = canvas.getContext("2d");
 canvas.width = 1000;
 canvas.height = 1000;
 
+// stores the value for the center of the cube
+let middlePointLocation = {x:0, y:0};
+
 canvas.style.border = "5px solid black"
 
 let canvasWidth = canvas.width;
@@ -65,7 +68,6 @@ console.log("zones ", zones);
 
 //find the middle point of the moving object
 function findMiddlePoint() {
-    let middlePointLocation = {x:0, y:0};
     middlePointLocation.x = shapes[0].x + 100;
     middlePointLocation.y = shapes[0].y +100;
     // console.log("middlePointLocation.x ", middlePointLocation.x);
@@ -74,21 +76,28 @@ function findMiddlePoint() {
     snapTo(middlePointLocation);
 }
 
-function snapTo (middlePointLocation) { 
+function snapTo () { 
+    let squareX = middlePointLocation.x;  
+    let squareY = middlePointLocation.y;
+    console.log ("squareX", squareX, "squareY", squareY);
+    // is middle point location in a zone?
+    
     
     // console.log(middlePointLocation);
+
 }
 //snap square to the nearest mid point - this can be found mathematically 
 // if y < 50 interval, round up nearest 100, else round down to nearest 100
 // if x < 50 interval, round up to nearest 100, else round down to nearest 100
-
+//O
 
 // console.log("zones ", zones);
 
-//zones functions do not work
-//is mouse in zone?
+//is mouse in zone function?
+//X and Y co-ordinates and 'zone' are passed in by the mouseDownInZone function 
 function isMouseInZone (x, y, zone) {
-    // console.log("mouseInZone has been called");
+    //console.log("mouseInZone has been called");
+    //these variables take the values from the for loop in the mouseDownInZone function 
     let zoneLeft = zone.x;
     let zoneRight = zone.x + zone.width;
     let zoneTop = zone.y;
@@ -96,6 +105,7 @@ function isMouseInZone (x, y, zone) {
 
     if (x > zoneLeft && x < zoneRight && y > zoneTop && y < zoneBottom) {
         console.log(`is inside zone ${zone.zoneName}`);
+
         return true;
     } else {
         // console.log("not inside zone");
@@ -104,17 +114,18 @@ function isMouseInZone (x, y, zone) {
 }
 
 //onmousedown this function is triggered
-function mouseDownInZone (e) {
-     
+function mouseDownInZone (e) {   
     // console.log("mouseDownInZone func clicked");
-    zoneStartX = parseInt(e.clientX);
-    zoneStartY = parseInt(e.clientY); 
+    //zoneStart gives the x and y co-ordinates respectively. 
+    zoneStartX = e.clientX; //removed passInt() 
+    zoneStartY = e.clientY; 
+    // console.log(zoneStartX);
 
     let zoneIndex = 0;
     for (let zone of zones) {
         if (isMouseInZone(zoneStartX, zoneStartY, zone)) {
             // console.log("in zone === yes");
-            currentZoneIndex = zoneIndex;
+            // currentZoneIndex = zoneIndex; //commented out as not needed? 
             return;
         } else {
         // console.log("in zone === no");
@@ -152,7 +163,7 @@ let isDragging = false;
 let currentShapesIndex = null;
 // x and y declare where in the canvas the shapes are going to be drawn
 shapes.push({x:100, y:100, width: 200, height: 200, color: 'green'});
-shapes.push({x:0, y:0, width: 200, height: 200, color: 'blue'});
+// shapes.push({x:0, y:0, width: 200, height: 200, color: 'blue'});
 // shapes.push({x:100, y:100, width: 3, height: 500, color: 'black'});
 
 // creates the vertical grid lines array
