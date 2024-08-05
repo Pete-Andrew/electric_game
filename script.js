@@ -72,28 +72,54 @@ function findMiddlePoint() {
     middlePointLocation.y = shapes[0].y +100;
     // console.log("middlePointLocation.x ", middlePointLocation.x);
     //console.log("middlePointLocation.y ", middlePointLocation.y);
-    console.log("middle point location = ", middlePointLocation);
-    snapTo(middlePointLocation);
+    console.log("middle point location =", middlePointLocation);
+    // snapTo(middlePointLocation);
 }
 
 function snapTo () { 
     let squareX = middlePointLocation.x;  
     let squareY = middlePointLocation.y;
-    console.log ("squareX", squareX, "squareY", squareY);
-    // is middle point location in a zone?
+    let squareRef = {column:0, row:0};
+    // make a nested for loop?
+    //Checks X axis 
+        if (squareX < 200) {
+            squareRef.column = 1;
+        } else if (squareX > 200 && squareX < 400) {
+            squareRef.column = 2;
+        } else if (squareX > 400 && squareX < 600) {
+            squareRef.column = 3;
+        } else if (squareX > 600 && squareX < 800) {
+            squareRef.column = 4;
+        } else if (squareX > 800) {
+            squareRef.column = 5;
+        };
+    //Checks Y axis  
+    if (squareY < 200) {
+        squareRef.row = "A";
+    } else if (squareY > 200 && squareY < 400) {
+        squareRef.row = "B";
+    } else if (squareY > 400 && squareY < 600) {
+        squareRef.row = "C";
+    } else if (squareY > 600 && squareY < 800) {
+        squareRef.row = "D";
+    } else if (squareY > 800) {
+        squareRef.row = "E";
+    };
+
+    console.log("cell containing the center of the square",squareRef);
+    cellRef = `${squareRef.row}${squareRef.column}`
+    console.log(cellRef);
+    if (cellRef === "A1") {
+        console.log("wicca wicca woo");      
+    } 
+    //console.log ("squareX", squareX, "squareY", squareY);
+    //console.log(middlePointLocation);
+
+    //snapping function
     
-    
-    // console.log(middlePointLocation);
 
 }
-//snap square to the nearest mid point - this can be found mathematically 
-// if y < 50 interval, round up nearest 100, else round down to nearest 100
-// if x < 50 interval, round up to nearest 100, else round down to nearest 100
-//O
 
-// console.log("zones ", zones);
-
-//is mouse in zone function?
 //X and Y co-ordinates and 'zone' are passed in by the mouseDownInZone function 
 function isMouseInZone (x, y, zone) {
     //console.log("mouseInZone has been called");
@@ -113,15 +139,14 @@ function isMouseInZone (x, y, zone) {
     }
 }
 
-//onmousedown this function is triggered
+//onmousedown this function is triggered, onmousedown @ line 212 
 function mouseDownInZone (e) {   
     // console.log("mouseDownInZone func clicked");
-    //zoneStart gives the x and y co-ordinates respectively. 
+    //zoneStart variable give the x and y co-ordinates of the mouse click respectively. 
     zoneStartX = e.clientX; //removed passInt() 
     zoneStartY = e.clientY; 
     // console.log(zoneStartX);
-
-    let zoneIndex = 0;
+    // let zoneIndex = 0; // commented out as not needed??
     for (let zone of zones) {
         if (isMouseInZone(zoneStartX, zoneStartY, zone)) {
             // console.log("in zone === yes");
@@ -129,20 +154,14 @@ function mouseDownInZone (e) {
             return;
         } else {
         // console.log("in zone === no");
-        }    
-        zoneIndex++;
+        }  
+        // zoneIndex++; //commented out as not needed?? 
   }
 };
-
-// check to see if the square overlaps
-
-// on un-click drop the coloured square in the nearest box
 
 //fills the screen:
 // canvas.width = window.innerWidth - 15;
 // canvas.height = window.innerHeight;
-
-
 
 // getBoundingClientRect returns the size of an element and its position relative to the viewport, deals with screen re-sizing
 function getOffset() {
@@ -217,11 +236,10 @@ function isMouseInShape (x, y, shape) {
     }
 }
 
-//onmousedown this function is triggered
+//onmousedown these functions are triggered
 function mouseDown (e) {
     e.preventDefault();
-    mouseDownInZone(e);
-    
+    mouseDownInZone(e); 
 
     startX = parseInt(e.clientX - offsetX);
     startY = parseInt(e.clientY - offsetY); 
@@ -246,6 +264,8 @@ function mouseUp (e) {
     } else {
         e.preventDefault();
         findMiddlePoint(e);
+        snapTo() //need to pass in the value of the cells
+
         isDragging = false; 
     }
 }
@@ -301,7 +321,6 @@ function drawShapes() {
     for (let shape of shapes) {
         context.fillStyle = shape.color;
         context.fillRect(shape.x, shape.y, shape.width, shape.height)
-
     }
 }
 drawShapes();
