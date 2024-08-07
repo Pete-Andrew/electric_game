@@ -6,7 +6,7 @@ canvas.width = 1000;
 canvas.height = 1000;
 
 // stores the value for the center of the cube
-let middlePointLocation = {x:0, y:0};
+let middlePointLocation = { x: 0, y: 0 };
 
 canvas.style.border = "5px solid black"
 
@@ -25,22 +25,49 @@ let offsetY;
 let zoneStartX;
 let zoneStartY;
 
+function loadImage(src, callback) {
+    const img = new Image();
+    img.onload = () => callback(img);
+    img.src = src;
+}
+
 //holds shapes as an array
 let shapes = [];
 let isDragging = false;
 
 let currentShapesIndex = null;
 // x and y declare where in the canvas the shapes are going to be drawn
-shapes.push({x:100, y:100, width: 200, height: 200, color: 'green', shapeIndex: 0});
-shapes.push({x:0, y:0, width: 200, height: 200, color: 'blue', shapeIndex: 1});
-shapes.push({x:200, y:200, width: 200, height: 200, color: 'red', shapeIndex: 2});
+shapes.push({ x: 200, y: 400, width: 200, height: 200, color: 'green', shapeIndex: 0, imgSrc:'img/r_angle_dead.jpg' });
+shapes.push({ x: 0, y: 0, width: 200, height: 200, color: 'blue', shapeIndex: 1, imgSrc:'img/r_angle_live.jpg' });
+shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'red', shapeIndex: 2, imgSrc:'img/r_angle_live.jpg' });
+shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', shapeIndex: 3, imgSrc:'img/r_angle_dead.jpg' });
+
+function loadImages(shapes, callback) {
+    let loadedCount = 0;
+    shapes.forEach(shape => {
+        if (shape.imgSrc) {
+            loadImage(shape.imgSrc, (img) => {
+                shape.image = img;
+                loadedCount++;
+                if (loadedCount === shapes.length) {
+                    callback();
+                }
+            });
+        } else {
+            loadedCount++;
+            if (loadedCount === shapes.length) {
+                callback();
+            }
+        }
+    });
+}
 
 // creates the vertical grid lines array
 let vertGridLines = [];
-vertGridLines.push({x:200, y:0, width: 4, height:canvasHeight, color: 'blacK'});
-vertGridLines.push({x:400, y:0, width: 4, height:canvasHeight, color: 'blacK'});
-vertGridLines.push({x:600, y:0, width: 4, height:canvasHeight, color: 'blacK'});
-vertGridLines.push({x:800, y:0, width: 4, height:canvasHeight, color: 'blacK'});
+vertGridLines.push({ x: 200, y: 0, width: 4, height: canvasHeight, color: 'blacK' });
+vertGridLines.push({ x: 400, y: 0, width: 4, height: canvasHeight, color: 'blacK' });
+vertGridLines.push({ x: 600, y: 0, width: 4, height: canvasHeight, color: 'blacK' });
+vertGridLines.push({ x: 800, y: 0, width: 4, height: canvasHeight, color: 'blacK' });
 
 // draws the vert grid
 function drawVertGrid() {
@@ -55,10 +82,10 @@ drawVertGrid();
 
 // creates the horizontal grid lines array
 let horizGridLines = [];
-horizGridLines.push({x:0, y:200, width:canvasWidth, height: 4, color: 'black'})
-horizGridLines.push({x:0, y:400, width:canvasWidth, height: 4, color: 'black'})
-horizGridLines.push({x:0, y:600, width:canvasWidth, height: 4, color: 'black'})
-horizGridLines.push({x:0, y:800, width:canvasWidth, height: 4, color: 'black'})
+horizGridLines.push({ x: 0, y: 200, width: canvasWidth, height: 4, color: 'black' })
+horizGridLines.push({ x: 0, y: 400, width: canvasWidth, height: 4, color: 'black' })
+horizGridLines.push({ x: 0, y: 600, width: canvasWidth, height: 4, color: 'black' })
+horizGridLines.push({ x: 0, y: 800, width: canvasWidth, height: 4, color: 'black' })
 
 function drawHorizGrid() {
     // context.clearRect(0,0, canvasWidth, canvasHeight);
@@ -71,18 +98,18 @@ function drawHorizGrid() {
 drawHorizGrid();
 
 //for using an image rather than a js drawn grid NOT IN USE CURRENTLY
-function backgroundCanvasImg () {
+function backgroundCanvasImg() {
     base_image = new Image();
     base_image.src = 'img/fiveByFiveGrid.gif'
-    base_image.onload = function() {
+    base_image.onload = function () {
         context.drawImage(base_image, 0, 0);
     }
-}
-// backgroundCanvasImg(); 
+} // This function is currently never called!! 
 
+// backgroundCanvasImg(); 
 // set co-ordinates for the grid squares
 let zones = [];
- 
+
 // zones.push({x:0, y:0, width: 200, height: 200, zoneName: "a1"})
 // OR put in a for loop to set each zone. 
 //set bounding areas for squares
@@ -116,100 +143,88 @@ console.log("zones ", zones);
 function findMiddlePoint() {
     //current shapes index needs to be used here or all the shapes default to the square of the first one.
     middlePointLocation.x = shapes[currentShapesIndex].x + 100;
-    middlePointLocation.y = shapes[currentShapesIndex].y +100;
+    middlePointLocation.y = shapes[currentShapesIndex].y + 100;
     console.log("middle point location =", middlePointLocation);
 }
 
-function checkCell () { 
-    let squareX = middlePointLocation.x;  
+function checkCell() {
+    let squareX = middlePointLocation.x;
     let squareY = middlePointLocation.y;
-    let squareRef = {column:0, row:0};
+    let squareRef = { column: 0, row: 0 };
 
     currentShape = shapes[currentShapesIndex];
     // make a nested for loop?
     //Checks X axis 
-        if (squareX < 200) {
-            squareRef.column = 1;
-        } else if (squareX > 200 && squareX < 400) {
-            squareRef.column = 2;
-        } else if (squareX > 400 && squareX < 600) {
-            squareRef.column = 3;
-        } else if (squareX > 600 && squareX < 800) {
-            squareRef.column = 4;
-        } else if (squareX > 800) {
-            squareRef.column = 5;
-        };
+    if (squareX < 200) {
+        squareRef.column = 1;
+    } else if (squareX > 200 && squareX < 400) {
+        squareRef.column = 2;
+    } else if (squareX > 400 && squareX < 600) {
+        squareRef.column = 3;
+    } else if (squareX > 600 && squareX < 800) {
+        squareRef.column = 4;
+    } else if (squareX > 800) {
+        squareRef.column = 5;
+    };
     //Checks Y axis  
-        if (squareY < 200) {
-            squareRef.row = "A";
-        } else if (squareY > 200 && squareY < 400) {
-            squareRef.row = "B";
-        } else if (squareY > 400 && squareY < 600) {
-            squareRef.row = "C";
-        } else if (squareY > 600 && squareY < 800) {
-            squareRef.row = "D";
-        } else if (squareY > 800) {
-            squareRef.row = "E";
-        };
+    if (squareY < 200) {
+        squareRef.row = "A";
+    } else if (squareY > 200 && squareY < 400) {
+        squareRef.row = "B";
+    } else if (squareY > 400 && squareY < 600) {
+        squareRef.row = "C";
+    } else if (squareY > 600 && squareY < 800) {
+        squareRef.row = "D";
+    } else if (squareY > 800) {
+        squareRef.row = "E";
+    };
 
-    console.log("cell containing the center of the square",squareRef);
+    console.log("cell containing the center of the square", squareRef);
     cellRef = `${squareRef.row}${squareRef.column}`
     console.log(cellRef);
-//A row
-    if (cellRef === "A1") {
-        currentShape.x = 0;
-        currentShape.y = 0;
-    } 
-    if (cellRef === "A2") {
-        currentShape.x = 200;
-        currentShape.y = 0;
-    } 
-    if (cellRef === "A3") {
-        currentShape.x = 400;
-        currentShape.y = 0;
-    } 
-    if (cellRef === "A4") {
-        currentShape.x = 600;
-        currentShape.y = 0;
-    } 
-    if (cellRef === "A5") {
-        currentShape.x = 800;
-        currentShape.y = 0;
-    } 
-//B row
-    if (cellRef === "B1") {
-        currentShape.x = 0;
-        currentShape.y = 200;
-    } 
-    if (cellRef === "B2") {
-        currentShape.x = 200;
-        currentShape.y = 200;
-    } 
-    if (cellRef === "B3") {
-        currentShape.x = 400;
-        currentShape.y = 200;
-    } 
-    if (cellRef === "B4") {
-        currentShape.x = 600;
-        currentShape.y = 200;
-    } 
-    if (cellRef === "B5") {
-        currentShape.x = 800;
-        currentShape.y = 200;}
+let cellCoords = {
+        "A1": { x: 0, y: 0 },
+        "A2": { x: 200, y: 0 },
+        "A3": { x: 400, y: 0 },
+        "A4": { x: 600, y: 0 },
+        "A5": { x: 800, y: 0 },
+        "B1": { x: 0, y: 200 },
+        "B2": { x: 200, y: 200 },
+        "B3": { x: 400, y: 200 },
+        "B4": { x: 600, y: 200 },
+        "B5": { x: 800, y: 200 },
+        "C1": { x: 0, y: 400 },
+        "C2": { x: 200, y: 400 },
+        "C3": { x: 400, y: 400 },
+        "C4": { x: 600, y: 400 },
+        "C5": { x: 800, y: 400 },
+        "D1": { x: 0, y: 600 },
+        "D2": { x: 200, y: 600 },
+        "D3": { x: 400, y: 600 },
+        "D4": { x: 600, y: 600 },
+        "D5": { x: 800, y: 600 },
+        "E1": { x: 0, y: 800 },
+        "E2": { x: 200, y: 800 },
+        "E3": { x: 400, y: 800 },
+        "E4": { x: 600, y: 800 },
+        "E5": { x: 800, y: 800 },
+    };
+// checks to see if the cellRef is the same as the cell co-ordinate,
+    if (cellCoords[cellRef]) {
+        currentShape.x = cellCoords[cellRef].x;
+        currentShape.y = cellCoords[cellRef].y;
+    }
     snapTo();
-    
-    
-        //updates the value of the shapes x and y co-ordinates
-        //need to give the center cell ref co-ordinates
 
+    //updates the value of the shapes x and y co-ordinates
+    //need to give the center cell ref co-ordinates
     //console.log ("squareX", squareX, "squareY", squareY);
     //console.log(middlePointLocation);
-
     //snapping function
 }
 
 //X and Y co-ordinates and 'zone' are passed in by the mouseDownInZone function 
-function isMouseInZone (x, y, zone) {
+function isMouseInZone(x, y, zone) {
     //console.log("mouseInZone has been called");
     //these variables take the values from the for loop in the mouseDownInZone function 
     let zoneLeft = zone.x;
@@ -223,16 +238,16 @@ function isMouseInZone (x, y, zone) {
         return true;
     } else {
         // console.log("not inside zone");
-        return false; 
+        return false;
     }
 }
 
 //onmousedown this function is triggered, onmousedown @ line 212 
-function mouseDownInZone (e) {   
+function mouseDownInZone(e) {
     // console.log("mouseDownInZone func clicked");
     //zoneStart variable give the x and y co-ordinates of the mouse click respectively. 
     zoneStartX = e.clientX; //removed passInt() 
-    zoneStartY = e.clientY; 
+    zoneStartY = e.clientY;
     // console.log(zoneStartX);
     // let zoneIndex = 0; // commented out as not needed??
     for (let zone of zones) {
@@ -241,10 +256,10 @@ function mouseDownInZone (e) {
             // currentZoneIndex = zoneIndex; //commented out as not needed? 
             return;
         } else {
-        // console.log("in zone === no");
-        }  
+            // console.log("in zone === no");
+        }
         // zoneIndex++; //commented out as not needed?? 
-  }
+    }
 };
 
 //fills the screen:
@@ -259,13 +274,12 @@ function getOffset() {
 }
 getOffset();
 
-window.onscroll = function() { getOffset();}
-window.onresize = function() { getOffset();}
-canvas.onresize = function() { getOffset();}
-
+window.onscroll = function () { getOffset(); }
+window.onresize = function () { getOffset(); }
+canvas.onresize = function () { getOffset(); }
 
 //checks to see if the mouse is inside a shape
-function isMouseInShape (x, y, shape) {
+function isMouseInShape(x, y, shape) {
     let shapeLeft = shape.x;
     let shapeRight = shape.x + shape.width;
     let shapeTop = shape.y;
@@ -276,33 +290,33 @@ function isMouseInShape (x, y, shape) {
         return true;
     } else {
         // console.log("not inside shape");
-        return false; 
+        return false;
     }
 }
 
 //onmousedown these functions are triggered
-function mouseDown (e) {
+function mouseDown(e) {
     e.preventDefault();
-    mouseDownInZone(e); 
+    mouseDownInZone(e);
 
     startX = parseInt(e.clientX - offsetX);
-    startY = parseInt(e.clientY - offsetY); 
+    startY = parseInt(e.clientY - offsetY);
 
-    let index =0;
-    for (let shape of shapes ) {
+    let index = 0;
+    for (let shape of shapes) {
         if (isMouseInShape(startX, startY, shape)) {
             // console.log("in shape === yes");
             currentShapesIndex = index;
             isDragging = true;
             return;
         } else {
-        // console.log("in shape === no");
-        }    
+            // console.log("in shape === no");
+        }
         index++;
-  }
+    }
 };
 
-function mouseUp (e) {
+function mouseUp(e) {
     if (!isDragging) {
         return;
     } else {
@@ -310,11 +324,11 @@ function mouseUp (e) {
         findMiddlePoint(e);
         checkCell() //need to pass in the value of the cells
 
-        isDragging = false; 
+        isDragging = false;
     }
 }
 
-function mouseOut (e) {
+function mouseOut(e) {
     if (!isDragging) {
         return;
     } else {
@@ -323,8 +337,8 @@ function mouseOut (e) {
     }
 }
 
-function mouseMove (e) {
-    if(!isDragging) {
+function mouseMove(e) {
+    if (!isDragging) {
         return;
     } else {
         // console.log("move with dragging");
@@ -341,7 +355,7 @@ function mouseMove (e) {
         //updates the value of the shapes x and y co-ordinates
         currentShape.x += mouseMoveDistanceX;
         currentShape.y += mouseMoveDistanceY;
-     
+
         drawShapes();
         //console.log("square is moving")
         startX = mouseX;
@@ -356,33 +370,40 @@ canvas.onmouseup = mouseUp;
 canvas.onmouseout = mouseOut;
 canvas.onmousemove = mouseMove;
 
-function itIsAlive() {
-    console.log("it is alive");
-}
-
 //let drawShapes = function(), this an alternative way of declaring this function.
 function drawShapes() {
-    context.clearRect(0,0, canvasWidth, canvasHeight);
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
     drawHorizGrid();
     drawVertGrid();
     for (let shape of shapes) {
-        context.fillStyle = shape.color;
-        context.fillRect(shape.x, shape.y, shape.width, shape.height)
+        if (shape.image) {
+                // Draw the image
+                context.drawImage(shape.image, shape.x, shape.y, shape.width, shape.height);
+        } else {
+                // Draw the shape with color (fallback)
+                context.fillStyle = shape.color;
+                context.fillRect(shape.x, shape.y, shape.width, shape.height);
+            }
+        }
     }
-}
-drawShapes();
 
-function snapTo () {
-    context.clearRect(0,0, canvasWidth, canvasHeight);
+    // Load all shapes (with their relevant images) and then draw the shapes
+    loadImages(shapes, drawShapes)
+    
+function snapTo() {
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
     drawHorizGrid();
     drawVertGrid();
     for (let shape of shapes) {
-        context.fillStyle = shape.color;
-        context.fillRect(shape.x, shape.y, shape.width, shape.height)
+        if (shape.image) {
+            // Draw the image
+            context.drawImage(shape.image, shape.x, shape.y, shape.width, shape.height);
+    } else {
+            // Draw the shape with color (fallback)
+            context.fillStyle = shape.color;
+            context.fillRect(shape.x, shape.y, shape.width, shape.height);
+        }
     }
 }
-
-
-
 
 // https://www.youtube.com/watch?v=7PYvx8u_9Sk&ab_channel=BananaCoding
