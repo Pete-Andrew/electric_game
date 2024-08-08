@@ -25,9 +25,17 @@ let offsetY;
 let zoneStartX;
 let zoneStartY;
 
+//JavaScript callback is a function which is to be executed after another function has finished execution
+//A callback is a function passed as an argument to another function. This technique allows a function to call another function
+//A callback function can run after another function has finished
+
 function loadImage(src, callback) {
+    //creates a new HTML Image element/image object using the 'new Image()' constructor.
     const img = new Image();
+    //"img.onload" is an event handler that gets called when the image has finished loading successfully. The arrow function "() => callback(img)" is assigned to img.onload. 
+    //This means that when the image has loaded, the function callback will be called with img (the loaded image object) as its argument.
     img.onload = () => callback(img);
+    //sets the src attribute of the img object to the provided src argument. Setting img.src starts the process of loading the image from the specified URL.
     img.src = src;
 }
 
@@ -37,16 +45,19 @@ let isDragging = false;
 
 let currentShapesIndex = null;
 // x and y declare where in the canvas the shapes are going to be drawn
-shapes.push({ x: 200, y: 400, width: 200, height: 200, color: 'green', shapeIndex: 0, imgSrc:'img/r_angle_dead.jpg' });
-shapes.push({ x: 0, y: 0, width: 200, height: 200, color: 'blue', shapeIndex: 1, imgSrc:'img/r_angle_live.jpg' });
-shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'red', shapeIndex: 2, imgSrc:'img/r_angle_live.jpg' });
-shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', shapeIndex: 3, imgSrc:'img/r_angle_dead.jpg' });
+//shapes.push({ x: 140, y: 20, width: 40, height: 40, color: 'green', shapeIndex: 0}); //shape to hold the rotate button
+shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green',  shapeIndex: 0, imgSrc:'img/power.jpg',        type: 'power',   canMove: false});
+shapes.push({ x: 200, y: 400, width: 200, height: 200, color: 'green',  shapeIndex: 0, imgSrc:'img/r_angle_dead.jpg', type: 'r_angle', canMove: true });
+shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue',   shapeIndex: 1, imgSrc:'img/r_angle_live.jpg', type: 'r_angle', canMove: true  });
+shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'red',    shapeIndex: 2, imgSrc:'img/r_angle_live.jpg', type: 'r_angle', canMove: true  });
+shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', shapeIndex: 3, imgSrc:'img/r_angle_dead.jpg', type: 'r_angle', canMove: true  });
 
+//need to understand this better..... 
 function loadImages(shapes, callback) {
     let loadedCount = 0;
     shapes.forEach(shape => {
-        if (shape.imgSrc) {
-            loadImage(shape.imgSrc, (img) => {
+        if (shape.imgSrc) { //checks to see if a given shape has an imgSrc attribute 
+            loadImage(shape.imgSrc, (img) => {  //calls the load image function passing in the imageSrc attribute and.... 
                 shape.image = img;
                 loadedCount++;
                 if (loadedCount === shapes.length) {
