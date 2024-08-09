@@ -46,11 +46,11 @@ let isDragging = false;
 let currentShapesIndex = null;
 // x and y declare where in the canvas the shapes are going to be drawn
 //shapes.push({ x: 140, y: 20, width: 40, height: 40, color: 'green', shapeIndex: 0}); //shape to hold the rotate button
-shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green',  shapeIndex: 0, imgSrc:'img/power.jpg',        type: 'power',   canMove: false});
-shapes.push({ x: 200, y: 400, width: 200, height: 200, color: 'green',  shapeIndex: 0, imgSrc:'img/r_angle_dead.jpg', type: 'r_angle', canMove: true });
-shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue',   shapeIndex: 1, imgSrc:'img/r_angle_live.jpg', type: 'r_angle', canMove: true  });
-shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'red',    shapeIndex: 2, imgSrc:'img/r_angle_live.jpg', type: 'r_angle', canMove: true  });
-shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', shapeIndex: 3, imgSrc:'img/r_angle_dead.jpg', type: 'r_angle', canMove: true  });
+shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green',  shapeIndex: 0, imgSrc:'img/power.jpg',        type: 'power',   currentCell: '', canMove: false, top: false, right: false, bottom: true, left: false });
+shapes.push({ x: 200, y: 400, width: 200, height: 200, color: 'green',  shapeIndex: 0, imgSrc:'img/r_angle_dead.jpg', type: 'r_angle', currentCell: '', canMove: true });
+shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue',   shapeIndex: 1, imgSrc:'img/r_angle_live.jpg', type: 'r_angle', currentCell: '', canMove: true  });
+shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'red',    shapeIndex: 2, imgSrc:'img/r_angle_live.jpg', type: 'r_angle', currentCell: '', canMove: true  });
+shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', shapeIndex: 3, imgSrc:'img/r_angle_dead.jpg', type: 'r_angle', currentCell: '', canMove: true,  top: true, right: false, bottom: false, left: true});
 
 //need to understand this better..... 
 function loadImages(shapes, callback) {
@@ -192,7 +192,12 @@ function checkCell() {
 
     console.log("cell containing the center of the square", squareRef);
     cellRef = `${squareRef.row}${squareRef.column}`
-    console.log(cellRef);
+    // console.log(cellRef);
+    // pushes the current cell ref to the tile that is in the cell. 
+    shapes[currentShapesIndex].currentCell = cellRef;
+    console.log("current shape is in cell", shapes[currentShapesIndex].currentCell);
+    checkConnection();
+
 let cellCoords = {
         "A1": { x: 0, y: 0 },
         "A2": { x: 200, y: 0 },
@@ -415,6 +420,55 @@ function snapTo() {
             context.fillRect(shape.x, shape.y, shape.width, shape.height);
         }
     }
+}
+
+//take a letter in as a parameter and return the previous letter
+function getPreviousLetter (letter) {
+        // Convert the letter to its ASCII code
+        const charCode = letter.charCodeAt(0);
+        // console.log(charCode)
+        // Get the preceding letter by subtracting 1
+        const precedingCharCode = charCode - 1; 
+        // Convert the ASCII code back to a letter
+        const precedingLetter = String.fromCharCode(precedingCharCode)
+        return precedingLetter;
+}
+
+function getNextLetter (letter) {
+            // Convert the letter to its ASCII code
+            const charCode = letter.charCodeAt(0);
+            // console.log(charCode)
+            // Get the preceding letter by subtracting 1
+            const precedingCharCode = charCode + 1; 
+            // Convert the ASCII code back to a letter
+            const precedingLetter = String.fromCharCode(precedingCharCode)
+            return precedingLetter;
+}
+
+
+function checkConnection() {
+
+    let gridRef = shapes[currentShapesIndex].currentCell;
+    // console.log(gridRef); 
+
+    let neighbours = {
+        top: getPreviousLetter(gridRef.charAt(0)), //substring gets the first character in an array. 
+        bottom: getNextLetter(gridRef.charAt(0)), 
+        left:   (gridRef.charAt(1))-1,
+        right:  parseInt(gridRef.charAt(1))+1,
+        
+    }
+    console.log("cell above", neighbours.top + gridRef.charAt(1));
+    console.log("cell below",neighbours.bottom + gridRef.charAt(1));
+    console.log("cell to left", gridRef.charAt(0) + neighbours.left);
+    console.log("cell to right", gridRef.charAt(0) + neighbours.right);
+
+    //check to see if there are neighbouring tiles 
+    //check neighbouring tiles to see if 
+}
+
+function changeTile() {
+    //if check connection returns true then replace the dead tile with a live one. 
 }
 
 // https://www.youtube.com/watch?v=7PYvx8u_9Sk&ab_channel=BananaCoding
