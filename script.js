@@ -47,9 +47,9 @@ let currentShapesIndex = null;
 // x and y declare where in the canvas the shapes are going to be drawn
 //shapes.push({ x: 140, y: 20, width: 40, height: 40, color: 'green', shapeIndex: 0}); //shape to hold the rotate button
 shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green',  shapeIndex: 0, imgSrc:'img/power.jpg',        type: 'power',   currentCell: '', canMove: false, top: false, right: false, bottom: true, left: false });
-shapes.push({ x: 200, y: 400, width: 200, height: 200, color: 'green',  shapeIndex: 0, imgSrc:'img/r_angle_dead.jpg', type: 'r_angle', currentCell: '', canMove: true });
-shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue',   shapeIndex: 1, imgSrc:'img/r_angle_live.jpg', type: 'r_angle', currentCell: '', canMove: true  });
-shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'red',    shapeIndex: 2, imgSrc:'img/r_angle_live.jpg', type: 'r_angle', currentCell: '', canMove: true  });
+//shapes.push({ x: 200, y: 400, width: 200, height: 200, color: 'green',  shapeIndex: 0, imgSrc:'img/r_angle_dead.jpg', type: 'r_angle', currentCell: '', canMove: true });
+//shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue',   shapeIndex: 1, imgSrc:'img/r_angle_live.jpg', type: 'r_angle', currentCell: '', canMove: true  });
+//shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'red',    shapeIndex: 2, imgSrc:'img/r_angle_live.jpg', type: 'r_angle', currentCell: '', canMove: true  });
 shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', shapeIndex: 3, imgSrc:'img/r_angle_dead.jpg', type: 'r_angle', currentCell: '', canMove: true,  top: true, right: false, bottom: false, left: true});
 
 //need to understand this better..... 
@@ -433,18 +433,17 @@ function getPreviousLetter (letter) {
         const precedingLetter = String.fromCharCode(precedingCharCode)
         return precedingLetter;
 }
-
+//take a letter in as a parameter and return the next letter
 function getNextLetter (letter) {
             // Convert the letter to its ASCII code
             const charCode = letter.charCodeAt(0);
             // console.log(charCode)
-            // Get the preceding letter by subtracting 1
+            // Get the next letter by adding 1
             const precedingCharCode = charCode + 1; 
             // Convert the ASCII code back to a letter
             const precedingLetter = String.fromCharCode(precedingCharCode)
             return precedingLetter;
 }
-
 
 function checkConnection() {
 
@@ -456,15 +455,20 @@ function checkConnection() {
         bottom: getNextLetter(gridRef.charAt(0)), 
         left:   (gridRef.charAt(1))-1,
         right:  parseInt(gridRef.charAt(1))+1,
-        
     }
-    console.log("cell above", neighbours.top + gridRef.charAt(1));
-    console.log("cell below",neighbours.bottom + gridRef.charAt(1));
-    console.log("cell to left", gridRef.charAt(0) + neighbours.left);
-    console.log("cell to right", gridRef.charAt(0) + neighbours.right);
 
-    //check to see if there are neighbouring tiles 
-    //check neighbouring tiles to see if 
+    let cellAbove = neighbours.top + gridRef.charAt(1);
+    let cellBelow = neighbours.bottom + gridRef.charAt(1);
+    let cellToRight =  gridRef.charAt(0) + neighbours.left;
+    let cellToLeft = gridRef.charAt(0) + neighbours.right;
+
+    console.log("Neighbour cells: above", cellAbove + ", below", cellBelow + ", left", cellToLeft + ", right", cellToRight);
+
+    //check to see if there are tiles in neighbouring cells  
+    
+    //if the cell is filled, find out by which tile.
+    //check neighbouring tiles live connections
+    //if connections join then change cell image to live.  
 }
 
 function changeTile() {
