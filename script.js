@@ -196,7 +196,8 @@ function checkCell() {
     // pushes the current cell ref to the tile that is in the cell. 
     shapes[currentShapesIndex].currentCell = cellRef;
     console.log("current shape is in cell", shapes[currentShapesIndex].currentCell);
-    checkConnection();
+
+    checkNeighbour();
 
 let cellCoords = {
         "A1": { x: 0, y: 0 },
@@ -229,6 +230,10 @@ let cellCoords = {
     if (cellCoords[cellRef]) {
         currentShape.x = cellCoords[cellRef].x;
         currentShape.y = cellCoords[cellRef].y;
+        //logs out the object key, e.g. A2
+        console.log("object key:", Object.keys(cellCoords)[1])
+        //logs out the object value, e.g. x:200, y:0
+        console.log("object value:", Object.values(cellCoords)[1])
     }
     snapTo();
 
@@ -445,7 +450,7 @@ function getNextLetter (letter) {
             return precedingLetter;
 }
 
-function checkConnection() {
+function checkNeighbour() {
 
     let gridRef = shapes[currentShapesIndex].currentCell;
     // console.log(gridRef); 
@@ -461,15 +466,24 @@ function checkConnection() {
     let cellBelow = neighbours.bottom + gridRef.charAt(1);
     let cellToRight =  gridRef.charAt(0) + neighbours.left;
     let cellToLeft = gridRef.charAt(0) + neighbours.right;
-
     console.log("Neighbour cells: above", cellAbove + ", below", cellBelow + ", left", cellToLeft + ", right", cellToRight);
+    
+}
+
+    //each tile has a property 'currentCell' depending on which cell they are in.
+    
+    function checkConnections (cellAbove, cellBelow, cellToLeft, cellToRight) {
+
+    }
+
+    //forEach.
 
     //check to see if there are tiles in neighbouring cells  
     
     //if the cell is filled, find out by which tile.
     //check neighbouring tiles live connections
     //if connections join then change cell image to live.  
-}
+
 
 function changeTile() {
     //if check connection returns true then replace the dead tile with a live one. 
