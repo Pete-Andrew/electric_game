@@ -25,6 +25,8 @@ let offsetY;
 let zoneStartX;
 let zoneStartY;
 
+let gridRef;
+
 //JavaScript callback is a function which is to be executed after another function has finished execution
 //A callback is a function passed as an argument to another function. This technique allows a function to call another function
 //A callback function can run after another function has finished
@@ -38,19 +40,25 @@ function loadImage(src, callback) {
     //sets the src attribute of the img object to the provided src argument. Setting img.src starts the process of loading the image from the specified URL.
     img.src = src;
 }
-
+ 
 //holds shapes as an array
 let shapes = [];
 let isDragging = false;
+//sets a tile type for looking at neighbouring tiles
+let tileType = {
+    straight: { top: true, right: false, bottom: true, left: false }, 
+    power: { top: false, right: false, bottom: true, left: false }, 
+    rAngle: { top: true, right: false, bottom: false, left: true }
+}
 
 let currentShapesIndex = null;
 // x and y declare where in the canvas the shapes are going to be drawn
 //shapes.push({ x: 140, y: 20, width: 40, height: 40, color: 'green', shapeIndex: 0}); //shape to hold the rotate button
-shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green',  shapeIndex: 0, imgSrc:'img/power.jpg',        type: 'power',   currentCell: '', canMove: false, top: false, right: false, bottom: true, left: false });
+shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green',  shapeIndex: 0, imgSrc:'img/power.jpg',        type: tileType.power, cellName:'power',  currentCell: 'A3', canMove: false, isLive: true, canRotate: false});
 //shapes.push({ x: 200, y: 400, width: 200, height: 200, color: 'green',  shapeIndex: 0, imgSrc:'img/r_angle_dead.jpg', type: 'r_angle', currentCell: '', canMove: true });
 //shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue',   shapeIndex: 1, imgSrc:'img/r_angle_live.jpg', type: 'r_angle', currentCell: '', canMove: true  });
 //shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'red',    shapeIndex: 2, imgSrc:'img/r_angle_live.jpg', type: 'r_angle', currentCell: '', canMove: true  });
-shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', shapeIndex: 3, imgSrc:'img/r_angle_dead.jpg', type: 'r_angle', currentCell: '', canMove: true,  top: true, right: false, bottom: false, left: true});
+shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', shapeIndex: 3, imgSrc:'img/r_angle_dead.jpg', type: tileType.rAngle, cellName:'r_angle', currentCell: '', canMove: true, isLive: false, canRotate: true });
 
 //need to understand this better..... 
 function loadImages(shapes, callback) {
@@ -195,9 +203,10 @@ function checkCell() {
     // console.log(cellRef);
     // pushes the current cell ref to the tile that is in the cell. 
     shapes[currentShapesIndex].currentCell = cellRef;
-    console.log("current shape is in cell", shapes[currentShapesIndex].currentCell);
+    gridRef = shapes[currentShapesIndex].currentCell;
+    console.log("current shape is in cell", gridRef);
 
-    checkNeighbour();
+    checkNeighbour(gridRef);
 
 let cellCoords = {
         "A1": { x: 0, y: 0 },
@@ -231,9 +240,9 @@ let cellCoords = {
         currentShape.x = cellCoords[cellRef].x;
         currentShape.y = cellCoords[cellRef].y;
         //logs out the object key, e.g. A2
-        console.log("object key:", Object.keys(cellCoords)[1])
+        //console.log("object key:", Object.keys(cellCoords)[1])
         //logs out the object value, e.g. x:200, y:0
-        console.log("object value:", Object.values(cellCoords)[1])
+        //console.log("object value:", Object.values(cellCoords)[1])
     }
     snapTo();
 
@@ -450,11 +459,9 @@ function getNextLetter (letter) {
             return precedingLetter;
 }
 
-function checkNeighbour() {
-
-    let gridRef = shapes[currentShapesIndex].currentCell;
+function checkNeighbour(gridRef) {
+  
     // console.log(gridRef); 
-
     let neighbours = {
         top: getPreviousLetter(gridRef.charAt(0)), //substring gets the first character in an array. 
         bottom: getNextLetter(gridRef.charAt(0)), 
@@ -467,14 +474,36 @@ function checkNeighbour() {
     let cellToRight =  gridRef.charAt(0) + neighbours.left;
     let cellToLeft = gridRef.charAt(0) + neighbours.right;
     console.log("Neighbour cells: above", cellAbove + ", below", cellBelow + ", left", cellToLeft + ", right", cellToRight);
-    
+    checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileType);
 }
 
-    //each tile has a property 'currentCell' depending on which cell they are in.
-    
-    function checkConnections (cellAbove, cellBelow, cellToLeft, cellToRight) {
+    //each tile has a property 'currentCell' depending on which cell they are in.   
+    function checkConnections (cellAbove, cellBelow, cellToLeft, cellToRight, tileType) {
+        
+        //gridRef holds the current cell location
+        //need to compare gridRef to the other shapes gridRefs (e.g. for each shapes[currentShapesIndex].currentCell)
 
+        //if there is a tile in a neighbouring cell then check it's tile type. 
+        shapes.forEach(shape => {
+            if (shape.currentCell === cellAbove) {
+                console.log("there is a cell above of type:", shape.cellName)
+                // console.log(shape.type.bottom);
+                if (shape.type.bottom == true) {   // && currentCell
+                        console.log("Live wire, high voltage!")
+                    }
+
+
+
+            }
+        }
+        )
     }
+        //if there is a tile in a neighbouring cell then check it's tile type. 
+        //check to see if the sides of the tile have touching 'true' regions
+        //if they do, change the isLive property of the tile to true and change the image to live version (do the opposite if the link is broken)
+
+        //
+  
 
     //forEach.
 
