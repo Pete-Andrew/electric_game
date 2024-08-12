@@ -54,11 +54,11 @@ let tileType = {
 let currentShapesIndex = null;
 // x and y declare where in the canvas the shapes are going to be drawn
 //shapes.push({ x: 140, y: 20, width: 40, height: 40, color: 'green', shapeIndex: 0}); //shape to hold the rotate button
-shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green',  shapeIndex: 0, imgSrc:'img/power.jpg',        type: tileType.power, cellName:'power',  currentCell: 'A3', canMove: false, isLive: true, canRotate: false});
-//shapes.push({ x: 200, y: 400, width: 200, height: 200, color: 'green',  shapeIndex: 0, imgSrc:'img/r_angle_dead.jpg', type: 'r_angle', currentCell: '', canMove: true });
-//shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue',   shapeIndex: 1, imgSrc:'img/r_angle_live.jpg', type: 'r_angle', currentCell: '', canMove: true  });
-//shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'red',    shapeIndex: 2, imgSrc:'img/r_angle_live.jpg', type: 'r_angle', currentCell: '', canMove: true  });
-shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', shapeIndex: 3, imgSrc:'img/r_angle_dead.jpg', type: tileType.rAngle, cellName:'r_angle', currentCell: '', canMove: true, isLive: false, canRotate: true });
+shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green', imgSrc:'img/power.jpg',        type: tileType.power, cellName:'power',  currentCell: 'A3', canMove: false, isLive: true, canRotate: false});
+//shapes.push({ x: 200, y: 400, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead.jpg', type: 'r_angle', currentCell: '', canMove: true });
+//shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue', imgSrc:'img/r_angle_live.jpg', type: 'r_angle', currentCell: '', canMove: true  });
+//shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'red', imgSrc:'img/r_angle_live.jpg', type: 'r_angle', currentCell: '', canMove: true  });
+shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', imgSrc:'img/r_angle_dead.jpg', type: tileType.rAngle, cellName:'r_angle', currentCell: '', canMove: true, isLive: false, canRotate: true });
 
 //need to understand this better..... 
 function loadImages(shapes, callback) {
@@ -469,6 +469,7 @@ function checkNeighbour(gridRef) {
         right:  parseInt(gridRef.charAt(1))+1,
     }
 
+    //gets the cell names for the neighbouring cells.
     let cellAbove = neighbours.top + gridRef.charAt(1);
     let cellBelow = neighbours.bottom + gridRef.charAt(1);
     let cellToRight =  gridRef.charAt(0) + neighbours.left;
@@ -478,26 +479,29 @@ function checkNeighbour(gridRef) {
 }
 
     //each tile has a property 'currentCell' depending on which cell they are in.   
-    function checkConnections (cellAbove, cellBelow, cellToLeft, cellToRight, tileType) {
-        
-        //gridRef holds the current cell location
-        //need to compare gridRef to the other shapes gridRefs (e.g. for each shapes[currentShapesIndex].currentCell)
-
-        //if there is a tile in a neighbouring cell then check it's tile type. 
-        shapes.forEach(shape => {
-            if (shape.currentCell === cellAbove) {
-                console.log("there is a cell above of type:", shape.cellName)
-                // console.log(shape.type.bottom);
-                if (shape.type.bottom == true) {   // && currentCell
-                        console.log("Live wire, high voltage!")
-                    }
-
-
-
-            }
+function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileType) {
+    let isLive = false; // Flag to check if there is a live connection
+    
+    shapes.forEach(shape => {
+        if (shape.currentCell === cellAbove) {
+            console.log("there is a cell above of type:", shape.cellName);
+            if (shape.type.bottom == true && shapes[currentShapesIndex].type.top == true) {
+                console.log("Live wire, high voltage!");
+                shapes[currentShapesIndex].imgSrc = 'img/r_angle_live.jpg';
+                //This
+                isLive = true;
+            }           
         }
-        )
+        // Similar checks for cellBelow, cellToLeft, cellToRight can be added here
+    });
+
+    if (!isLive) { 
+        // If no live connections were found, set the image to dead.
+        shapes[currentShapesIndex].imgSrc = 'img/r_angle_dead.jpg';
     }
+    console.log(shapes[currentShapesIndex].imgSrc);
+    loadImages(shapes, drawShapes);
+}
         //if there is a tile in a neighbouring cell then check it's tile type. 
         //check to see if the sides of the tile have touching 'true' regions
         //if they do, change the isLive property of the tile to true and change the image to live version (do the opposite if the link is broken)
