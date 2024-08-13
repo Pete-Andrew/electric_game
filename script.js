@@ -46,12 +46,12 @@ let shapes = [];
 let isDragging = false;
 //sets a tile type for looking at neighbouring tiles
 let tileType = {
-    straight: { top: true, right: false, bottom: true, left: false }, 
-    power: { top: false, right: false, bottom: true, left: false }, 
-    rAngle1: { top: false, right: false, bottom: true, left: true },
-    rAngle2: { top: true, right: false, bottom: false, left: true },
-    rAngle3: { top: true, right: true, bottom: false, left: false },
-    rAngle4: { top: false, right: true, bottom: true, left: false },
+    straight:{ top: true,  right: false, bottom: true,  left: false }, 
+    power:   { top: false, right: false, bottom: true,  left: false }, 
+    rAngle1: { top: false, right: false, bottom: true,  left: true },
+    rAngle2: { top: true,  right: false, bottom: false, left: true },
+    rAngle3: { top: true,  right: true,  bottom: false, left: false },
+    rAngle4: { top: false, right: true,  bottom: true,  left: false },
 }
 
 let currentShapesIndex = null;
@@ -60,9 +60,9 @@ let currentShapesIndex = null;
 
 shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green', imgSrc:'img/power.jpg',           type: tileType.power,    cellName:'power',     currentCell: 'A3', canMove: false, isLive: true, canRotate: false});
 shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'red', imgSrc:'img/r_angle_dead_1.jpg',    type: tileType.rAngle1,  cellName:'r_angle_1', currentCell: '',   canMove: true  });
-shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,  cellName:'r_angle_2', currentCell: '',   canMove: true, isLive: false, canRotate: true });
-shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue', imgSrc:'img/r_angle_dead_3.jpg',   type: tileType.rAngle3,  cellName:'r_angle_3', currentCell: '', canMove: true  });
-shapes.push({ x: 200, y: 400, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_4.jpg',  type: tileType.rAngle4,  cellName:'r_angle_4', currentCell: '', canMove: true });
+shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,  cellName:'r_angle_2', currentCell: '',   canMove: true,  isLive: true, canRotate: true });
+shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue', imgSrc:'img/r_angle_dead_3.jpg',   type: tileType.rAngle3,  cellName:'r_angle_3', currentCell: '',   canMove: true  });
+shapes.push({ x: 200, y: 400, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_4.jpg',  type: tileType.rAngle4,  cellName:'r_angle_4', currentCell: '',   canMove: true });
 
 
 //need to understand this better..... 
