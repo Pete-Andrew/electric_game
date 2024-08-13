@@ -48,17 +48,20 @@ let isDragging = false;
 let tileType = {
     straight: { top: true, right: false, bottom: true, left: false }, 
     power: { top: false, right: false, bottom: true, left: false }, 
-    rAngle: { top: true, right: false, bottom: false, left: true }
+    rAngle1: { top: false, right: true, bottom: true, left: false },
+    rAngle2: { top: true, right: false, bottom: false, left: true },
+    rAngle3: { top: false, right: true, bottom: true, left: false },
+    rAngle4: { top: false, right: true, bottom: true, left: false },
 }
 
 let currentShapesIndex = null;
 // x and y declare where in the canvas the shapes are going to be drawn
 //shapes.push({ x: 140, y: 20, width: 40, height: 40, color: 'green', shapeIndex: 0}); //shape to hold the rotate button
-shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green', imgSrc:'img/power.jpg',        type: tileType.power, cellName:'power',  currentCell: 'A3', canMove: false, isLive: true, canRotate: false});
-//shapes.push({ x: 200, y: 400, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead.jpg', type: 'r_angle', currentCell: '', canMove: true });
+shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green', imgSrc:'img/power.jpg',              type: tileType.power,        cellName:'power',  currentCell: 'A3', canMove: false, isLive: true, canRotate: false});
+shapes.push({ x: 200, y: 400, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_right.jpg', type: tileType.rAngle1,                         currentCell: '', canMove: true });
 //shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue', imgSrc:'img/r_angle_live.jpg', type: 'r_angle', currentCell: '', canMove: true  });
 //shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'red', imgSrc:'img/r_angle_live.jpg', type: 'r_angle', currentCell: '', canMove: true  });
-shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', imgSrc:'img/r_angle_dead.jpg', type: tileType.rAngle, cellName:'r_angle', currentCell: '', canMove: true, isLive: false, canRotate: true });
+shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', imgSrc:'img/r_angle_dead.jpg',      type: tileType.rAngle2,      cellName:'r_angle', currentCell: '', canMove: true, isLive: false, canRotate: true });
 
 //need to understand this better..... 
 function loadImages(shapes, callback) {
@@ -487,7 +490,13 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
             console.log("there is a cell above of type:", shape.cellName);
             if (shape.type.bottom == true && shapes[currentShapesIndex].type.top == true) {
                 console.log("Live wire, high voltage!");
-                shapes[currentShapesIndex].imgSrc = 'img/r_angle_live.jpg';
+                if (shapes[currentShapesIndex].imgSrc = 'img/r_angle_dead.jpg') {
+                    shapes[currentShapesIndex].imgSrc = 'img/r_angle_live.jpg'
+                }
+                else if (shapes[currentShapesIndex].imgSrc = 'img/r_angle_dead_right.jpg') {
+                    shapes[currentShapesIndex].imgSrc = 'img/r_angle_live_right.jpg'
+                }
+
                 //This
                 isLive = true;
             }           
@@ -497,7 +506,13 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
 
     if (!isLive) { 
         // If no live connections were found, set the image to dead.
+        if(shapes[currentShapesIndex].imgSrc == 'img/r_angle_live.jpg') {
         shapes[currentShapesIndex].imgSrc = 'img/r_angle_dead.jpg';
+        }
+        
+        if(shapes[currentShapesIndex].imgSrc == 'img/r_angle_dead_right.jpg') {
+            shapes[currentShapesIndex].imgSrc = 'img/r_angle_dead_right.jpg';
+        }
     }
     console.log(shapes[currentShapesIndex].imgSrc);
     loadImages(shapes, drawShapes);
