@@ -396,7 +396,6 @@ function mouseMove(e) {
         startX = mouseX;
         startY = mouseY;
     }
-    // console.log("move");
 }
 
 //listens for the mousedown event on the canvas
@@ -489,18 +488,19 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
 
     shapes.forEach(shape => {
         //check cells above
-
-        if (shape.currentCell === cellAbove) {
+        
+        if (shape.currentCell === cellToLeft) {
             console.log("there is a cell above of type:", shape.cellName);
-            if (shape.type.left == true && shapes[currentShapesIndex].type.left == true && shapes[currentShapesIndex].cellName == "r_angle_1") {
+            if (shape.type.right == true && shapes[currentShapesIndex].type.left == true && shapes[currentShapesIndex].cellName == "r_angle_1") {
                 console.log("Live wire, high voltage!");
                 if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_dead_1.jpg') {
                     shapes[currentShapesIndex].imgSrc = 'img/r_angle_live_1.jpg'
                     isLive = true;
+                    //⅂
                 }
             }
         }
-
+       
         if (shape.currentCell === cellAbove) {
             console.log("there is a cell above of type:", shape.cellName);
             if (shape.type.bottom == true && shapes[currentShapesIndex].type.top == true && shapes[currentShapesIndex].cellName == "r_angle_2") {
@@ -508,6 +508,7 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
                 if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_dead_2.jpg') {
                     shapes[currentShapesIndex].imgSrc = 'img/r_angle_live_2.jpg'
                     isLive = true;
+                     //⅃
                 }
             }
         }
@@ -519,6 +520,7 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
                 if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_dead_3.jpg') {
                     shapes[currentShapesIndex].imgSrc = 'img/r_angle_live_3.jpg'
                     isLive = true;
+                    //L,  
                 }
             }
         }
@@ -530,9 +532,11 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
                     shapes[currentShapesIndex].imgSrc = 'img/r_angle_live_4.jpg';
                     console.log("Live wire, high voltage!");
                     isLive = true;
+                    //Γ
                 }
             }
-        }
+        }   
+        
 
         // Similar checks for cellBelow, cellToLeft, cellToRight can be added here
     });
