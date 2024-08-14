@@ -488,10 +488,13 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
 
     shapes.forEach(shape => {
         // condensed functions, check for connections at both ends of wires
-                
-        if (shape.currentCell === cellToLeft) {
+        
+        let getCellName = shapes[currentShapesIndex].cellName;
+
+        if ((shape.currentCell === cellToLeft) || (shape.currentCell === cellBelow)) {
             console.log("there is a cell above of type:", shape.cellName);
-            if (shape.type.right == true && shapes[currentShapesIndex].type.left == true && shapes[currentShapesIndex].cellName == "r_angle_1") {
+            if ((shape.type.right == true && getCellName == "r_angle_1")
+                || (shape.type.top == true && getCellName == "r_angle_1")) {
                 console.log("Live wire, high voltage!");
                 if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_dead_1.jpg') {
                     shapes[currentShapesIndex].imgSrc = 'img/r_angle_live_1.jpg'
@@ -502,8 +505,8 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
         }
 
         if ((shape.currentCell === cellAbove) || (shape.currentCell === cellToLeft)) {
-            if ((shape.type.right  == true && shapes[currentShapesIndex].cellName == "r_angle_2")
-             || (shape.type.bottom == true && shapes[currentShapesIndex].cellName == "r_angle_2")) {
+            if ((shape.type.right  == true && getCellName == "r_angle_2")
+             || (shape.type.bottom == true && getCellName == "r_angle_2")) {
                 console.log("Live wire, high voltage!");
                 if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_dead_2.jpg') {
                     shapes[currentShapesIndex].imgSrc = 'img/r_angle_live_2.jpg'
@@ -514,8 +517,8 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
         }
     
         if ((shape.currentCell === cellAbove) || (shape.currentCell === cellToRight) ) {
-            if ((shape.type.bottom == true && shapes[currentShapesIndex].cellName == "r_angle_3")
-             ||(shape.type.left == true && shapes[currentShapesIndex].cellName == "r_angle_3"))    { 
+            if ((shape.type.bottom == true && getCellName == "r_angle_3")
+             ||(shape.type.left == true && getCellName == "r_angle_3"))    { 
                 console.log("Live wire, high voltage!");
                 if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_dead_3.jpg') {
                     shapes[currentShapesIndex].imgSrc = 'img/r_angle_live_3.jpg'
@@ -527,8 +530,8 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
 
         //checks cells to right
         if ((shape.currentCell === cellToRight) || (shape.currentCell === cellBelow)) {
-            if ((shape.type.left == true && shapes[currentShapesIndex].cellName == "r_angle_4")
-               || (shape.type.top == true && shapes[currentShapesIndex].cellName == "r_angle_4"))  {
+            if ((shape.type.left == true && getCellName == "r_angle_4")
+               || (shape.type.top == true && getCellName == "r_angle_4"))  {
                 if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_dead_4.jpg') {
                     shapes[currentShapesIndex].imgSrc = 'img/r_angle_live_4.jpg';
                     console.log("Live wire, high voltage!");
