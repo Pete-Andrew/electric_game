@@ -487,8 +487,8 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
     let isLive = false; // Flag to check if there is a live connection
 
     shapes.forEach(shape => {
-        //check cells above
-        
+        // condensed functions, check for connections at both ends of wires
+                
         if (shape.currentCell === cellToLeft) {
             console.log("there is a cell above of type:", shape.cellName);
             if (shape.type.right == true && shapes[currentShapesIndex].type.left == true && shapes[currentShapesIndex].cellName == "r_angle_1") {
@@ -500,10 +500,10 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
                 }
             }
         }
-       
-        if (shape.currentCell === cellAbove) {
-            console.log("there is a cell above of type:", shape.cellName);
-            if (shape.type.bottom == true && shapes[currentShapesIndex].type.top == true && shapes[currentShapesIndex].cellName == "r_angle_2") {
+
+        if ((shape.currentCell === cellAbove) || (shape.currentCell === cellToLeft)) {
+            if ((shape.type.right  == true && shapes[currentShapesIndex].cellName == "r_angle_2")
+             || (shape.type.bottom == true && shapes[currentShapesIndex].cellName == "r_angle_2")) {
                 console.log("Live wire, high voltage!");
                 if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_dead_2.jpg') {
                     shapes[currentShapesIndex].imgSrc = 'img/r_angle_live_2.jpg'
@@ -512,10 +512,10 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
                 }
             }
         }
-        
-        if (shape.currentCell === cellAbove) {
-            console.log("there is a cell above of type:", shape.cellName);
-            if (shape.type.bottom == true && shapes[currentShapesIndex].type.top == true && shapes[currentShapesIndex].cellName == "r_angle_3") { // AND cell type
+    
+        if ((shape.currentCell === cellAbove) || (shape.currentCell === cellToRight) ) {
+            if ((shape.type.bottom == true && shapes[currentShapesIndex].cellName == "r_angle_3")
+             ||(shape.type.left == true && shapes[currentShapesIndex].cellName == "r_angle_3"))    { 
                 console.log("Live wire, high voltage!");
                 if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_dead_3.jpg') {
                     shapes[currentShapesIndex].imgSrc = 'img/r_angle_live_3.jpg'
@@ -526,8 +526,9 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
         }
 
         //checks cells to right
-        if (shape.currentCell === cellToRight) {
-            if (shape.type.left == true && shapes[currentShapesIndex].type.right == true && shapes[currentShapesIndex].cellName == "r_angle_4") {
+        if ((shape.currentCell === cellToRight) || (shape.currentCell === cellBelow)) {
+            if ((shape.type.left == true && shapes[currentShapesIndex].cellName == "r_angle_4")
+               || (shape.type.top == true && shapes[currentShapesIndex].cellName == "r_angle_4"))  {
                 if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_dead_4.jpg') {
                     shapes[currentShapesIndex].imgSrc = 'img/r_angle_live_4.jpg';
                     console.log("Live wire, high voltage!");
@@ -537,8 +538,7 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
             }
         }   
         
-
-        // Similar checks for cellBelow, cellToLeft, cellToRight can be added here
+       // Similar checks for cellBelow, cellToLeft, cellToRight can be added here
     });
 
    
@@ -571,20 +571,6 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
     console.log(shapes[currentShapesIndex].imgSrc);
     loadImages(shapes, drawShapes);
 }
-        //if there is a tile in a neighbouring cell then check it's tile type. 
-        //check to see if the sides of the tile have touching 'true' regions
-        //if they do, change the isLive property of the tile to true and change the image to live version (do the opposite if the link is broken)
-
-        //
-  
-
-    //forEach.
-
-    //check to see if there are tiles in neighbouring cells  
-    
-    //if the cell is filled, find out by which tile.
-    //check neighbouring tiles live connections
-    //if connections join then change cell image to live.  
 
 
 function changeTile() {
