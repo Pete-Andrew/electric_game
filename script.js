@@ -58,11 +58,11 @@ let currentShapesIndex = null;
 // x and y declare where in the canvas the shapes are going to be drawn
 //shapes.push({ x: 140, y: 20, width: 40, height: 40, color: 'green', shapeIndex: 0}); //shape to hold the rotate button
 
-shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green', imgSrc:'img/power.jpg',           type: tileType.power,    cellName:'power',     currentCell: 'A3', canMove: false, isLive: true, canRotate: false});
-shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'red', imgSrc:'img/r_angle_dead_1.jpg',    type: tileType.rAngle1,  cellName:'r_angle_1', currentCell: '',   canMove: true  });
-shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,  cellName:'r_angle_2', currentCell: '',   canMove: true, canRotate: true });
-shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue', imgSrc:'img/r_angle_dead_3.jpg',   type: tileType.rAngle3,  cellName:'r_angle_3', currentCell: '',   canMove: true  });
-shapes.push({ x: 200, y: 400, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_4.jpg',  type: tileType.rAngle4,  cellName:'r_angle_4', currentCell: '',   canMove: true });
+shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green', imgSrc:'img/power.jpg',           type: tileType.power,    cellName:'power',     currentCell: 'A3', canMove: false, tileIsLive: true, canRotate: false});
+shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'red', imgSrc:'img/r_angle_dead_1.jpg',    type: tileType.rAngle1,  cellName:'r_angle_1', currentCell: '',   canMove: true,  tileIsLive: false  });
+shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,  cellName:'r_angle_2', currentCell: '',   canMove: true,  isLive: false ,canRotate: true });
+shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue', imgSrc:'img/r_angle_dead_3.jpg',   type: tileType.rAngle3,  cellName:'r_angle_3', currentCell: '',   canMove: true,  isLive: false  });
+shapes.push({ x: 200, y: 400, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_4.jpg',  type: tileType.rAngle4,  cellName:'r_angle_4', currentCell: '',   canMove: true,  isLive: false });
 
 
 //need to understand this better..... 
@@ -482,10 +482,18 @@ function checkNeighbour(gridRef) {
     checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileType);
 }
 
+function isNeighbouringTileLive () {
+    
+    let isNeighbourTileLive = shape.isLive;
+
+}
+
     //each tile has a property 'currentCell' depending on which cell they are in.   
 function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight) {
+
     let isLive = false; // Flag to check if there is a live connection
 
+    //goes through each shape and checks if they are a neighboring cell 
     shapes.forEach(shape => {
         // condensed functions, check for connections at both ends of wires
         
@@ -494,80 +502,91 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight) {
         let topConnectionLive = shape.type.top;
         let bottomConnectionLive = shape.type.bottom;
         let neighbouringCell = shape.currentCell;
-
+        let currentShape = shapes[currentShapesIndex];
+        
+        //⅂
         //check cells to left AND below of r_angle_1
-        if ((neighbouringCell === cellToLeft && shape.cellName != 'r_angle_2') || (neighbouringCell === cellBelow && shape.cellName != 'r_angle_4')) {
-            if ((rightConnectionLive == true) || (topConnectionLive == true)) {
+        //first line adds exceptions as there are false positives. Not sure why. 
+        if (((neighbouringCell === cellToLeft && shape.cellName != 'r_angle_2') || (neighbouringCell === cellBelow && shape.cellName != 'r_angle_4'))&& shape.tileIsLive == true ) {
+            if ((rightConnectionLive == true) || (topConnectionLive == true)) { 
                 console.log("Live wire, high voltage!");
-                if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_dead_1.jpg') {
-                    shapes[currentShapesIndex].imgSrc = 'img/r_angle_live_1.jpg'
+                if (currentShape.imgSrc == 'img/r_angle_dead_1.jpg') {
+                    currentShape.imgSrc = 'img/r_angle_live_1.jpg'
+                    currentShape.tileIsLive = true;
                     isLive = true;
-                    //⅂
+                    
+                    
                 }
             }
         }
 
+        //⅃ 
         //check cells to left AND above of r_angle_2
-        if ((neighbouringCell === cellAbove && shape.cellName != 'r_angle_3') || (neighbouringCell === cellToLeft && shape.cellName != 'r_angle_1')) {
-            if ((rightConnectionLive  == true) || (bottomConnectionLive == true)) {
+        if (((neighbouringCell === cellAbove && shape.cellName != 'r_angle_3') || (neighbouringCell === cellToLeft && shape.cellName != 'r_angle_1')) && shape.tileIsLive == true ) {  
+            if ((rightConnectionLive  == true) || (bottomConnectionLive == true) ) { //&& neighbouring cell is live!!
                 console.log("Live wire, high voltage!");
-                if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_dead_2.jpg') {
-                    shapes[currentShapesIndex].imgSrc = 'img/r_angle_live_2.jpg'
+                if (currentShape.imgSrc == 'img/r_angle_dead_2.jpg') {
+                    currentShape.imgSrc = 'img/r_angle_live_2.jpg'
+                    currentShape.tileIsLive = true;
                     isLive = true;
-                     //⅃
                 }
             }
         }
         
+        //L
         //check cells to right AND above of r_angle_3
-        if ((neighbouringCell === cellAbove && shape.cellName != 'r_angle_2') || (neighbouringCell === cellToRight && shape.cellName != 'r_angle_4') ) {
+        if (((neighbouringCell === cellAbove && shape.cellName != 'r_angle_2') || (neighbouringCell === cellToRight && shape.cellName != 'r_angle_4'))&& shape.tileIsLive == true ) {
             if ((bottomConnectionLive == true) || (leftConnectionLive == true))    { 
                 console.log("Live wire, high voltage!");
-                if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_dead_3.jpg') {
-                    shapes[currentShapesIndex].imgSrc = 'img/r_angle_live_3.jpg'
+                if (currentShape.imgSrc == 'img/r_angle_dead_3.jpg') {
+                    currentShape.imgSrc = 'img/r_angle_live_3.jpg'
+                    currentShape.tileIsLive = true;
                     isLive = true;
-                    //L,  
+                      
                 }
             }
         }
 
+        //Γ
         //checks cells to right AND below of r_angle_4
-        if ((neighbouringCell === cellToRight && shape.cellName != 'r_angle_4') || (neighbouringCell === cellBelow && shape.cellName != 'r_angle_1')) {
+        if (((neighbouringCell === cellToRight && shape.cellName != 'r_angle_3') || (neighbouringCell === cellBelow && shape.cellName != 'r_angle_1')) && shape.tileIsLive == true ) {
             if ((leftConnectionLive == true) || (topConnectionLive == true))  {
-                if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_dead_4.jpg') {
-                    shapes[currentShapesIndex].imgSrc = 'img/r_angle_live_4.jpg';
-                    console.log("Live wire, high voltage!");
+                console.log("Live wire, high voltage!");
+                if (currentShape.imgSrc == 'img/r_angle_dead_4.jpg') {
+                    currentShape.imgSrc = 'img/r_angle_live_4.jpg';
+                    currentShape.tileIsLive = true;
                     isLive = true;
-                    //Γ
+                    
                 }
             }
         }   
-        
-       // Similar checks for cellBelow, cellToLeft, cellToRight can be added here
     });
    
 //separate to it's own function
     if (!isLive) { 
 
         // If no live connections were found, set the image to dead.
-
-        if(shapes[currentShapesIndex].imgSrc == 'img/r_angle_live_1.jpg' && shapes[currentShapesIndex].cellName == "r_angle_1") {
-            shapes[currentShapesIndex].imgSrc = 'img/r_angle_dead_1.jpg';
+        if(currentShape.imgSrc == 'img/r_angle_live_1.jpg') {
+            currentShape.imgSrc = 'img/r_angle_dead_1.jpg';
+            currentShape.tileIsLive = false;
             isLive = false;
         }
 
-        if(shapes[currentShapesIndex].imgSrc == 'img/r_angle_live_2.jpg' && shapes[currentShapesIndex].cellName == "r_angle_2") {
-            shapes[currentShapesIndex].imgSrc = 'img/r_angle_dead_2.jpg';
+        if(currentShape.imgSrc == 'img/r_angle_live_2.jpg') {
+            currentShape.imgSrc = 'img/r_angle_dead_2.jpg';
+            currentShape.tileIsLive = false;
             isLive = false;
         }
         
-        if(shapes[currentShapesIndex].imgSrc == 'img/r_angle_live_3.jpg' && shapes[currentShapesIndex].cellName == "r_angle_3") {
-            shapes[currentShapesIndex].imgSrc = 'img/r_angle_dead_3.jpg';
+        if(currentShape.imgSrc == 'img/r_angle_live_3.jpg') {
+            currentShape.imgSrc = 'img/r_angle_dead_3.jpg';
+            currentShape.tileIsLive = false;
             isLive = false;
         }
 
-        if(shapes[currentShapesIndex].imgSrc == 'img/r_angle_live_4.jpg' && shapes[currentShapesIndex].cellName == "r_angle_4") {
-            shapes[currentShapesIndex].imgSrc = 'img/r_angle_dead_4.jpg';
+        if(currentShape.imgSrc == 'img/r_angle_live_4.jpg') {
+           currentShape.imgSrc = 'img/r_angle_dead_4.jpg';
+           currentShape.tileIsLive = false;
             isLive = false;
         }
 
