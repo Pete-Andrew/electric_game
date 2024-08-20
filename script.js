@@ -64,7 +64,6 @@ shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', imgSrc:'
 shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue', imgSrc:'img/r_angle_dead_3.jpg',   type: tileType.rAngle3,  cellName:'r_angle_3', currentCell: '',   canMove: true,  isLive: false  });
 shapes.push({ x: 200, y: 400, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_4.jpg',  type: tileType.rAngle4,  cellName:'r_angle_4', currentCell: '',   canMove: true,  isLive: false });
 
-
 //need to understand this better..... 
 function loadImages(shapes, callback) {
     let loadedCount = 0;
@@ -250,12 +249,7 @@ let cellCoords = {
         //console.log("object value:", Object.values(cellCoords)[1])
     }
     snapTo();
-
-    //updates the value of the shapes x and y co-ordinates
-    //need to give the center cell ref co-ordinates
-    //console.log ("squareX", squareX, "squareY", squareY);
-    //console.log(middlePointLocation);
-    //snapping function
+    //updates the value of the shapes x and y co-ordinates 
 }
 
 //X and Y co-ordinates and 'zone' are passed in by the mouseDownInZone function 
@@ -482,9 +476,10 @@ function checkNeighbour(gridRef) {
     checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileType);
 }
 
-function isNeighbouringTileLive () {
-    
-    let isNeighbourTileLive = shape.isLive;
+function liveCircuit () {
+    //every time the draw shapes function is called check to see if there is a live circuit.
+    //
+        
 
 }
 
@@ -507,23 +502,27 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight) {
         //⅂
         //check cells to left AND below of r_angle_1
         //first line adds exceptions as there are false positives. Not sure why. 
-        if (((neighbouringCell === cellToLeft && shape.cellName != 'r_angle_2') || (neighbouringCell === cellBelow && shape.cellName != 'r_angle_4'))&& shape.tileIsLive == true ) {
+        if ((
+             (neighbouringCell === cellToLeft && shape.cellName != 'r_angle_2') || 
+             (neighbouringCell === cellBelow && shape.cellName != 'r_angle_4')
+            ) && shape.tileIsLive == true ) {
             if ((rightConnectionLive == true) || (topConnectionLive == true)) { 
                 console.log("Live wire, high voltage!");
                 if (currentShape.imgSrc == 'img/r_angle_dead_1.jpg') {
                     currentShape.imgSrc = 'img/r_angle_live_1.jpg'
                     currentShape.tileIsLive = true;
                     isLive = true;
-                    
-                    
                 }
             }
         }
 
         //⅃ 
         //check cells to left AND above of r_angle_2
-        if (((neighbouringCell === cellAbove && shape.cellName != 'r_angle_3') || (neighbouringCell === cellToLeft && shape.cellName != 'r_angle_1')) && shape.tileIsLive == true ) {  
-            if ((rightConnectionLive  == true) || (bottomConnectionLive == true) ) { //&& neighbouring cell is live!!
+        if ((
+            (neighbouringCell === cellAbove && shape.cellName != 'r_angle_3') || 
+            (neighbouringCell === (cellToLeft && shape.cellName != 'r_angle_1' || shape.cellName !== 'power'))
+            ) && shape.tileIsLive == true ) {  
+            if ((rightConnectionLive  == true) || (bottomConnectionLive == true) ) { 
                 console.log("Live wire, high voltage!");
                 if (currentShape.imgSrc == 'img/r_angle_dead_2.jpg') {
                     currentShape.imgSrc = 'img/r_angle_live_2.jpg'
@@ -535,7 +534,10 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight) {
         
         //L
         //check cells to right AND above of r_angle_3
-        if (((neighbouringCell === cellAbove && shape.cellName != 'r_angle_2') || (neighbouringCell === cellToRight && shape.cellName != 'r_angle_4'))&& shape.tileIsLive == true ) {
+        if ((
+            (neighbouringCell === cellAbove && shape.cellName != 'r_angle_2') || 
+            (neighbouringCell === (cellToRight && shape.cellName != 'r_angle_4' || shape.cellName !== 'power'))
+            )&& shape.tileIsLive == true ) {
             if ((bottomConnectionLive == true) || (leftConnectionLive == true))    { 
                 console.log("Live wire, high voltage!");
                 if (currentShape.imgSrc == 'img/r_angle_dead_3.jpg') {
@@ -591,7 +593,7 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight) {
         }
 
     }
-    console.log(shapes[currentShapesIndex].imgSrc);
+    console.log("current shape =", shapes[currentShapesIndex].imgSrc);
     loadImages(shapes, drawShapes);
 
 }
