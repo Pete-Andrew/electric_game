@@ -476,17 +476,18 @@ function checkNeighbour(gridRef) {
     checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileType);
 }
 
-function liveCircuit () {
+function checkLiveCircuit () {
     //every time the draw shapes function is called check to see if there is a live circuit.
+    //check if there is a chain of live tiles
     //
-        
+    //if there is a break turn off the tiles not connected to the power source        
 
 }
 
     //each tile has a property 'currentCell' depending on which cell they are in.   
 function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight) {
 
-    let isLive = false; // Flag to check if there is a live connection
+    let isLive // Flag to check if there is a live connection
 
     //goes through each shape and checks if they are a neighboring cell 
     shapes.forEach(shape => {
@@ -521,7 +522,7 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight) {
         if ((
             (neighbouringCell === cellAbove && shape.cellName != 'r_angle_3') || 
             (neighbouringCell === (cellToLeft && shape.cellName != 'r_angle_1' || shape.cellName !== 'power'))
-            ) && shape.tileIsLive == true ) {  
+            ) && shape.tileIsLive == true && currentShape.cellName == 'r_angle_2') {  
             if ((rightConnectionLive  == true) || (bottomConnectionLive == true) ) { 
                 console.log("Live wire, high voltage!");
                 if (currentShape.imgSrc == 'img/r_angle_dead_2.jpg') {
@@ -537,7 +538,7 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight) {
         if ((
             (neighbouringCell === cellAbove && shape.cellName != 'r_angle_2') || 
             (neighbouringCell === (cellToRight && shape.cellName != 'r_angle_4' || shape.cellName !== 'power'))
-            )&& shape.tileIsLive == true ) {
+            )&& shape.tileIsLive == true && currentShape.cellName == 'r_angle_3') {
             if ((bottomConnectionLive == true) || (leftConnectionLive == true))    { 
                 console.log("Live wire, high voltage!");
                 if (currentShape.imgSrc == 'img/r_angle_dead_3.jpg') {
