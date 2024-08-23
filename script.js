@@ -350,12 +350,13 @@ function mouseUp(e) {
         return;
     } else {
         e.preventDefault();
-        findMiddlePoint(e);
-        checkCell() //need to pass in the value of the cells
+        findMiddlePoint();
+        checkCell(); // This calls checkNeighbour internally
 
         isDragging = false;
     }
 }
+
 
 function mouseOut(e) {
     if (!isDragging) {
@@ -458,23 +459,23 @@ function getNextLetter (letter) {
 }
 
 function checkNeighbour(gridRef) {
-  
-    // console.log(gridRef); 
     let neighbours = {
-        top: getPreviousLetter(gridRef.charAt(0)), //substring gets the first character in an array. 
-        bottom: getNextLetter(gridRef.charAt(0)), 
-        left:   (gridRef.charAt(1))-1,
-        right:  parseInt(gridRef.charAt(1))+1,
-    }
+        top: getPreviousLetter(gridRef.charAt(0)), 
+        bottom: getNextLetter(gridRef.charAt(0)),
+        left: (gridRef.charAt(1)) - 1,
+        right: parseInt(gridRef.charAt(1)) + 1,
+    };
 
-    //gets the cell names for the neighbouring cells.
     let cellAbove = neighbours.top + gridRef.charAt(1);
     let cellBelow = neighbours.bottom + gridRef.charAt(1);
-    let cellToLeft =  gridRef.charAt(0) + neighbours.left;
+    let cellToLeft = gridRef.charAt(0) + neighbours.left;
     let cellToRight = gridRef.charAt(0) + neighbours.right;
+
     console.log("Neighbour cells: above", cellAbove + ", below", cellBelow + ", left", cellToLeft + ", right", cellToRight);
+
     checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileType);
 }
+
 
 function checkLiveCircuit () {
     //every time the draw shapes function is called check to see if there is a live circuit.
@@ -485,123 +486,84 @@ function checkLiveCircuit () {
 }
 
     //each tile has a property 'currentCell' depending on which cell they are in.   
-function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight) {
 
-    let isLive // Flag to check if there is a live connection
+    function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileType) {
+        // Iterate over the shapes to find the ones in the neighboring cells
+        for (let shape of shapes) {
 
-    //goes through each shape and checks if they are a neighboring cell 
-    shapes.forEach(shape => {
-        // condensed functions, check for connections at both ends of wires
-        
-        let rightConnectionLive = shape.type.right;
-        let leftConnectionLive = shape.type.left;
-        let topConnectionLive = shape.type.top;
-        let bottomConnectionLive = shape.type.bottom;
-        let neighbouringCell = shape.currentCell;
-        let currentShape = shapes[currentShapesIndex];
-        
-        //⅂
-        //check cells to left AND below of r_angle_1
-        //first line adds exceptions as there are false positives. Not sure why. 
-        if ((
-             (neighbouringCell === cellToLeft && shape.cellName != 'r_angle_2') || 
-             (neighbouringCell === cellBelow && shape.cellName != 'r_angle_4')
-            ) && shape.tileIsLive == true ) {
-            if ((rightConnectionLive == true) || (topConnectionLive == true)) { 
-                console.log("Live wire, high voltage!");
-                if (currentShape.imgSrc == 'img/r_angle_dead_1.jpg') {
-                    currentShape.imgSrc = 'img/r_angle_live_1.jpg'
+            if (shape.currentCell === cellAbove && shape.tileIsLive == true) {
+                //checks live edge links agains the live edge links of the current cell
+                if (shape.type.bottom && currentShape.type.top) {
+                    console.log("Connected to the tile above!");
+                    currentShape.tileIsLive = true;   
+                } 
+            }
+            if (shape.currentCell === cellBelow && shape.tileIsLive == true) {
+                if (shape.type.top && currentShape.type.bottom) {
+                    console.log("Connected to the tile below!");
                     currentShape.tileIsLive = true;
-                    isLive = true;
                 }
             }
-        }
-
-        //⅃ 
-        //check cells to left AND above of r_angle_2
-        if ((
-            (neighbouringCell === cellAbove && shape.cellName != 'r_angle_3') || 
-            (neighbouringCell === (cellToLeft && shape.cellName != 'r_angle_1' || shape.cellName !== 'power'))
-            ) && shape.tileIsLive == true && currentShape.cellName == 'r_angle_2') {  
-            if ((rightConnectionLive  == true) || (bottomConnectionLive == true) ) { 
-                console.log("Live wire, high voltage!");
-                if (currentShape.imgSrc == 'img/r_angle_dead_2.jpg') {
-                    currentShape.imgSrc = 'img/r_angle_live_2.jpg'
+            if (shape.currentCell === cellToLeft && shape.tileIsLive == true) {
+                if (shape.type.right && currentShape.type.left) {
+                    console.log("Connected to the tile on the left!");
                     currentShape.tileIsLive = true;
-                    isLive = true;
                 }
             }
+            if (shape.currentCell === cellToRight && shape.tileIsLive == true) {
+                if (shape.type.left && currentShape.type.right) {
+                    console.log("Connected to the tile on the right!");
+                    currentShape.tileIsLive = true;
+                }
+            }
+
+
         }
+        changeTile();
+        // Redraw shapes to update their state (e.g., change color if connected)
         
-        //L
-        //check cells to right AND above of r_angle_3
-        if ((
-            (neighbouringCell === cellAbove && shape.cellName != 'r_angle_2') || 
-            (neighbouringCell === (cellToRight && shape.cellName != 'r_angle_4' || shape.cellName !== 'power'))
-            )&& shape.tileIsLive == true && currentShape.cellName == 'r_angle_3') {
-            if ((bottomConnectionLive == true) || (leftConnectionLive == true))    { 
-                console.log("Live wire, high voltage!");
-                if (currentShape.imgSrc == 'img/r_angle_dead_3.jpg') {
-                    currentShape.imgSrc = 'img/r_angle_live_3.jpg'
-                    currentShape.tileIsLive = true;
-                    isLive = true;
-                      
-                }
-            }
-        }
-
-        //Γ
-        //checks cells to right AND below of r_angle_4
-        if (((neighbouringCell === cellToRight && shape.cellName != 'r_angle_3') || (neighbouringCell === cellBelow && shape.cellName != 'r_angle_1')) && shape.tileIsLive == true ) {
-            if ((leftConnectionLive == true) || (topConnectionLive == true))  {
-                console.log("Live wire, high voltage!");
-                if (currentShape.imgSrc == 'img/r_angle_dead_4.jpg') {
-                    currentShape.imgSrc = 'img/r_angle_live_4.jpg';
-                    currentShape.tileIsLive = true;
-                    isLive = true;
-                    
-                }
-            }
-        }   
-    });
-   
-//separate to it's own function
-    if (!isLive) { 
-
-        // If no live connections were found, set the image to dead.
-        if(currentShape.imgSrc == 'img/r_angle_live_1.jpg') {
-            currentShape.imgSrc = 'img/r_angle_dead_1.jpg';
-            currentShape.tileIsLive = false;
-            isLive = false;
-        }
-
-        if(currentShape.imgSrc == 'img/r_angle_live_2.jpg') {
-            currentShape.imgSrc = 'img/r_angle_dead_2.jpg';
-            currentShape.tileIsLive = false;
-            isLive = false;
-        }
-        
-        if(currentShape.imgSrc == 'img/r_angle_live_3.jpg') {
-            currentShape.imgSrc = 'img/r_angle_dead_3.jpg';
-            currentShape.tileIsLive = false;
-            isLive = false;
-        }
-
-        if(currentShape.imgSrc == 'img/r_angle_live_4.jpg') {
-           currentShape.imgSrc = 'img/r_angle_dead_4.jpg';
-           currentShape.tileIsLive = false;
-            isLive = false;
-        }
-
     }
-    console.log("current shape =", shapes[currentShapesIndex].imgSrc);
-    loadImages(shapes, drawShapes);
-
-}
-
-
+       
 function changeTile() {
+
+    //iterates through shapes and checks and if "currentShape.tileIsLive = true;" changes the image
+    for (let shape of shapes) {
+
+        if (shape.tileIsLive == true) {
+            if (shape.imgSrc == 'img/r_angle_dead_1.jpg') {
+                shape.imgSrc = 'img/r_angle_live_1.jpg';
+            }
+            if (shape.imgSrc == 'img/r_angle_dead_2.jpg') {
+                shape.imgSrc = 'img/r_angle_live_2.jpg';
+            }
+            if (shape.imgSrc == 'img/r_angle_dead_3.jpg') {
+                shape.imgSrc = 'img/r_angle_live_3.jpg';
+            }
+            if (shape.imgSrc == 'img/r_angle_dead_4.jpg') {
+                shape.imgSrc = 'img/r_angle_live_4.jpg';
+            }
+        }
+        
+        if (shape.tileIsLive == false) {
+            if (shape.imgSrc == 'img/r_angle_live_1.jpg') {
+                shape.imgSrc = 'img/r_angle_dead_1.jpg';
+            }
+            if (shape.imgSrc == 'img/r_angle_live_2.jpg') {
+                shape.imgSrc = 'img/r_angle_dead_2.jpg';
+            }
+            if (shape.imgSrc == 'img/r_angle_live_3.jpg') {
+                shape.imgSrc = 'img/r_angle_dead_3.jpg';
+            }
+            if (shape.imgSrc == 'img/r_angle_live_4.jpg') {
+                shape.imgSrc = 'img/r_angle_dead_4.jpg';
+            }
+        }
+       
+    
+
     //if check connection returns true then replace the dead tile with a live one. 
+    loadImages(shapes, drawShapes);
+    }
 }
 
 // https://www.youtube.com/watch?v=7PYvx8u_9Sk&ab_channel=BananaCoding
