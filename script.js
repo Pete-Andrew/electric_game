@@ -167,7 +167,7 @@ function findMiddlePoint() {
     //current shapes index needs to be used here or all the shapes default to the square of the first one.
     middlePointLocation.x = shapes[currentShapesIndex].x + 100;
     middlePointLocation.y = shapes[currentShapesIndex].y + 100;
-    console.log("middle point location =", middlePointLocation);
+    // console.log("middle point location =", middlePointLocation);
 }
 
 function checkCell() {
@@ -202,7 +202,7 @@ function checkCell() {
         squareRef.row = "E";
     };
 
-    console.log("cell containing the center of the square", squareRef);
+    // console.log("cell containing the center of the square", squareRef);
     cellRef = `${squareRef.row}${squareRef.column}`
     // console.log(cellRef);
     // pushes the current cell ref to the tile that is in the cell. 
@@ -262,7 +262,7 @@ function isMouseInZone(x, y, zone) {
     let zoneBottom = zone.y + zone.height;
 
     if (x > zoneLeft && x < zoneRight && y > zoneTop && y < zoneBottom) {
-        console.log(`is inside zone ${zone.zoneName}`);
+        // console.log(`click is inside zone ${zone.zoneName}`);
 
         return true;
     } else {
@@ -487,44 +487,67 @@ function checkLiveCircuit () {
 
     //each tile has a property 'currentCell' depending on which cell they are in.   
 
-    function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileType) {
-        // Iterate over the shapes to find the ones in the neighboring cells
-        for (let shape of shapes) {
+function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileType) {
+    // Iterates over the shapes to find the ones in the neighboring cells
 
-            if (shape.currentCell === cellAbove && shape.tileIsLive == true) {
-                //checks live edge links agains the live edge links of the current cell
-                if (shape.type.bottom && currentShape.type.top) {
-                    console.log("Connected to the tile above!");
-                    currentShape.tileIsLive = true;   
-                } 
-            }
-            if (shape.currentCell === cellBelow && shape.tileIsLive == true) {
-                if (shape.type.top && currentShape.type.bottom) {
-                    console.log("Connected to the tile below!");
-                    currentShape.tileIsLive = true;
-                }
-            }
-            if (shape.currentCell === cellToLeft && shape.tileIsLive == true) {
-                if (shape.type.right && currentShape.type.left) {
-                    console.log("Connected to the tile on the left!");
-                    currentShape.tileIsLive = true;
-                }
-            }
-            if (shape.currentCell === cellToRight && shape.tileIsLive == true) {
-                if (shape.type.left && currentShape.type.right) {
-                    console.log("Connected to the tile on the right!");
-                    currentShape.tileIsLive = true;
-                }
-            }
+    let isConnected = false;  // Flag to track if any connection was made... NEED MORE EXPLANATION
 
+    for (let shape of shapes) {
 
+        if (shape.currentCell === cellAbove && shape.tileIsLive == true) {
+            //checks live edge links against the live edge links of the current cell
+            if (shape.type.bottom && currentShape.type.top) {
+                console.log("Connected to the tile above!");
+                currentShape.tileIsLive = true;
+                changeTileToLive();
+                isConnected = true;  // Mark that a connection was made
+            }
         }
-        changeTile();
-        // Redraw shapes to update their state (e.g., change color if connected)
+
+        if (shape.currentCell === cellBelow && shape.tileIsLive == true) {
+            if (shape.type.top && currentShape.type.bottom) {
+                console.log("Connected to the tile below!");
+                currentShape.tileIsLive = true;
+                changeTileToLive();
+                isConnected = true;  // Mark that a connection was made
+            }
+        }
+        if (shape.currentCell === cellToLeft && shape.tileIsLive == true) {
+            if (shape.type.right && currentShape.type.left) {
+                console.log("Connected to the tile on the left!");
+                currentShape.tileIsLive = true;
+                changeTileToLive();
+                isConnected = true;  // Mark that a connection was made
+            }
+        }
+        if (shape.currentCell === cellToRight && shape.tileIsLive == true) {
+            if (shape.type.left && currentShape.type.right) {
+                console.log("Connected to the tile on the right!");
+                currentShape.tileIsLive = true;
+                changeTileToLive();
+                isConnected = true;  // Mark that a connection was made
+            }
+        }
+    }
+
+    // If no connections were made, call the separate function
+    if (!isConnected) {
+        handleNoConnections();
+    }
+
+    // Redraw shapes to update their state (e.g., change color if connected)
+
+}
+
+
+    function handleNoConnections() {
+        console.log("No connections were made.");
+        changeTileToDead();
         
+    
     }
        
-function changeTile() {
+function changeTileToLive() {
 
     //iterates through shapes and checks and if "currentShape.tileIsLive = true;" changes the image
     for (let shape of shapes) {
@@ -542,9 +565,19 @@ function changeTile() {
             if (shape.imgSrc == 'img/r_angle_dead_4.jpg') {
                 shape.imgSrc = 'img/r_angle_live_4.jpg';
             }
-        }
+        } 
+
+    }
         
-        if (shape.tileIsLive == false) {
+    //if check connection returns true then replace the dead tile with a live one. 
+    loadImages(shapes, drawShapes);
+    }
+
+function changeTileToDead () {
+        //would only trigger if true so never triggered
+        // needs to target only the current shape! 
+        for (let shape of shapes) {
+
             if (shape.imgSrc == 'img/r_angle_live_1.jpg') {
                 shape.imgSrc = 'img/r_angle_dead_1.jpg';
             }
@@ -557,13 +590,12 @@ function changeTile() {
             if (shape.imgSrc == 'img/r_angle_live_4.jpg') {
                 shape.imgSrc = 'img/r_angle_dead_4.jpg';
             }
-        }
-       
-    
-
-    //if check connection returns true then replace the dead tile with a live one. 
+        
+        //if check connection returns false then replace the dead tile with a dead one. 
     loadImages(shapes, drawShapes);
     }
 }
+
+
 
 // https://www.youtube.com/watch?v=7PYvx8u_9Sk&ab_channel=BananaCoding
