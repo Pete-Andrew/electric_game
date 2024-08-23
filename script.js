@@ -575,7 +575,7 @@ function changeTileToLive() {
 
 function changeTileToDead () {
         //would only trigger if true so never triggered
-        // needs to target only the current shape! 
+        // needs to target only the current shape! Currently targets them all!
         for (let shape of shapes) {
 
             if (shape.imgSrc == 'img/r_angle_live_1.jpg') {
