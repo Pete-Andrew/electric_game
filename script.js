@@ -487,10 +487,12 @@ function checkLiveCircuit () {
 
     //each tile has a property 'currentCell' depending on which cell they are in.   
 
+let isConnected;
+
 function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileType) {
     // Iterates over the shapes to find the ones in the neighboring cells
 
-    let isConnected = false;  // Flag to track if any connection was made... NEED MORE EXPLANATION
+    isConnected = false;  // Flag to track if any connection was made... NEED MORE EXPLANATION
 
     for (let shape of shapes) {
 
@@ -542,9 +544,7 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
 
     function handleNoConnections() {
         console.log("No connections were made.");
-        changeTileToDead();
-        
-    
+        changeTileToDead();    
     }
        
 function changeTileToLive() {
@@ -574,26 +574,36 @@ function changeTileToLive() {
     }
 
 function changeTileToDead () {
-        //would only trigger if true so never triggered
+        
         // needs to target only the current shape! Currently targets them all!
-        for (let shape of shapes) {
+        //shapes[currentShapesIndex] targets the active tile that has been moved.
 
-            if (shape.imgSrc == 'img/r_angle_live_1.jpg') {
-                shape.imgSrc = 'img/r_angle_dead_1.jpg';
+            if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_live_1.jpg') {
+                shapes[currentShapesIndex].imgSrc = 'img/r_angle_dead_1.jpg';
+                //turns off the cell and marks connections as false
+                currentShape.tileIsLive = false;
+                isConnected = false;  
             }
-            if (shape.imgSrc == 'img/r_angle_live_2.jpg') {
-                shape.imgSrc = 'img/r_angle_dead_2.jpg';
+            if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_live_2.jpg') {
+                shapes[currentShapesIndex].imgSrc = 'img/r_angle_dead_2.jpg';
+                currentShape.tileIsLive = false;
+                isConnected = false;  
             }
-            if (shape.imgSrc == 'img/r_angle_live_3.jpg') {
-                shape.imgSrc = 'img/r_angle_dead_3.jpg';
+            if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_live_3.jpg') {
+                shapes[currentShapesIndex].imgSrc = 'img/r_angle_dead_3.jpg';
+                currentShape.tileIsLive = false;
+                isConnected = false;  
             }
-            if (shape.imgSrc == 'img/r_angle_live_4.jpg') {
-                shape.imgSrc = 'img/r_angle_dead_4.jpg';
+            if (shapes[currentShapesIndex].imgSrc == 'img/r_angle_live_4.jpg') {
+                shapes[currentShapesIndex].imgSrc = 'img/r_angle_dead_4.jpg';
+                currentShape.tileIsLive = false;
+                isConnected = false;  
             }
+           
         
         //if check connection returns false then replace the dead tile with a dead one. 
     loadImages(shapes, drawShapes);
-    }
+    
 }
 
 
