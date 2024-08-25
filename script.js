@@ -490,7 +490,19 @@ function checkLiveCircuit () {
 let isConnected;
 
 function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileType) {
-    // Iterates over the shapes to find the ones in the neighboring cells
+    // This function works each time a tile is moved and works ONLY on that tile.
+    // It Iterates over all possible shapes and finds the ones in the neighboring cells.
+    // IF there is a possible live connection then the current tile becomes live.
+
+    // once the function is run...
+    // It ALSO needs to search for other neighbouring tiles for the next tile in the chain. 
+    // IF there is another tile with possible connections 
+    // call the 'checkNeighbour' function with an updated gridRef e.g. the grid ref of the next cell in the chain.
+    // All other tiles need to be marked as dead
+    // The griRef will always be the first connection from the start tile (as the start tile is always live) and work from there...?
+
+    // needs to be recursive e.g. start with the power supply
+    // every time a piece is moved the recursive function needs to run to check for broken links. 
 
     isConnected = false;  // Flag to track if any connection was made... NEED MORE EXPLANATION
 
@@ -503,6 +515,7 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
                 currentShape.tileIsLive = true;
                 changeTileToLive();
                 isConnected = true;  // Mark that a connection was made
+                //call a function that looks for other connected cells
             }
         }
 
@@ -512,6 +525,7 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
                 currentShape.tileIsLive = true;
                 changeTileToLive();
                 isConnected = true;  // Mark that a connection was made
+                
             }
         }
         if (shape.currentCell === cellToLeft && shape.tileIsLive == true) {
@@ -602,9 +616,11 @@ function changeTileToDead () {
            
         
         //if check connection returns false then replace the dead tile with a dead one. 
-    loadImages(shapes, drawShapes);
-    
+    loadImages(shapes, drawShapes);   
 }
+
+// build an array of tiles IF tile is live, add to the array.
+// if a tile is removed from the array remove items after it in the array and clear the   
 
 
 
