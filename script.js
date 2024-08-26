@@ -170,6 +170,8 @@ function findMiddlePoint() {
     // console.log("middle point location =", middlePointLocation);
 }
 
+// the check cell function looks to see which cell the active tile has been dropped in. 
+// the value of this cell is then sent to the checkNeighbour function which then searches surrounding tiles for a live connection.  
 function checkCell() {
     let squareX = middlePointLocation.x;
     let squareY = middlePointLocation.y;
@@ -207,6 +209,7 @@ function checkCell() {
     // console.log(cellRef);
     // pushes the current cell ref to the tile that is in the cell. 
     shapes[currentShapesIndex].currentCell = cellRef;
+    //holds the value of the cell occupied by the current tile
     gridRef = shapes[currentShapesIndex].currentCell;
     console.log("current shape is in cell", gridRef);
 
@@ -435,6 +438,7 @@ function snapTo() {
     }
 }
 
+//This part of the code works out what the surrounding letters are to the current cell
 //take a letter in as a parameter and return the previous letter
 function getPreviousLetter (letter) {
         // Convert the letter to its ASCII code
@@ -504,52 +508,70 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
     // needs to be recursive e.g. start with the power supply
     // every time a piece is moved the recursive function needs to run to check for broken links. 
 
-    isConnected = false;  // Flag to track if any connection was made... NEED MORE EXPLANATION
+    // Needs to find any neighbouring cells with connections that are NOT live. 
+    // then run the checkNeighbours function as normal with the value of the new cell passed in. 
+
+    isConnected = false;  // Flag to track if any connection was made... NEED MORE EXPLANATION ....
 
     for (let shape of shapes) {
 
+        //checks cells above
         if (shape.currentCell === cellAbove && shape.tileIsLive == true) {
             //checks live edge links against the live edge links of the current cell
             if (shape.type.bottom && currentShape.type.top) {
                 console.log("Connected to the tile above!");
                 currentShape.tileIsLive = true;
-                changeTileToLive();
+                
                 isConnected = true;  // Mark that a connection was made
+                changeTileToLive();
                 //call a function that looks for other connected cells
+                // pass gridRef of the new connected tile into the checkNeighbour function  
             }
         }
 
+        //checks cells below
         if (shape.currentCell === cellBelow && shape.tileIsLive == true) {
             if (shape.type.top && currentShape.type.bottom) {
                 console.log("Connected to the tile below!");
                 currentShape.tileIsLive = true;
                 changeTileToLive();
                 isConnected = true;  // Mark that a connection was made
+                //call a function that looks for other connected cells
+                // pass gridRef of the new connected tile into the checkNeighbour function
+               
                 
             }
         }
+
+        //checks cells to the left
         if (shape.currentCell === cellToLeft && shape.tileIsLive == true) {
             if (shape.type.right && currentShape.type.left) {
                 console.log("Connected to the tile on the left!");
                 currentShape.tileIsLive = true;
                 changeTileToLive();
                 isConnected = true;  // Mark that a connection was made
+               
             }
         }
+        // checks cells to the right
         if (shape.currentCell === cellToRight && shape.tileIsLive == true) {
             if (shape.type.left && currentShape.type.right) {
                 console.log("Connected to the tile on the right!");
                 currentShape.tileIsLive = true;
                 changeTileToLive();
                 isConnected = true;  // Mark that a connection was made
+                // gridRef = 'C2';
+                // checkNeighbour(gridRef); 
             }
         }
     }
 
-    // If no connections were made, call the separate function
+    // If no connections were made, call the separate function which then calls a func to change tiles to dead. 
     if (!isConnected) {
         handleNoConnections();
     }
+
+    // call the checkLiveCircuit function 
 
     // Redraw shapes to update their state (e.g., change color if connected)
 
