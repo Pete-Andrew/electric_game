@@ -481,16 +481,9 @@ function checkNeighbour(gridRef) {
 }
 
 
-// this function is only called if the existing tile is live
+// this function is only called if the existing tile is live AND there is a dead tile in the chain after it. 
 //checks ALL the surrounding 4 tiles for connections ignores tiles that are live.
 function checkForNextTile (cellAbove, cellBelow, cellToLeft, cellToRight) {
-
-    let neighbours = {
-        top: getPreviousLetter(gridRef.charAt(0)), 
-        bottom: getNextLetter(gridRef.charAt(0)),
-        left: (gridRef.charAt(1)) - 1,
-        right: parseInt(gridRef.charAt(1)) + 1,
-    };
 
     //console.log("Check for next tile function has been called");
     //check to see if there is another connected tile
@@ -501,28 +494,27 @@ function checkForNextTile (cellAbove, cellBelow, cellToLeft, cellToRight) {
             //checks live edge links against the live edge links of the current cell
             if (shape.type.bottom && currentShape.type.top) {
                 console.log("there is a live connected tile above");
-                // get the grid ref of this tile and call the checkNeighbour func....
-                //console.log(gridRef);
+                console.log("cell above =", cellAbove);
+                // checkNeighbour(cellAbove)
             }
         }
 
         //checks cells below
         if (shape.currentCell === cellBelow && shape.tileIsLive == false) {
             if (shape.type.top && currentShape.type.bottom) {
-                console.log("There is a live connected tile below"); 
+                console.log("There is a live connected tile below");
+                console.log("cell below =", cellBelow);
+                // checkNeighbour(cellBelow)
 
             }
         }
 
         //checks cells to the left
         if (shape.currentCell === cellToLeft && shape.tileIsLive == false) {
-            if (shape.type.right && currentShape.type.left) {
-               
-                // update grid ref to be the value of the new cell
-                
-                // gridRef = gridRef.charAt(0) - (neighbours.left);
-                
+            if (shape.type.right && currentShape.type.left) {             
                 console.log("There is a live connected tile the left");
+                console.log("cell to left =", cellToLeft);
+                // checkNeighbour(cellToLeft);
                 // checkNeighbour(gridRef)
             }
         }
@@ -531,9 +523,8 @@ function checkForNextTile (cellAbove, cellBelow, cellToLeft, cellToRight) {
         if (shape.currentCell === cellToRight && shape.tileIsLive == false) {
             if (shape.type.left && currentShape.type.right) {
                 console.log("There is a live connected tile on the right");
-                // gridRef = gridRef.charAt(0) + neighbours.right;
-                
-                console.log("There is a live connected tile the left");
+                console.log("cell to right =", cellToRight);
+                // checkNeighbour(cellToRight);
             }
         }
     } 
