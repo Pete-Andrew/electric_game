@@ -481,18 +481,70 @@ function checkNeighbour(gridRef) {
 }
 
 
-function checkLiveCircuit () {
-    //every time the draw shapes function is called check to see if there is a live circuit.
-    //check if there is a chain of live tiles
-    //
-    //if there is a break turn off the tiles not connected to the power source        
+// this function is only called if the existing tile is live
+//checks ALL the surrounding 4 tiles for connections ignores tiles that are live.
+function checkForNextTile (cellAbove, cellBelow, cellToLeft, cellToRight) {
 
+    let neighbours = {
+        top: getPreviousLetter(gridRef.charAt(0)), 
+        bottom: getNextLetter(gridRef.charAt(0)),
+        left: (gridRef.charAt(1)) - 1,
+        right: parseInt(gridRef.charAt(1)) + 1,
+    };
+
+    //console.log("Check for next tile function has been called");
+    //check to see if there is another connected tile
+    for (let shape of shapes) {
+
+        //checks cells above, current cell is the one being currently checked
+        if (shape.currentCell === cellAbove && shape.tileIsLive == false) {
+            //checks live edge links against the live edge links of the current cell
+            if (shape.type.bottom && currentShape.type.top) {
+                console.log("there is a live connected tile above");
+                // get the grid ref of this tile and call the checkNeighbour func....
+                //console.log(gridRef);
+            }
+        }
+
+        //checks cells below
+        if (shape.currentCell === cellBelow && shape.tileIsLive == false) {
+            if (shape.type.top && currentShape.type.bottom) {
+                console.log("There is a live connected tile below"); 
+
+            }
+        }
+
+        //checks cells to the left
+        if (shape.currentCell === cellToLeft && shape.tileIsLive == false) {
+            if (shape.type.right && currentShape.type.left) {
+               
+                // update grid ref to be the value of the new cell
+                
+                // gridRef = gridRef.charAt(0) - (neighbours.left);
+                
+                console.log("There is a live connected tile the left");
+                // checkNeighbour(gridRef)
+            }
+        }
+
+        // checks cells to the right
+        if (shape.currentCell === cellToRight && shape.tileIsLive == false) {
+            if (shape.type.left && currentShape.type.right) {
+                console.log("There is a live connected tile on the right");
+                // gridRef = gridRef.charAt(0) + neighbours.right;
+                
+                console.log("There is a live connected tile the left");
+            }
+        }
+    } 
 }
 
     //each tile has a property 'currentCell' depending on which cell they are in.   
 
 let isConnected;
 
+
+//check connections function works to look for a live tile connection. 
 function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileType) {
     // This function works each time a tile is moved and works ONLY on that tile.
     // It Iterates over all possible shapes and finds the ones in the neighboring cells.
@@ -511,6 +563,8 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
     // Needs to find any neighbouring cells with connections that are NOT live. 
     // then run the checkNeighbours function as normal with the value of the new cell passed in. 
 
+
+
     isConnected = false;  // Flag to track if any connection was made... NEED MORE EXPLANATION ....
 
     for (let shape of shapes) {
@@ -521,11 +575,12 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
             if (shape.type.bottom && currentShape.type.top) {
                 console.log("Connected to the tile above!");
                 currentShape.tileIsLive = true;
-                
-                isConnected = true;  // Mark that a connection was made
+                                
                 changeTileToLive();
+                isConnected = true;  // Mark that a connection was made
                 //call a function that looks for other connected cells
                 // pass gridRef of the new connected tile into the checkNeighbour function  
+                checkForNextTile(cellAbove, cellBelow, cellToLeft, cellToRight);
             }
         }
 
@@ -536,9 +591,8 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
                 currentShape.tileIsLive = true;
                 changeTileToLive();
                 isConnected = true;  // Mark that a connection was made
-                //call a function that looks for other connected cells
-                // pass gridRef of the new connected tile into the checkNeighbour function
-               
+
+                checkForNextTile(cellAbove, cellBelow, cellToLeft, cellToRight);
                 
             }
         }
@@ -550,7 +604,7 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
                 currentShape.tileIsLive = true;
                 changeTileToLive();
                 isConnected = true;  // Mark that a connection was made
-               
+                checkForNextTile(cellAbove, cellBelow, cellToLeft, cellToRight);
             }
         }
         // checks cells to the right
@@ -560,8 +614,7 @@ function checkConnections(cellAbove, cellBelow, cellToLeft, cellToRight, tileTyp
                 currentShape.tileIsLive = true;
                 changeTileToLive();
                 isConnected = true;  // Mark that a connection was made
-                // gridRef = 'C2';
-                // checkNeighbour(gridRef); 
+                checkForNextTile(cellAbove, cellBelow, cellToLeft, cellToRight);
             }
         }
     }
