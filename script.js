@@ -469,10 +469,6 @@ function getNextLetter (letter) {
             return precedingLetter;
 }
 
-// BUG: Only works if all tiles have been previously moved as this adds a value to 'currentCell' in the tiles objects. Works fine otherwise
-// function does not know what is in each cell if tile cell values have not been initialized. 
-// This can be done by adding a value in 'currentCell' in the tiles objects
-
 function checkNeighbour(gridRef) {
     console.log("checkNeighbour func has been called for " + gridRef);
     //logs the current cell taken from the objects properties. 
@@ -553,8 +549,7 @@ function canConnect(gridRef, neighbourCell) {
 
 checkNeighbour();
 
-// Only push to the array if A3 features in it. 
-// OR - IF the array contains A3 then call the change tiles function
+// IF the array contains A3 then call the change tiles function
 // ***** Needs to only change the cells in the array. Currently changes all cells. *****
 // Needs to break the circuit if the circuit is broken
 
