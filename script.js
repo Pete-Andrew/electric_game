@@ -359,6 +359,7 @@ function mouseUp(e) {
         e.preventDefault();
         findMiddlePoint();
         chainArr = []; //clears the chainArr array so that the array is only filled with current values
+        console.log(chainArr)
         checkCell(); // This calls checkNeighbour internally
         
         isDragging = false;
@@ -576,10 +577,20 @@ function checkForStartingCell (chainArr) {
 
 function changeTileToLive() {
 
-    //iterates through shapes and checks and if the current shape matches it changes the image
-    // Needs to only iterate through relevant tiles in the array.
-    for (let shape of shapes) {
+    // iterates through shapes and checks and if the current shape matches it changes the image
+    // Needs to only iterate through relevant tiles in the array. needs to target the current cell property
+    // if the values in the chainArr match a cell's currentCell property then run this function. 
      
+
+
+
+    for (let shape of shapes) {
+    
+        // if statement to see if the currentCell property matches any of the values in the chainArr array. 
+        // if not ignore the tile and check the others. 
+        
+        if(chainArr.includes(shape.currentCell)) {
+
             if (shape.imgSrc == 'img/r_angle_dead_1.jpg') { 
                 shape.imgSrc = 'img/r_angle_live_1.jpg';
             }
@@ -592,6 +603,7 @@ function changeTileToLive() {
             if (shape.imgSrc == 'img/r_angle_dead_4.jpg') {
                 shape.imgSrc = 'img/r_angle_live_4.jpg';
             }
+       }
     }
         
     //if check connection returns true then replace the dead tile with a live one. 
@@ -600,6 +612,10 @@ function changeTileToLive() {
 
 function changeTileToDead () {
         for (let shape of shapes) {
+
+            if(!chainArr.includes(shape.currentCell)) {
+            //only apply this function to shapes NOT in the current array.
+            
             if (shape.imgSrc == 'img/r_angle_live_1.jpg') {
                 shape.imgSrc = 'img/r_angle_dead_1.jpg';
                 //turns off the cell and marks connections as false
@@ -617,8 +633,8 @@ function changeTileToDead () {
                 shape.imgSrc = 'img/r_angle_dead_4.jpg';
              
             }
-
         }
+    }
         
         //if check connection returns false then replace the dead tile with a dead one. 
     loadImages(shapes, drawShapes);   
