@@ -137,8 +137,6 @@ function backgroundCanvasImg() {
 // set co-ordinates for the grid squares
 let zones = [];
 
-// zones.push({x:0, y:0, width: 200, height: 200, zoneName: "a1"})
-// OR put in a for loop to set each zone. 
 //set bounding areas for squares
 let zoneWidth = 200;
 let zoneHeight = 200;
@@ -209,7 +207,7 @@ function checkCell() {
     };
 
     currentShape = shapes[currentShapesIndex];
-    // make a nested for loop?
+    
     //Checks X axis 
     if (squareX < 200) {
         squareRef.column = 1;
@@ -235,21 +233,36 @@ function checkCell() {
         squareRef.row = "E";
     };
 
+
+
     // console.log("cell containing the center of the square", squareRef);
     cellRef = `${squareRef.row}${squareRef.column}`
-    // console.log(cellRef);
+    console.log(cellRef);
+    
+    //BUG: need to stop the cell from being dropped on a pre-exiting one.
+    // Needs to check here if the cellRef matches any of the other tiles. 
+    // If it does, return out of the func and do nothing. 
+
+    for (let shape of shapes) { 
+        if (shape.currentCell == cellRef) {
+            console.log("woo")
+        }
+    }
+
+
     // pushes the current cell ref to the tile that is in the cell. 
     shapes[currentShapesIndex].currentCell = cellRef;
     //gridRef holds the value of the cell occupied by the current tile
     gridRef = shapes[currentShapesIndex].currentCell;
     console.log("current shape is in cell", gridRef);
+
+
     //calls the checkNeighbour func to see if there are surrounding tiles, uses A3 as a start point to iterate from. 
     checkNeighbour('A3');
-    //calling the change tile to dead here makes sure that all non-connected tiles are made dead. Argument passed in needs to be the start tile
+    // calling the change tile to dead here makes sure that all non-connected tiles are made dead. Argument passed in needs to be the start tile
     // don't use gridRef as a this does not start the chain at the start point but rather the tile that was moved > Breaks the code.
     changeTileToDead();
     
-
 // checks to see if the cellRef is the same as the cell co-ordinate,
     if (cellCoords[cellRef]) {
         currentShape.x = cellCoords[cellRef].x;
@@ -363,14 +376,11 @@ function mouseUp(e) {
     } else {
         e.preventDefault();
         findMiddlePoint();
-        checkCell(); // This calls checkNeighbour internally
+        checkCell(); // This calls checkNeighbour func.
         isDragging = false;
 
         chainArr = []; //clears the chainArr array so that the array is only filled with current values
-        console.log("Chain array cleared");
-                
-        //checkNeighbour(); 
-       
+        console.log("Chain array cleared");     
     }
 }
 
@@ -409,13 +419,14 @@ function mouseMove(e) {
     }
 }
 
-//listens for the mousedown event on the canvas
+// listens for the mousedown event on the canvas
 canvas.onmousedown = mouseDown;
 canvas.onmouseup = mouseUp;
 canvas.onmouseout = mouseOut;
 canvas.onmousemove = mouseMove;
 
-//let drawShapes = function(), this an alternative way of declaring this function.
+// let drawShapes = function(), this an alternative way of declaring this function. Stores the func as a variable.
+// Functions stored in variables do not need function names. They are always invoked (called) using the variable name. 
 function drawShapes() {
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     drawHorizGrid();
@@ -558,14 +569,6 @@ function canConnect(gridRef, neighbourCell) {
     return false;
 }
 
-//checkNeighbour('A3');  // why is this here? For initial start check? 
-
-// IF the array contains A3 then call the change tiles function
-// ***** Needs to only change the cells in the array. Currently changes all cells. *****
-// Set a live or dead attribute to the tiles. If they are live
-
-// Needs to break the circuit if the circuit is broken
-
 function checkForStartingCell (chainArr) {
     
     if (chainArr.includes('A3')) {
@@ -583,17 +586,11 @@ function checkForStartingCell (chainArr) {
     }
 }
 
-// BUG: all tiles turn dead if one is removed, caused by moving tile clearing chainArr? 
-// 
-// BUG: Sometimes the second cell will turn off, not sure why... Moving the 4th cell in the array seems to cause this..?
-
 function changeTileToLive() {
 
     // iterates through shapes and checks and if the current shape matches it changes the image
-    // Needs to only iterate through relevant tiles in the array. needs to target the current cell property
     // if the values in the chainArr match a cell's currentCell property then run this function. 
-    // console.log("Valid circuit");
-     
+       
     for (let shape of shapes) {
     
         // if statement to see if the currentCell property matches any of the values in the chainArr array. 
