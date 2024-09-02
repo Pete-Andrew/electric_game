@@ -655,11 +655,7 @@ function changeTileToDead () {
     loadImages(shapes, drawShapes);   
 }
 
-
-
 // build an array of tiles IF tile is live, add to the array.
 // if a tile is removed from the array remove items after it in the array and clear the   
-
-
 
 // https://www.youtube.com/watch?v=7PYvx8u_9Sk&ab_channel=BananaCoding
