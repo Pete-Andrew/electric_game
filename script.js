@@ -180,6 +180,33 @@ function checkCell() {
     let squareX = middlePointLocation.x;
     let squareY = middlePointLocation.y;
     let squareRef = { column: 0, row: 0 };
+    let cellCoords = {
+        "A1": { x: 0, y: 0 },
+        "A2": { x: 200, y: 0 },
+        "A3": { x: 400, y: 0 },
+        "A4": { x: 600, y: 0 },
+        "A5": { x: 800, y: 0 },
+        "B1": { x: 0, y: 200 },
+        "B2": { x: 200, y: 200 },
+        "B3": { x: 400, y: 200 },
+        "B4": { x: 600, y: 200 },
+        "B5": { x: 800, y: 200 },
+        "C1": { x: 0, y: 400 },
+        "C2": { x: 200, y: 400 },
+        "C3": { x: 400, y: 400 },
+        "C4": { x: 600, y: 400 },
+        "C5": { x: 800, y: 400 },
+        "D1": { x: 0, y: 600 },
+        "D2": { x: 200, y: 600 },
+        "D3": { x: 400, y: 600 },
+        "D4": { x: 600, y: 600 },
+        "D5": { x: 800, y: 600 },
+        "E1": { x: 0, y: 800 },
+        "E2": { x: 200, y: 800 },
+        "E3": { x: 400, y: 800 },
+        "E4": { x: 600, y: 800 },
+        "E5": { x: 800, y: 800 },
+    };
 
     currentShape = shapes[currentShapesIndex];
     // make a nested for loop?
@@ -213,39 +240,16 @@ function checkCell() {
     // console.log(cellRef);
     // pushes the current cell ref to the tile that is in the cell. 
     shapes[currentShapesIndex].currentCell = cellRef;
-    //holds the value of the cell occupied by the current tile
+    //gridRef holds the value of the cell occupied by the current tile
     gridRef = shapes[currentShapesIndex].currentCell;
     console.log("current shape is in cell", gridRef);
+    //calls the checkNeighbour func to see if there are surrounding tiles, uses A3 as a start point to iterate from. 
+    checkNeighbour('A3');
+    //calling the change tile to dead here makes sure that all non-connected tiles are made dead. Argument passed in needs to be the start tile
+    // don't use gridRef as a this does not start the chain at the start point but rather the tile that was moved > Breaks the code.
+    changeTileToDead();
+    
 
-    checkNeighbour(gridRef);
-
-let cellCoords = {
-        "A1": { x: 0, y: 0 },
-        "A2": { x: 200, y: 0 },
-        "A3": { x: 400, y: 0 },
-        "A4": { x: 600, y: 0 },
-        "A5": { x: 800, y: 0 },
-        "B1": { x: 0, y: 200 },
-        "B2": { x: 200, y: 200 },
-        "B3": { x: 400, y: 200 },
-        "B4": { x: 600, y: 200 },
-        "B5": { x: 800, y: 200 },
-        "C1": { x: 0, y: 400 },
-        "C2": { x: 200, y: 400 },
-        "C3": { x: 400, y: 400 },
-        "C4": { x: 600, y: 400 },
-        "C5": { x: 800, y: 400 },
-        "D1": { x: 0, y: 600 },
-        "D2": { x: 200, y: 600 },
-        "D3": { x: 400, y: 600 },
-        "D4": { x: 600, y: 600 },
-        "D5": { x: 800, y: 600 },
-        "E1": { x: 0, y: 800 },
-        "E2": { x: 200, y: 800 },
-        "E3": { x: 400, y: 800 },
-        "E4": { x: 600, y: 800 },
-        "E5": { x: 800, y: 800 },
-    };
 // checks to see if the cellRef is the same as the cell co-ordinate,
     if (cellCoords[cellRef]) {
         currentShape.x = cellCoords[cellRef].x;
@@ -352,20 +356,23 @@ function mouseDown(e) {
     }
 };
 
+// mouse up event
 function mouseUp(e) {
     if (!isDragging) {
         return;
     } else {
         e.preventDefault();
         findMiddlePoint();
-        chainArr = []; //clears the chainArr array so that the array is only filled with current values
-        console.log(chainArr)
         checkCell(); // This calls checkNeighbour internally
-        
         isDragging = false;
+
+        chainArr = []; //clears the chainArr array so that the array is only filled with current values
+        console.log("Chain array cleared");
+                
+        //checkNeighbour(); 
+       
     }
 }
-
 
 function mouseOut(e) {
     if (!isDragging) {
@@ -469,6 +476,7 @@ function getNextLetter (letter) {
             return precedingLetter;
 }
 
+//checkNeighbour is called in the checkCell function
 function checkNeighbour(gridRef) {
     console.log("checkNeighbour func has been called for " + gridRef);
     //logs the current cell taken from the objects properties. 
@@ -504,15 +512,18 @@ function checkNeighbour(gridRef) {
                 // Add the cell to the chain array
                 chainArr.push(cell);
                 console.log(`Connecting to ${cell}`);
-                console.log(chainArr);
-                // Recursively check this cell's neighbors
+                console.log("chain Array =", chainArr);
+                // Recursively check this cell's neighbours
                 checkNeighbour(cell);
-
-                
+               
             }
         }
     }); 
+
+    // Once the recursive function has been run to check the neighbours for each cell the checkForStartingCell func is run to see if A3 is present
+    // checks to see if A3 is included in the array
     checkForStartingCell (chainArr); // issues with where this is being called? 
+    //check for starting cell is being called multiple times as the check neighbour function is being called multiple times. 
 }
 
 function canConnect(gridRef, neighbourCell) {
@@ -547,38 +558,42 @@ function canConnect(gridRef, neighbourCell) {
     return false;
 }
 
-checkNeighbour();
+//checkNeighbour('A3');  // why is this here? For initial start check? 
 
 // IF the array contains A3 then call the change tiles function
 // ***** Needs to only change the cells in the array. Currently changes all cells. *****
+// Set a live or dead attribute to the tiles. If they are live
+
 // Needs to break the circuit if the circuit is broken
 
 function checkForStartingCell (chainArr) {
     
     if (chainArr.includes('A3')) {
-        console.log("Valid circuit");
+        //console.log("Valid circuit");
+        //console.log("chainArr =", chainArr);
         changeTileToLive();
-        console.log("chainArr =", chainArr);
     } 
     
     if (!chainArr.includes('A3')) {
         console.log("not a valid circuit")
-        console.log("valid circuit =", validCircuit);
+        // console.log("valid circuit =", validCircuit);
         changeTileToDead();
-        console.log("chainArr =", chainArr);
+        //If the chain array doesn't include A3 then mark the whole circuit as dead
+        chainArr = [];
     }
 }
 
+// BUG: all tiles turn dead if one is removed, caused by moving tile clearing chainArr? 
+// 
+// BUG: Sometimes the second cell will turn off, not sure why... Moving the 4th cell in the array seems to cause this..?
 
 function changeTileToLive() {
 
     // iterates through shapes and checks and if the current shape matches it changes the image
     // Needs to only iterate through relevant tiles in the array. needs to target the current cell property
     // if the values in the chainArr match a cell's currentCell property then run this function. 
+    // console.log("Valid circuit");
      
-
-
-
     for (let shape of shapes) {
     
         // if statement to see if the currentCell property matches any of the values in the chainArr array. 
@@ -606,6 +621,11 @@ function changeTileToLive() {
     }
 
 function changeTileToDead () {
+
+    //if the chainArr doesn't contain 'A3' mark the whole circuit as dead 
+    //causes a stack overflow when chainArr is cleared here, so don't do it!
+    //chainArr = [];
+
         for (let shape of shapes) {
 
             if(!chainArr.includes(shape.currentCell)) {
@@ -630,8 +650,8 @@ function changeTileToDead () {
             }
         }
     }
-        
-        //if check connection returns false then replace the dead tile with a dead one. 
+   
+    //if check connection returns false then replace the dead tile with a dead one. 
     loadImages(shapes, drawShapes);   
 }
 
