@@ -255,7 +255,7 @@ function checkCell() {
             //set the tiles co-ordinates to last valid cell
             // sets the currentCell property of the tile to lastCellVal
             shapes[currentShapesIndex].currentCell = lastCellVal;
-            console.log("last valid cell", currentShape.currentCell);
+            console.log("Moving tile to last valid cell:", currentShape.currentCell);
             //Need to pass in the values of the last valid cell NOT cell ref
             currentShape.x = cellCoords[lastCellVal].x
             currentShape.y = cellCoords[lastCellVal].y;          
@@ -264,12 +264,7 @@ function checkCell() {
 
         }
     }
-    
-    for (let shape of shapes) {
-        if (shape.currentCell !== cellRef)
-            console.log("No overlap! Crack on guv'nor");
-    }
-
+        
     // pushes the current cell ref to the tile that is in the cell. 
     shapes[currentShapesIndex].currentCell = cellRef;
     //gridRef holds the value of the cell occupied by the current tile
