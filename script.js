@@ -62,11 +62,11 @@ let currentShapesIndex = null;
 // x and y declare where in the canvas the shapes are going to be drawn
 //shapes.push({ x: 140, y: 20, width: 40, height: 40, color: 'green', shapeIndex: 0}); //shape to hold the rotate button
 
-shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green', imgSrc:'img/power.jpg',           type: tileType.power,    cellName:'power',     currentCell: 'A3', canMove: false, tileIsLive: true, canRotate: false});
-shapes.push({ x: 200, y: 600, width: 200, height: 200, color: 'red', imgSrc:'img/r_angle_dead_1.jpg',    type: tileType.rAngle1,  cellName:'r_angle_1', currentCell: 'D2',   canMove: true,  tileIsLive: false  });
-shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,  cellName:'r_angle_2', currentCell: 'C3',   canMove: true,  isLive: false ,canRotate: true });
-shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue', imgSrc:'img/r_angle_dead_3.jpg',   type: tileType.rAngle3,  cellName:'r_angle_3', currentCell: 'A1',   canMove: true,  isLive: false  });
-shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_4.jpg',  type: tileType.rAngle4,  cellName:'r_angle_4', currentCell: 'B2',   canMove: true,  isLive: false });
+shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green', imgSrc:'img/power.jpg',           type: tileType.power,    cellName:'power',     currentCell: 'A3', lastCellValue: '',   canMove: false});
+shapes.push({ x: 200, y: 600, width: 200, height: 200, color: 'red', imgSrc:'img/r_angle_dead_1.jpg',    type: tileType.rAngle1,  cellName:'r_angle_1', currentCell: 'D2', lastCellValue: '',  canMove: true,  });
+shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,  cellName:'r_angle_2', currentCell: 'C3', lastCellValue: '',  canMove: true, });
+shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue', imgSrc:'img/r_angle_dead_3.jpg',   type: tileType.rAngle3,  cellName:'r_angle_3', currentCell: 'A1', lastCellValue: '',  canMove: true, });
+shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_4.jpg',  type: tileType.rAngle4,  cellName:'r_angle_4', currentCell: 'B2', lastCellValue: '',  canMove: true, });
 
 //need to understand this better..... 
 function loadImages(shapes, callback) {
@@ -233,29 +233,49 @@ function checkCell() {
         squareRef.row = "E";
     };
 
-
+    //holds the value of the last cell
+    let lastCellVal = shapes[currentShapesIndex].lastCellValue
+    lastCellVal = shapes[currentShapesIndex].currentCell;
 
     // console.log("cell containing the center of the square", squareRef);
     cellRef = `${squareRef.row}${squareRef.column}`
-    console.log(cellRef);
+    //console.log(cellRef);
     
-    //BUG: need to stop the cell from being dropped on a pre-exiting one.
+    // BUG: need to stop the cell from being dropped on a pre-exiting one.
     // Needs to check here if the cellRef matches any of the other tiles. 
     // If it does, return out of the func and do nothing. 
+    // need a variable to hold the last cell ref
 
+    //iterates over all tiles and sees if there is an tile with the same cellRef. 
+    // compares it against all existing tiles so you get a multiple console log
     for (let shape of shapes) { 
         if (shape.currentCell == cellRef) {
-            console.log("woo")
+            console.log("overlapping cell!");
+            
+            //set the tiles co-ordinates to last valid cell
+            // sets the currentCell property of the tile to lastCellVal
+            shapes[currentShapesIndex].currentCell = lastCellVal;
+            console.log("last valid cell", currentShape.currentCell);
+            //Need to pass in the values of the last valid cell NOT cell ref
+            currentShape.x = cellCoords[lastCellVal].x
+            currentShape.y = cellCoords[lastCellVal].y;          
+            snapTo();          
+            return; //exits the whole function
+
         }
     }
-
+    
+    for (let shape of shapes) {
+        if (shape.currentCell !== cellRef)
+            console.log("No overlap! Crack on guv'nor");
+    }
 
     // pushes the current cell ref to the tile that is in the cell. 
     shapes[currentShapesIndex].currentCell = cellRef;
     //gridRef holds the value of the cell occupied by the current tile
     gridRef = shapes[currentShapesIndex].currentCell;
-    console.log("current shape is in cell", gridRef);
-
+    console.log("current tile is in cell", gridRef);
+    console.log("previous cell value was", lastCellVal);
 
     //calls the checkNeighbour func to see if there are surrounding tiles, uses A3 as a start point to iterate from. 
     checkNeighbour('A3');
@@ -445,8 +465,7 @@ function drawShapes() {
 
 // Load all shapes (with their relevant images) and then draw the shapes
 loadImages(shapes, drawShapes)
-
-    
+   
 function snapTo() {
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     drawHorizGrid();
@@ -489,9 +508,9 @@ function getNextLetter (letter) {
 
 //checkNeighbour is called in the checkCell function
 function checkNeighbour(gridRef) {
-    console.log("checkNeighbour func has been called for " + gridRef);
+    //console.log("checkNeighbour func has been called for " + gridRef);
     //logs the current cell taken from the objects properties. 
-    console.log("current cell cell ref =", gridRef)
+    //console.log("current cell ref =", gridRef)
     //console.log(currentShape.currentCell); // does the same thing as cell ref. 
     // Get neighbouring cells
     let neighbours = {
@@ -526,15 +545,13 @@ function checkNeighbour(gridRef) {
                 console.log("chain Array =", chainArr);
                 // Recursively check this cell's neighbours
                 checkNeighbour(cell);
-               
             }
         }
     }); 
 
     // Once the recursive function has been run to check the neighbours for each cell the checkForStartingCell func is run to see if A3 is present
     // checks to see if A3 is included in the array
-    checkForStartingCell (chainArr); // issues with where this is being called? 
-    //check for starting cell is being called multiple times as the check neighbour function is being called multiple times. 
+    checkForStartingCell (chainArr); 
 }
 
 function canConnect(gridRef, neighbourCell) {
@@ -619,10 +636,6 @@ function changeTileToLive() {
 
 function changeTileToDead () {
 
-    //if the chainArr doesn't contain 'A3' mark the whole circuit as dead 
-    //causes a stack overflow when chainArr is cleared here, so don't do it!
-    //chainArr = [];
-
         for (let shape of shapes) {
 
             if(!chainArr.includes(shape.currentCell)) {
@@ -630,20 +643,16 @@ function changeTileToDead () {
             
             if (shape.imgSrc == 'img/r_angle_live_1.jpg') {
                 shape.imgSrc = 'img/r_angle_dead_1.jpg';
-                //turns off the cell and marks connections as false
-                
+                //turns off the cell and marks connections as false   
             }
             if (shape.imgSrc == 'img/r_angle_live_2.jpg') {
                 shape.imgSrc = 'img/r_angle_dead_2.jpg';
-           
             }
             if (shape.imgSrc == 'img/r_angle_live_3.jpg') {
                 shape.imgSrc = 'img/r_angle_dead_3.jpg';
-                
             }
             if (shape.imgSrc == 'img/r_angle_live_4.jpg') {
-                shape.imgSrc = 'img/r_angle_dead_4.jpg';
-             
+                shape.imgSrc = 'img/r_angle_dead_4.jpg'; 
             }
         }
     }
