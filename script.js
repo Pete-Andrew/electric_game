@@ -62,11 +62,16 @@ let currentShapesIndex = null;
 // x and y declare where in the canvas the shapes are going to be drawn
 //shapes.push({ x: 140, y: 20, width: 40, height: 40, color: 'green', shapeIndex: 0}); //shape to hold the rotate button
 
-shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green', imgSrc:'img/power.jpg',           type: tileType.power,    cellName:'power',     currentCell: 'A3', lastCellValue: '',   canMove: false});
-shapes.push({ x: 200, y: 600, width: 200, height: 200, color: 'red', imgSrc:'img/r_angle_dead_1.jpg',    type: tileType.rAngle1,  cellName:'r_angle_1', currentCell: 'D2', lastCellValue: '',  canMove: true,  });
-shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,  cellName:'r_angle_2', currentCell: 'C3', lastCellValue: '',  canMove: true, });
-shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue', imgSrc:'img/r_angle_dead_3.jpg',   type: tileType.rAngle3,  cellName:'r_angle_3', currentCell: 'A1', lastCellValue: '',  canMove: true, });
-shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_4.jpg',  type: tileType.rAngle4,  cellName:'r_angle_4', currentCell: 'B2', lastCellValue: '',  canMove: true, });
+shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green', imgSrc:'img/power.jpg',           type: tileType.power,    cellName:'power',     currentCell: 'A3', lastCellValue: '',  canMove: false, rotation: 0});
+shapes.push({ x: 200, y: 600, width: 200, height: 200, color: 'red', imgSrc:'img/r_angle_dead_1.jpg',    type: tileType.rAngle1,  cellName:'r_angle_1', currentCell: 'D2', lastCellValue: '',  canMove: true, rotation: 0 });
+shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,  cellName:'r_angle_2', currentCell: 'C3', lastCellValue: '',  canMove: true, rotation: 0 });
+shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue', imgSrc:'img/r_angle_dead_3.jpg',   type: tileType.rAngle3,  cellName:'r_angle_3', currentCell: 'A1', lastCellValue: '',  canMove: true, rotation: 0});
+shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_4.jpg',  type: tileType.rAngle4,  cellName:'r_angle_4', currentCell: 'B2', lastCellValue: '',  canMove: true, rotation: 0});
+
+
+// Straights, T's, Diodes, blank blocks, bridges, switches, end bulb
+// Need to be able to rotate tiles, 
+// 
 
 //need to understand this better..... 
 function loadImages(shapes, callback) {
@@ -240,11 +245,6 @@ function checkCell() {
     // console.log("cell containing the center of the square", squareRef);
     cellRef = `${squareRef.row}${squareRef.column}`
     //console.log(cellRef);
-    
-    // BUG: need to stop the cell from being dropped on a pre-exiting one.
-    // Needs to check here if the cellRef matches any of the other tiles. 
-    // If it does, return out of the func and do nothing. 
-    // need a variable to hold the last cell ref
 
     //iterates over all tiles and sees if there is an tile with the same cellRef. 
     // compares it against all existing tiles so you get a multiple console log
@@ -261,7 +261,6 @@ function checkCell() {
             currentShape.y = cellCoords[lastCellVal].y;          
             snapTo();          
             return; //exits the whole function
-
         }
     }
         
@@ -362,27 +361,65 @@ function isMouseInShape(x, y, shape) {
     }
 }
 
+// BUG: if you click on a shape but don't move it, the corner button will disappear.
+
 //onmousedown these functions are triggered
 function mouseDown(e) {
     e.preventDefault();
-    mouseDownInZone(e);
 
     startX = parseInt(e.clientX - offsetX);
     startY = parseInt(e.clientY - offsetY);
 
-    let index = 0;
-    for (let shape of shapes) {
+    for (let i = 0; i < shapes.length; i++) {
+        let shape = shapes[i];
         if (isMouseInShape(startX, startY, shape)) {
-            // console.log("in shape === yes");
-            currentShapesIndex = index;
-            isDragging = true;
-            return;
-        } else {
-            // console.log("in shape === no");
+            if (isMouseInRotateButton(startX, startY, shape)) {
+                // Rotate the shape 90 degrees
+                console.log("shape rotate button clicked")
+                // rather than rotate the shape it would be better to change it the next one in the array.
+                
+                
+                //shape.rotation = (shape.rotation + 90) % 360;
+                drawShapes();
+                return;
+            } else {
+                // Regular dragging behavior
+                currentShapesIndex = i;
+                isDragging = true;
+                return;
+            }
         }
-        index++;
     }
-};
+}
+
+//onmousedown these functions are triggered
+// function mouseDown(e) {
+//     e.preventDefault();
+//     mouseDownInZone(e);
+
+//     startX = parseInt(e.clientX - offsetX);
+//     startY = parseInt(e.clientY - offsetY);
+
+//     let index = 0;
+//     for (let shape of shapes) {
+//         if (isMouseInShape(startX, startY, shape)) {
+//             // console.log("in shape === yes");
+//             currentShapesIndex = index;
+//             isDragging = true;
+//             return;
+//         } else {
+//             // console.log("in shape === no");
+//         }
+//         index++;
+//     }
+// };
+
+function isMouseInRotateButton(x, y, shape) {
+    let buttonX = shape.x + shape.width - 20;
+    let buttonY = shape.y + 20;
+    let distance = Math.sqrt((x - buttonX) ** 2 + (y - buttonY) ** 2);
+    return distance < 10; // 10 is the radius of the rotate button
+}
 
 // mouse up event
 function mouseUp(e) {
@@ -446,17 +483,48 @@ function drawShapes() {
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     drawHorizGrid();
     drawVertGrid();
+
+    
     for (let shape of shapes) {
+        
+        context.save(); // Save the current state
+        context.translate(shape.x + shape.width / 2, shape.y + shape.height / 2); // Move to the center of the shape
+        context.rotate((shape.rotation * Math.PI) / 180); // Rotate the shape
+        context.translate(-shape.width / 2, -shape.height / 2); // Move back to the top left corner of the shape
+
         if (shape.image) {
-                // Draw the image
-                context.drawImage(shape.image, shape.x, shape.y, shape.width, shape.height);
+            // Draw the image
+            context.drawImage(shape.image, 0, 0, shape.width, shape.height);
         } else {
-                // Draw the shape with color (fallback)
-                context.fillStyle = shape.color;
-                context.fillRect(shape.x, shape.y, shape.width, shape.height);
-            }
+            // Draw the shape with color (fallback)
+            context.fillStyle = shape.color;
+            context.fillRect(0, 0, shape.width, shape.height);
+        }
+
+    // for (let shape of shapes) {
+      
+    //     if (shape.image) {
+    //             // Draw the image
+    //             context.drawImage(shape.image, shape.x, shape.y, shape.width, shape.height);
+    //     } else {
+    //             // Draw the shape with color (fallback)
+    //             context.fillStyle = shape.color;
+    //             context.fillRect(shape.x, shape.y, shape.width, shape.height);
+    //         }
+
+            context.restore(); // Restore the previous state, this keeps the dot when tiles are moved. 
+
+            // Draws the rotate button
+            context.fillStyle = 'grey'; //Sets a colour
+            context.beginPath(); //initiates the drawing?
+            context.arc(shape.x + shape.width - 20, shape.y + 20, 10, 0, 2 * Math.PI); // sets the location for the dot to be drawn in each tile. And sets out the mathematical shape for the dot 
+            context.fill(); //Fills the shape, Comment this out to hide the buttons
+
         }
     }
+
+
+
 
 // Load all shapes (with their relevant images) and then draw the shapes
 loadImages(shapes, drawShapes)
