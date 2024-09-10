@@ -59,6 +59,29 @@ let cellCoords = {
     "E5": { x: 800, y: 800 },
 };
 
+//holds shapes as an array
+let shapes = [];
+
+let tileType = {
+    straight:{ top: true,  right: false, bottom: true,  left: false }, 
+    power:   { top: false, right: false, bottom: true,  left: false }, 
+    rAngle1: { top: false, right: false, bottom: true,  left: true },
+    rAngle2: { top: true,  right: false, bottom: false, left: true },
+    rAngle3: { top: true,  right: true,  bottom: false, left: false },
+    rAngle4: { top: false, right: true,  bottom: true,  left: false },
+}
+
+// cell types separates out all the various shapes to make them easier to manipulate. 
+let cellTypes = {
+    "Power": { cellName:'power',     x: 400, y: 0,   width: 200, height: 200, color: 'green', imgSrc:'img/power.jpg',          type: tileType.power,     currentCell: 'A3', lastCellValue: '',  canMove: false, rotation: 0},
+    "R_Angle_1": { cellName:'r_angle_1', x: 200, y: 600, width: 200, height: 200, color: 'red',   imgSrc:'img/r_angle_dead_1.jpg', type: tileType.rAngle1,   currentCell: 'D2', lastCellValue: '',  canMove: true, rotation: 0 },
+    "R_Angle_2": { cellName:'r_angle_2', x: 400, y: 400, width: 200, height: 200, color: 'black', imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,   currentCell: 'C3', lastCellValue: '',  canMove: true, rotation: 0 } ,
+    "R_Angle_3": { cellName:'r_angle_3', x: 0,   y: 0,   width: 200, height: 200, color: 'blue',  imgSrc:'img/r_angle_dead_3.jpg', type: tileType.rAngle3,   currentCell: 'A1', lastCellValue: '',  canMove: true, rotation: 0} ,
+    "R_Angle_4": { cellName:'r_angle_4', x: 200, y: 200, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_4.jpg', type: tileType.rAngle4,   currentCell: 'B2', lastCellValue: '',  canMove: true, rotation: 0} ,
+    
+}
+
+
 
 //JavaScript callback is a function which is to be executed after another function has finished execution
 //A callback is a function passed as an argument to another function. This technique allows a function to call another function
@@ -74,36 +97,31 @@ function loadImage(src, callback) {
     img.src = src;
 }
  
-//holds shapes as an array
-let shapes = [];
+
 let isDragging = false;
 //sets a tile type for looking at neighbouring tiles
-let tileType = {
-    straight:{ top: true,  right: false, bottom: true,  left: false }, 
-    power:   { top: false, right: false, bottom: true,  left: false }, 
-    rAngle1: { top: false, right: false, bottom: true,  left: true },
-    rAngle2: { top: true,  right: false, bottom: false, left: true },
-    rAngle3: { top: true,  right: true,  bottom: false, left: false },
-    rAngle4: { top: false, right: true,  bottom: true,  left: false },
-}
 
 let currentShapesIndex;
 // x and y declare where in the canvas the shapes are going to be drawn
 //shapes.push({ x: 140, y: 20, width: 40, height: 40, color: 'green', shapeIndex: 0}); //shape to hold the rotate button
 
-shapes.push({ cellName:'power',     x: 400, y: 0,   width: 200, height: 200, color: 'green', imgSrc:'img/power.jpg',          type: tileType.power,     currentCell: 'A3', lastCellValue: '',  canMove: false, rotation: 0});
-shapes.push({ cellName:'r_angle_1', x: 200, y: 600, width: 200, height: 200, color: 'red',   imgSrc:'img/r_angle_dead_1.jpg', type: tileType.rAngle1,   currentCell: 'D2', lastCellValue: '',  canMove: true, rotation: 0 });
-shapes.push({ cellName:'r_angle_2', x: 400, y: 400, width: 200, height: 200, color: 'black', imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,   currentCell: 'C3', lastCellValue: '',  canMove: true, rotation: 0 });
-shapes.push({ cellName:'r_angle_3', x: 0,   y: 0,   width: 200, height: 200, color: 'blue',  imgSrc:'img/r_angle_dead_3.jpg', type: tileType.rAngle3,   currentCell: 'A1', lastCellValue: '',  canMove: true, rotation: 0});
-shapes.push({ cellName:'r_angle_4', x: 200, y: 200, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_4.jpg', type: tileType.rAngle4,   currentCell: 'B2', lastCellValue: '',  canMove: true, rotation: 0});
 
+
+//pushes the cell types to the shapes array. 
+shapes.push(cellTypes.Power);
+shapes.push(cellTypes.R_Angle_1);
+shapes.push(cellTypes.R_Angle_2);
+shapes.push(cellTypes.R_Angle_3);
+shapes.push(cellTypes.R_Angle_4);
+
+// Cell types array? Cell name holds these values so is this needed? 
 
 // Additional tiles: Straights, T's, Diodes, blank blocks, bridges, switches, end bulb
 // Need to be able to rotate tiles 
 // 
 
 //need to understand this better..... 
-function loadImages(shapes, callback) {
+function loadImages(shapes, callback) { 
     let loadedCount = 0;
     shapes.forEach(shape => {
         if (shape.imgSrc) { //checks to see if a given shape has an imgSrc attribute 
@@ -365,6 +383,15 @@ function isMouseInShape(x, y, shape) {
 }
 
 // BUG: if you click on a shape but don't move it, the corner button will disappear.
+function replaceTile (shape) {
+    console.log("Replace tile func has been called");
+    console.log(shape)
+    if (shape.cellName =='r_angle_1') {
+        console.log("this is right_angle_1")
+        //Uggglllly, need to replace object with a variable that holds it's value. 
+        shapes.push({cellName:'r_angle_2', x: 200, y: 600, width: 200, height: 200, imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,   currentCell: 'C3', lastCellValue: '',  canMove: true, rotation: 0 })
+    }
+}
 
 //onmousedown these functions are triggered
 function mouseDown(e) {
@@ -383,7 +410,6 @@ function mouseDown(e) {
                 console.log("shape rotate button clicked")
 
                 // Rather than rotate the shape it would be better to change it the next one in the array.
-                // Need to delete existing tile (from mail tile array?)
                 // need to replace it with the next tile in the array at that location. 
                 
                 console.log("Current Shape", shape);
@@ -394,10 +420,10 @@ function mouseDown(e) {
 
                 //splice removes the tile from the array
                 shapes.splice(currentShapesIndex, 1);  // splice takes 2 arguments the index of the element you wish to remove and the index you wish to remove up to.
-                //Need to add the next one
-                
-                
-                drawShapes();
+                //Need to add the next tile
+
+                replaceTile(shape)
+                loadImages(shapes, drawShapes);
                 return;
             } else {
                 // Regular dragging behavior
@@ -495,7 +521,6 @@ function drawShapes() {
             context.fillStyle = shape.color;
             context.fillRect(0, 0, shape.width, shape.height);
         }
-
             //this section deals primarily with the rotate button:
             context.restore(); // Restore the previous state, this keeps the dot when tiles are moved. 
 
@@ -504,7 +529,6 @@ function drawShapes() {
             context.beginPath(); //initiates the drawing?
             context.arc(shape.x + shape.width - 20, shape.y + 20, 10, 0, 2 * Math.PI); // sets the location for the dot to be drawn in each tile. And sets out the mathematical shape for the dot 
             context.fill(); //Fills the shape, Comment this out to hide the buttons
-
         }
     }
 
