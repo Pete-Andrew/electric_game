@@ -72,7 +72,7 @@ let tileType = {
 }
 
 // cell types separates out all the various shapes to make them easier to manipulate. 
-let cellTypes = {
+let tileName = {
     "Power": { cellName:'power',     x: 400, y: 0,   width: 200, height: 200, color: 'green', imgSrc:'img/power.jpg',          type: tileType.power,     currentCell: 'A3', lastCellValue: '',  canMove: false, rotation: 0},
     "R_Angle_1": { cellName:'r_angle_1', x: 200, y: 600, width: 200, height: 200, color: 'red',   imgSrc:'img/r_angle_dead_1.jpg', type: tileType.rAngle1,   currentCell: 'D2', lastCellValue: '',  canMove: true, rotation: 0 },
     "R_Angle_2": { cellName:'r_angle_2', x: 400, y: 400, width: 200, height: 200, color: 'black', imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,   currentCell: 'C3', lastCellValue: '',  canMove: true, rotation: 0 } ,
@@ -80,8 +80,6 @@ let cellTypes = {
     "R_Angle_4": { cellName:'r_angle_4', x: 200, y: 200, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_4.jpg', type: tileType.rAngle4,   currentCell: 'B2', lastCellValue: '',  canMove: true, rotation: 0} ,
     
 }
-
-
 
 //JavaScript callback is a function which is to be executed after another function has finished execution
 //A callback is a function passed as an argument to another function. This technique allows a function to call another function
@@ -96,7 +94,6 @@ function loadImage(src, callback) {
     //sets the src attribute of the img object to the provided src argument. Setting img.src starts the process of loading the image from the specified URL.
     img.src = src;
 }
- 
 
 let isDragging = false;
 //sets a tile type for looking at neighbouring tiles
@@ -105,20 +102,14 @@ let currentShapesIndex;
 // x and y declare where in the canvas the shapes are going to be drawn
 //shapes.push({ x: 140, y: 20, width: 40, height: 40, color: 'green', shapeIndex: 0}); //shape to hold the rotate button
 
-
-
-//pushes the cell types to the shapes array. 
-shapes.push(cellTypes.Power);
-shapes.push(cellTypes.R_Angle_1);
-shapes.push(cellTypes.R_Angle_2);
-shapes.push(cellTypes.R_Angle_3);
-shapes.push(cellTypes.R_Angle_4);
-
-// Cell types array? Cell name holds these values so is this needed? 
+//pushes the tiles to the shapes array. 
+shapes.push(tileName.Power);
+shapes.push(tileName.R_Angle_1);
+shapes.push(tileName.R_Angle_2);
+shapes.push(tileName.R_Angle_3);
+shapes.push(tileName.R_Angle_4);
 
 // Additional tiles: Straights, T's, Diodes, blank blocks, bridges, switches, end bulb
-// Need to be able to rotate tiles 
-// 
 
 //need to understand this better..... 
 function loadImages(shapes, callback) { 
@@ -390,6 +381,7 @@ function replaceTile (shape) {
         console.log("this is right_angle_1")
         //Uggglllly, need to replace object with a variable that holds it's value. 
         shapes.push({cellName:'r_angle_2', x: 200, y: 600, width: 200, height: 200, imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,   currentCell: 'C3', lastCellValue: '',  canMove: true, rotation: 0 })
+        //shapes.push(cellTypes.R_Angle_2);
     }
 }
 
