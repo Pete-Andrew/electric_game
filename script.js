@@ -31,6 +31,35 @@ let zoneStartY;
 
 let gridRef;
 
+let cellCoords = {
+    "A1": { x: 0, y: 0 },
+    "A2": { x: 200, y: 0 },
+    "A3": { x: 400, y: 0 },
+    "A4": { x: 600, y: 0 },
+    "A5": { x: 800, y: 0 },
+    "B1": { x: 0, y: 200 },
+    "B2": { x: 200, y: 200 },
+    "B3": { x: 400, y: 200 },
+    "B4": { x: 600, y: 200 },
+    "B5": { x: 800, y: 200 },
+    "C1": { x: 0, y: 400 },
+    "C2": { x: 200, y: 400 },
+    "C3": { x: 400, y: 400 },
+    "C4": { x: 600, y: 400 },
+    "C5": { x: 800, y: 400 },
+    "D1": { x: 0, y: 600 },
+    "D2": { x: 200, y: 600 },
+    "D3": { x: 400, y: 600 },
+    "D4": { x: 600, y: 600 },
+    "D5": { x: 800, y: 600 },
+    "E1": { x: 0, y: 800 },
+    "E2": { x: 200, y: 800 },
+    "E3": { x: 400, y: 800 },
+    "E4": { x: 600, y: 800 },
+    "E5": { x: 800, y: 800 },
+};
+
+
 //JavaScript callback is a function which is to be executed after another function has finished execution
 //A callback is a function passed as an argument to another function. This technique allows a function to call another function
 //A callback function can run after another function has finished
@@ -58,19 +87,19 @@ let tileType = {
     rAngle4: { top: false, right: true,  bottom: true,  left: false },
 }
 
-let currentShapesIndex = null;
+let currentShapesIndex;
 // x and y declare where in the canvas the shapes are going to be drawn
 //shapes.push({ x: 140, y: 20, width: 40, height: 40, color: 'green', shapeIndex: 0}); //shape to hold the rotate button
 
-shapes.push({ x: 400, y: 0,   width: 200, height: 200, color: 'green', imgSrc:'img/power.jpg',           type: tileType.power,    cellName:'power',     currentCell: 'A3', lastCellValue: '',  canMove: false, rotation: 0});
-shapes.push({ x: 200, y: 600, width: 200, height: 200, color: 'red', imgSrc:'img/r_angle_dead_1.jpg',    type: tileType.rAngle1,  cellName:'r_angle_1', currentCell: 'D2', lastCellValue: '',  canMove: true, rotation: 0 });
-shapes.push({ x: 400, y: 400, width: 200, height: 200, color: 'yellow', imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,  cellName:'r_angle_2', currentCell: 'C3', lastCellValue: '',  canMove: true, rotation: 0 });
-shapes.push({ x: 0,   y: 0,   width: 200, height: 200, color: 'blue', imgSrc:'img/r_angle_dead_3.jpg',   type: tileType.rAngle3,  cellName:'r_angle_3', currentCell: 'A1', lastCellValue: '',  canMove: true, rotation: 0});
-shapes.push({ x: 200, y: 200, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_4.jpg',  type: tileType.rAngle4,  cellName:'r_angle_4', currentCell: 'B2', lastCellValue: '',  canMove: true, rotation: 0});
+shapes.push({ cellName:'power',     x: 400, y: 0,   width: 200, height: 200, color: 'green', imgSrc:'img/power.jpg',          type: tileType.power,     currentCell: 'A3', lastCellValue: '',  canMove: false, rotation: 0});
+shapes.push({ cellName:'r_angle_1', x: 200, y: 600, width: 200, height: 200, color: 'red',   imgSrc:'img/r_angle_dead_1.jpg', type: tileType.rAngle1,   currentCell: 'D2', lastCellValue: '',  canMove: true, rotation: 0 });
+shapes.push({ cellName:'r_angle_2', x: 400, y: 400, width: 200, height: 200, color: 'black', imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,   currentCell: 'C3', lastCellValue: '',  canMove: true, rotation: 0 });
+shapes.push({ cellName:'r_angle_3', x: 0,   y: 0,   width: 200, height: 200, color: 'blue',  imgSrc:'img/r_angle_dead_3.jpg', type: tileType.rAngle3,   currentCell: 'A1', lastCellValue: '',  canMove: true, rotation: 0});
+shapes.push({ cellName:'r_angle_4', x: 200, y: 200, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_4.jpg', type: tileType.rAngle4,   currentCell: 'B2', lastCellValue: '',  canMove: true, rotation: 0});
 
 
-// Straights, T's, Diodes, blank blocks, bridges, switches, end bulb
-// Need to be able to rotate tiles, 
+// Additional tiles: Straights, T's, Diodes, blank blocks, bridges, switches, end bulb
+// Need to be able to rotate tiles 
 // 
 
 //need to understand this better..... 
@@ -183,33 +212,7 @@ function checkCell() {
     let squareX = middlePointLocation.x;
     let squareY = middlePointLocation.y;
     let squareRef = { column: 0, row: 0 };
-    let cellCoords = {
-        "A1": { x: 0, y: 0 },
-        "A2": { x: 200, y: 0 },
-        "A3": { x: 400, y: 0 },
-        "A4": { x: 600, y: 0 },
-        "A5": { x: 800, y: 0 },
-        "B1": { x: 0, y: 200 },
-        "B2": { x: 200, y: 200 },
-        "B3": { x: 400, y: 200 },
-        "B4": { x: 600, y: 200 },
-        "B5": { x: 800, y: 200 },
-        "C1": { x: 0, y: 400 },
-        "C2": { x: 200, y: 400 },
-        "C3": { x: 400, y: 400 },
-        "C4": { x: 600, y: 400 },
-        "C5": { x: 800, y: 400 },
-        "D1": { x: 0, y: 600 },
-        "D2": { x: 200, y: 600 },
-        "D3": { x: 400, y: 600 },
-        "D4": { x: 600, y: 600 },
-        "D5": { x: 800, y: 600 },
-        "E1": { x: 0, y: 800 },
-        "E2": { x: 200, y: 800 },
-        "E3": { x: 400, y: 800 },
-        "E4": { x: 600, y: 800 },
-        "E5": { x: 800, y: 800 },
-    };
+    
 
     currentShape = shapes[currentShapesIndex];
     
@@ -374,12 +377,26 @@ function mouseDown(e) {
         let shape = shapes[i];
         if (isMouseInShape(startX, startY, shape)) {
             if (isMouseInRotateButton(startX, startY, shape)) {
+                
+                currentShapesIndex = i; // this sets the current shapes index to be the same as the cell clicked on. 
                 // Rotate the shape 90 degrees
                 console.log("shape rotate button clicked")
-                // rather than rotate the shape it would be better to change it the next one in the array.
+
+                // Rather than rotate the shape it would be better to change it the next one in the array.
+                // Need to delete existing tile (from mail tile array?)
+                // need to replace it with the next tile in the array at that location. 
                 
-                
+                console.log("Current Shape", shape);
+                console.log("current shapes index", currentShapesIndex); //if cells are not moved it does not update this value. Reads null on start up              
+                console.log("shapes array", shapes);
+                console.log("rotate button has been clicked!")
                 //shape.rotation = (shape.rotation + 90) % 360;
+
+                //splice removes the tile from the array
+                shapes.splice(currentShapesIndex, 1);  // splice takes 2 arguments the index of the element you wish to remove and the index you wish to remove up to.
+                //Need to add the next one
+                
+                
                 drawShapes();
                 return;
             } else {
@@ -391,28 +408,6 @@ function mouseDown(e) {
         }
     }
 }
-
-//onmousedown these functions are triggered
-// function mouseDown(e) {
-//     e.preventDefault();
-//     mouseDownInZone(e);
-
-//     startX = parseInt(e.clientX - offsetX);
-//     startY = parseInt(e.clientY - offsetY);
-
-//     let index = 0;
-//     for (let shape of shapes) {
-//         if (isMouseInShape(startX, startY, shape)) {
-//             // console.log("in shape === yes");
-//             currentShapesIndex = index;
-//             isDragging = true;
-//             return;
-//         } else {
-//             // console.log("in shape === no");
-//         }
-//         index++;
-//     }
-// };
 
 function isMouseInRotateButton(x, y, shape) {
     let buttonX = shape.x + shape.width - 20;
@@ -501,17 +496,7 @@ function drawShapes() {
             context.fillRect(0, 0, shape.width, shape.height);
         }
 
-    // for (let shape of shapes) {
-      
-    //     if (shape.image) {
-    //             // Draw the image
-    //             context.drawImage(shape.image, shape.x, shape.y, shape.width, shape.height);
-    //     } else {
-    //             // Draw the shape with color (fallback)
-    //             context.fillStyle = shape.color;
-    //             context.fillRect(shape.x, shape.y, shape.width, shape.height);
-    //         }
-
+            //this section deals primarily with the rotate button:
             context.restore(); // Restore the previous state, this keeps the dot when tiles are moved. 
 
             // Draws the rotate button
@@ -522,9 +507,6 @@ function drawShapes() {
 
         }
     }
-
-
-
 
 // Load all shapes (with their relevant images) and then draw the shapes
 loadImages(shapes, drawShapes)
