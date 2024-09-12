@@ -59,6 +59,7 @@ let cellCoords = {
     "E5": { x: 800, y: 800 },
 };
 
+
 //holds shapes as an array
 let shapes = [];
 
@@ -73,9 +74,9 @@ let tileType = {
 
 // cell types separates out all the various shapes to make them easier to manipulate. 
 let tileName = {
-    "Power": { cellName:'power',     x: 400, y: 0,   width: 200, height: 200, color: 'green', imgSrc:'img/power.jpg',          type: tileType.power,     currentCell: 'A3', lastCellValue: '',  canMove: false, rotation: 0},
-    "R_Angle_1": { cellName:'r_angle_1', x: 200, y: 600, width: 200, height: 200, color: 'red',   imgSrc:'img/r_angle_dead_1.jpg', type: tileType.rAngle1,   currentCell: 'D2', lastCellValue: '',  canMove: true, rotation: 0 },
-    "R_Angle_2": { cellName:'r_angle_2', x: 400, y: 400, width: 200, height: 200, color: 'black', imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,   currentCell: 'C3', lastCellValue: '',  canMove: true, rotation: 0 } ,
+    "Power":     { cellName:'power',     x: 400, y: 0,   width: 200, height: 200, color: 'green', imgSrc:'img/power.jpg',          type: tileType.power,     currentCell: 'A3', lastCellValue: '',  canMove: false, rotation: 0},
+    "R_Angle_1": { cellName:'r_angle_1', x: 400, y: 200, width: 200, height: 200, color: 'red',   imgSrc:'img/r_angle_dead_1.jpg', type: tileType.rAngle1,   currentCell: 'B3', lastCellValue: '',  canMove: true, rotation: 0 },
+    "R_Angle_2": { cellName:'r_angle_2', x: 400, y: 400, width: 200, height: 200, color: 'black', imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,   currentCell: 'C3', lastCellValue: '',  canMove: true, rotation: 0 },
     "R_Angle_3": { cellName:'r_angle_3', x: 0,   y: 0,   width: 200, height: 200, color: 'blue',  imgSrc:'img/r_angle_dead_3.jpg', type: tileType.rAngle3,   currentCell: 'A1', lastCellValue: '',  canMove: true, rotation: 0} ,
     "R_Angle_4": { cellName:'r_angle_4', x: 200, y: 200, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_4.jpg', type: tileType.rAngle4,   currentCell: 'B2', lastCellValue: '',  canMove: true, rotation: 0} ,
     
@@ -377,11 +378,38 @@ function isMouseInShape(x, y, shape) {
 function replaceTile (shape) {
     console.log("Replace tile func has been called");
     console.log(shape)
+
+    let currentCellCoord = shape.currentCell;
+    console.log("current cell Co-ord", currentCellCoord);
+
+    // Access dynamic cell coordinates using bracket notation
+    const cellCoord = cellCoords[currentCellCoord];
+
     if (shape.cellName =='r_angle_1') {
-        console.log("this is right_angle_1")
-        //Uggglllly, need to replace object with a variable that holds it's value. 
-        shapes.push({cellName:'r_angle_2', x: 200, y: 600, width: 200, height: 200, imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,   currentCell: 'C3', lastCellValue: '',  canMove: true, rotation: 0 })
-        //shapes.push(cellTypes.R_Angle_2);
+        //console.log("this is right_angle_1")
+        //console.log(shape.currentCell);
+       
+      //BUG: need to update the tiles co-ordinates so it is always the same as the tile that was clicked!! 
+      //BUG: shapes.push is ugly. Need to replace object with a variable that holds it's value. This doesn't seem to work. Not sure why...?
+        shapes.push({cellName:'r_angle_2', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,   currentCell: currentCellCoord, lastCellValue: '',  canMove: true, rotation: 0 })
+        
+    }
+    if (shape.cellName =='r_angle_2') {
+        console.log("this is right_angle_2")
+        console.log(shape.currentCell);
+        shapes.push({cellName:'r_angle_3', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, color: 'blue',  imgSrc:'img/r_angle_dead_3.jpg', type: tileType.rAngle3,   currentCell: currentCellCoord, lastCellValue: '',  canMove: true, rotation: 0})
+        
+    }
+    if (shape.cellName =='r_angle_3') {
+        console.log("this is right_angle_3")
+        console.log(shape.currentCell);
+        shapes.push({cellName:'r_angle_4', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_4.jpg', type: tileType.rAngle4,   currentCell: currentCellCoord, lastCellValue: '',  canMove: true, rotation: 0})       
+    }
+    if (shape.cellName =='r_angle_4') {
+        console.log("this is right_angle_4")
+        console.log(shape.currentCell);
+        shapes.push({cellName:'r_angle_1', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, color: 'red',   imgSrc:'img/r_angle_dead_1.jpg', type: tileType.rAngle1,   currentCell: currentCellCoord, lastCellValue: '',  canMove: true, rotation: 0 })
+       
     }
 }
 
@@ -401,6 +429,7 @@ function mouseDown(e) {
                 // Rotate the shape 90 degrees
                 console.log("shape rotate button clicked")
 
+                console.log("woo", shape.currentCell)
                 // Rather than rotate the shape it would be better to change it the next one in the array.
                 // need to replace it with the next tile in the array at that location. 
                 
@@ -415,6 +444,7 @@ function mouseDown(e) {
                 //Need to add the next tile
 
                 replaceTile(shape)
+
                 loadImages(shapes, drawShapes);
                 return;
             } else {
@@ -441,7 +471,7 @@ function mouseUp(e) {
     } else {
         e.preventDefault();
         findMiddlePoint();
-        checkCell(); // This calls checkNeighbour func.
+        checkCell(); // This calls checkNeighbour func. Kick starts the whole checking for surrounding tiles process. 
         isDragging = false;
 
         chainArr = []; //clears the chainArr array so that the array is only filled with current values
