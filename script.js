@@ -219,11 +219,14 @@ function findMiddlePoint() {
 // the check cell function looks to see which cell the active tile has been dropped in. 
 // the value of this cell is then sent to the checkNeighbour function which then searches surrounding tiles for a live connection.  
 function checkCell() {
+    console.log("Check cell has been run")
+
+    chainArr = []
+
     let squareX = middlePointLocation.x;
     let squareY = middlePointLocation.y;
     let squareRef = { column: 0, row: 0 };
-    
-
+   
     currentShape = shapes[currentShapesIndex];
     
     //Checks X axis 
@@ -272,7 +275,7 @@ function checkCell() {
             //Need to pass in the values of the last valid cell NOT cell ref
             currentShape.x = cellCoords[lastCellVal].x
             currentShape.y = cellCoords[lastCellVal].y;          
-            snapTo();          
+            snapTo();  
             return; //exits the whole function
         }
     }
@@ -301,6 +304,10 @@ function checkCell() {
     }
     snapTo();
     //updates the value of the shapes x and y co-ordinates 
+
+    checkForStartingCell(chainArr) 
+    checkNeighbour('A3');
+
 }
 
 //X and Y co-ordinates and 'zone' are passed in by the mouseDownInZone function 
@@ -314,7 +321,6 @@ function isMouseInZone(x, y, zone) {
 
     if (x > zoneLeft && x < zoneRight && y > zoneTop && y < zoneBottom) {
         // console.log(`click is inside zone ${zone.zoneName}`);
-
         return true;
     } else {
         // console.log("not inside zone");
@@ -374,43 +380,45 @@ function isMouseInShape(x, y, shape) {
     }
 }
 
-// BUG: if you click on a shape but don't move it, the corner button will disappear.
+//BUG: if a rotated tile is removed from a live array the broken chain remains lit. - need to clear chain array each time a tile is moved?
+//BUG: if you click on a shape but don't move it, the corner button will disappear.
+
+
 function replaceTile (shape) {
-    console.log("Replace tile func has been called");
+    //console.log("Replace tile func has been called");
     console.log(shape)
 
-    let currentCellCoord = shape.currentCell;
+    //Clear chain array
+    chainArr = [];
+
+    let currentCellCoord = shape.currentCell; // gives the cell co-ordinate value e.g. A2
     console.log("current cell Co-ord", currentCellCoord);
 
-    // Access dynamic cell coordinates using bracket notation
+    // Access dynamic cell coordinates using bracket notation. Takes whatever value is passed into the [] and opens the reference in the cellCoord object. 
     const cellCoord = cellCoords[currentCellCoord];
 
+    //console.log(shape.currentCell);
+    //BUG: shapes.push is ugly. Need to replace object with a variable that holds it's value. This doesn't seem to work. Not sure why...?
+
     if (shape.cellName =='r_angle_1') {
-        //console.log("this is right_angle_1")
-        //console.log(shape.currentCell);
-       
-      //BUG: need to update the tiles co-ordinates so it is always the same as the tile that was clicked!! 
-      //BUG: shapes.push is ugly. Need to replace object with a variable that holds it's value. This doesn't seem to work. Not sure why...?
-        shapes.push({cellName:'r_angle_2', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,   currentCell: currentCellCoord, lastCellValue: '',  canMove: true, rotation: 0 })
+        shapes.push({cellName:'r_angle_2', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc:'img/r_angle_dead_2.jpg', type: tileType.rAngle2,   currentCell: currentCellCoord, lastCellValue: '',  canMove: true,})
         
     }
     if (shape.cellName =='r_angle_2') {
-        console.log("this is right_angle_2")
-        console.log(shape.currentCell);
-        shapes.push({cellName:'r_angle_3', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, color: 'blue',  imgSrc:'img/r_angle_dead_3.jpg', type: tileType.rAngle3,   currentCell: currentCellCoord, lastCellValue: '',  canMove: true, rotation: 0})
-        
-    }
-    if (shape.cellName =='r_angle_3') {
-        console.log("this is right_angle_3")
-        console.log(shape.currentCell);
-        shapes.push({cellName:'r_angle_4', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, color: 'green', imgSrc:'img/r_angle_dead_4.jpg', type: tileType.rAngle4,   currentCell: currentCellCoord, lastCellValue: '',  canMove: true, rotation: 0})       
-    }
-    if (shape.cellName =='r_angle_4') {
-        console.log("this is right_angle_4")
-        console.log(shape.currentCell);
-        shapes.push({cellName:'r_angle_1', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, color: 'red',   imgSrc:'img/r_angle_dead_1.jpg', type: tileType.rAngle1,   currentCell: currentCellCoord, lastCellValue: '',  canMove: true, rotation: 0 })
+        shapes.push({cellName:'r_angle_3', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc:'img/r_angle_dead_3.jpg', type: tileType.rAngle3,   currentCell: currentCellCoord, lastCellValue: '',  canMove: true, })
        
     }
+    if (shape.cellName =='r_angle_3') {
+        shapes.push({cellName:'r_angle_4', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc:'img/r_angle_dead_4.jpg', type: tileType.rAngle4,   currentCell: currentCellCoord, lastCellValue: '',  canMove: true, })       
+       
+    }
+    if (shape.cellName =='r_angle_4') {
+        shapes.push({cellName:'r_angle_1', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200,  imgSrc:'img/r_angle_dead_1.jpg', type: tileType.rAngle1,   currentCell: currentCellCoord, lastCellValue: '',  canMove: true, })
+        
+    }
+   
+    checkForStartingCell(chainArr) 
+    checkNeighbour('A3');
 }
 
 //onmousedown these functions are triggered
@@ -428,25 +436,21 @@ function mouseDown(e) {
                 currentShapesIndex = i; // this sets the current shapes index to be the same as the cell clicked on. 
                 // Rotate the shape 90 degrees
                 console.log("shape rotate button clicked")
-
-                console.log("woo", shape.currentCell)
-                // Rather than rotate the shape it would be better to change it the next one in the array.
-                // need to replace it with the next tile in the array at that location. 
                 
                 console.log("Current Shape", shape);
                 console.log("current shapes index", currentShapesIndex); //if cells are not moved it does not update this value. Reads null on start up              
                 console.log("shapes array", shapes);
                 console.log("rotate button has been clicked!")
-                //shape.rotation = (shape.rotation + 90) % 360;
 
                 //splice removes the tile from the array
                 shapes.splice(currentShapesIndex, 1);  // splice takes 2 arguments the index of the element you wish to remove and the index you wish to remove up to.
-                //Need to add the next tile
 
+                //add the next tile in the array (based on type)
                 replaceTile(shape)
-
+            
                 loadImages(shapes, drawShapes);
                 return;
+
             } else {
                 // Regular dragging behavior
                 currentShapesIndex = i;
@@ -457,11 +461,12 @@ function mouseDown(e) {
     }
 }
 
+// checks to see if the cursor is on the mouse rotate button
 function isMouseInRotateButton(x, y, shape) {
     let buttonX = shape.x + shape.width - 20;
     let buttonY = shape.y + 20;
     let distance = Math.sqrt((x - buttonX) ** 2 + (y - buttonY) ** 2);
-    return distance < 10; // 10 is the radius of the rotate button
+    return distance < 15; // 10 is the radius of the rotate button, I have made this value larger to make it a bigger target
 }
 
 // mouse up event
@@ -526,13 +531,11 @@ function drawShapes() {
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     drawHorizGrid();
     drawVertGrid();
-
     
     for (let shape of shapes) {
         
         context.save(); // Save the current state
         context.translate(shape.x + shape.width / 2, shape.y + shape.height / 2); // Move to the center of the shape
-        context.rotate((shape.rotation * Math.PI) / 180); // Rotate the shape
         context.translate(-shape.width / 2, -shape.height / 2); // Move back to the top left corner of the shape
 
         if (shape.image) {
@@ -677,6 +680,7 @@ function canConnect(gridRef, neighbourCell) {
     return false;
 }
 
+//runs to see if the start tile exists in the array
 function checkForStartingCell (chainArr) {
     
     if (chainArr.includes('A3')) {
