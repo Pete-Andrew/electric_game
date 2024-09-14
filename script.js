@@ -737,6 +737,7 @@ function changeTileToLive() {
     }
 
     //if check connection returns true then replace the dead tile with a live one. 
+    //Make sure to only loadImages at the very end of all the other functions or you get random dead tile bug!
     loadImages(shapes, drawShapes);
 }
 
