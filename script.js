@@ -381,7 +381,8 @@ function isMouseInShape(x, y, shape) {
     }
 }
 
-//BUG: if you click on a shape but don't move it, the corner button will disappear.
+//Bug: random dead tiles in the chain. Not sure why yet... 
+
 
 function replaceTile(shape) {
     console.log("Replace tile func has been called");
@@ -463,6 +464,7 @@ function mouseDown(e) {
             }
         }
     }
+    
 }
 
 // checks to see if the cursor is on the mouse rotate button
@@ -516,7 +518,7 @@ function mouseMove(e) {
         currentShape.x += mouseMoveDistanceX;
         currentShape.y += mouseMoveDistanceY;
 
-        drawShapes();
+        drawShapes(); //live draws the shape so it can be physically dragged
         //console.log("square is moving")
         startX = mouseX;
         startY = mouseY;
@@ -552,14 +554,23 @@ function drawShapes() {
         }
         //this section deals primarily with the rotate button:
         context.restore(); // Restore the previous state, this keeps the dot when tiles are moved. 
-
-        // Draws the rotate button
-        context.fillStyle = 'grey'; //Sets a colour
-        context.beginPath(); //initiates the drawing?
-        context.arc(shape.x + shape.width - 20, shape.y + 20, 10, 0, 2 * Math.PI); // sets the location for the dot to be drawn in each tile. And sets out the mathematical shape for the dot 
-        context.fill(); //Fills the shape, Comment this out to hide the buttons
+        drawRotateButton();
+      
     }
 }
+
+//Separates out the draw button so it can also be invoked when the tile is clicked on but not moved from it's cell
+function drawRotateButton () {
+    for (let shape of shapes) {
+        // Draws the rotate button
+        context.fillStyle = 'grey'; //Sets a colour
+        context.beginPath();        //initiates the drawing?
+        context.arc(shape.x + shape.width - 20, shape.y + 20, 10, 0, 2 * Math.PI); // sets the location for the dot to be drawn in each tile. And sets out the mathematical shape for the dot 
+        context.fill(); //Fills the shape, Comment this out to hide the buttons
+        }
+    }
+
+
 
 //Load all shapes (with their relevant images) and then draw the shapes
 //Called here this initialises the map. 
@@ -570,10 +581,12 @@ function snapTo() {
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     drawHorizGrid();
     drawVertGrid();
+    
     for (let shape of shapes) {
         if (shape.image) {
             // Draw the image
             context.drawImage(shape.image, shape.x, shape.y, shape.width, shape.height);
+            drawRotateButton();
         } else {
             // Draw the shape with color (fallback)
             context.fillStyle = shape.color;
@@ -682,7 +695,6 @@ function canConnect(gridRef, neighbourCell) {
         // Right
         return currentShape.type.right && neighbourShape.type.left;
     }
-
     return false;
 }
 
@@ -690,8 +702,10 @@ function canConnect(gridRef, neighbourCell) {
 //runs to see if the start tile exists in the array
 function checkForStartingCell(chainArr) {
 
+    console.log("chain array called in the 'checkForStartingCell function", chainArr);
+
     if (chainArr.includes('A3')) {
-        //console.log("Valid circuit");
+        console.log("Valid circuit");
         //console.log("chainArr =", chainArr);
         changeTileToLive();
     }
@@ -706,6 +720,9 @@ function checkForStartingCell(chainArr) {
     }
 }
 
+
+//BUG: change tile to live not always converting all dead tiles to live ones. 
+// or rather the shapes are not being changed by the loadImages func call
 function changeTileToLive() {
 
     // iterates through shapes and checks and if the current shape matches it changes the image
@@ -717,6 +734,8 @@ function changeTileToLive() {
         // if not ignore the tile and check the others. 
 
         if (chainArr.includes(shape.currentCell)) {
+
+            console.log(shape.imgSrc, shape.currentCell)
 
             if (shape.imgSrc == 'img/r_angle_dead_1.jpg') {
                 shape.imgSrc = 'img/r_angle_live_1.jpg';
@@ -739,6 +758,8 @@ function changeTileToLive() {
 }
 
 function changeTileToDead() {
+
+    console.log("ChangeTileToDead function being called")
 
     for (let shape of shapes) {
         if (!chainArr.includes(shape.currentCell)) {
