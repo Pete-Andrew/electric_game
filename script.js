@@ -381,9 +381,6 @@ function isMouseInShape(x, y, shape) {
     }
 }
 
-//BUG: Occasional glitch, sometimes tiles in the chain remain grey, this only occurs if a tile is rotated (can happen if the rotated tile is not in the array)
-//this is an intermittent fault, something is being called in the wrong order...
-//fault could be in replaceTile func.
 //BUG: if you click on a shape but don't move it, the corner button will disappear.
 
 function replaceTile(shape) {
