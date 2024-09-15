@@ -113,7 +113,11 @@ shapes.push(tileName.R_Angle_4);
 // Additional tiles: Straights, T's, Diodes, blank blocks, bridges, switches, end bulb
 
 //need to understand this better..... 
+
+//BUG! Occasional dead tile despite the correct imgSrc being passed into this function. Infrequent issue. 
+
 function loadImages(shapes, callback) {
+    console.log("load images called")
     let loadedCount = 0;
     shapes.forEach(shape => {
         if (shape.imgSrc) { //checks to see if a given shape has an imgSrc attribute 
@@ -734,9 +738,7 @@ function changeTileToLive() {
         // if not ignore the tile and check the others. 
 
         if (chainArr.includes(shape.currentCell)) {
-
-            console.log(shape.imgSrc, shape.currentCell)
-
+           
             if (shape.imgSrc == 'img/r_angle_dead_1.jpg') {
                 shape.imgSrc = 'img/r_angle_live_1.jpg';
             }
@@ -749,7 +751,8 @@ function changeTileToLive() {
             if (shape.imgSrc == 'img/r_angle_dead_4.jpg') {
                 shape.imgSrc = 'img/r_angle_live_4.jpg';
             }
-        }
+            console.log(shape.imgSrc, shape.currentCell)
+        } 
     }
 
     //if check connection returns true then replace the dead tile with a live one. 
@@ -778,6 +781,7 @@ function changeTileToDead() {
             if (shape.imgSrc == 'img/r_angle_live_4.jpg') {
                 shape.imgSrc = 'img/r_angle_dead_4.jpg';
             }
+            console.log(shape.imgSrc, shape.currentCell)
         }
     }
     //if check connection returns false then replace the dead tile with a dead one. 
