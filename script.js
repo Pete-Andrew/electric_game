@@ -116,26 +116,33 @@ shapes.push(tileName.R_Angle_4);
 
 //BUG! Occasional dead tile despite the correct imgSrc being passed into this function. Infrequent issue. 
 
-function loadImages(shapes, callback) {
-    console.log("load images called")
-    let loadedCount = 0;
-    shapes.forEach(shape => {
-        if (shape.imgSrc) { //checks to see if a given shape has an imgSrc attribute 
-            loadImage(shape.imgSrc, (img) => {  //calls the load image function passing in the imageSrc attribute and.... 
-                shape.image = img;
-                loadedCount++;
-                if (loadedCount === shapes.length) {
-                    callback();
+function loadImages(shapes, callback) { 
+    console.log("load images called");
+    
+    let loadedCount = 0; // Counter to track how many images have loaded
+    
+    shapes.forEach(shape => {  // Loop through each shape in the `shapes` array
+        if (shape.imgSrc) { // Check if the shape has an `imgSrc` property
+            loadImage(shape.imgSrc, (img) => {  // Asynchronously load the image using `loadImage`
+                shape.image = img;  // Once the image is loaded, assign it to the shape’s `image` property
+                loadedCount++;  // Increment the counter when an image is successfully loaded
+                
+                if (loadedCount === shapes.length) {  // Check if all images have been loaded (by comparing `loadedCount` to the number of shapes)
+                    callback();  // Once all images are loaded, call the `callback` function (usually `drawShapes`)
+                  
                 }
             });
-        } else {
-            loadedCount++;
-            if (loadedCount === shapes.length) {
-                callback();
+        } else {  // If the shape doesn’t have an image source (`imgSrc`), we still need to update the counter
+            loadedCount++;  // Increment the counter even if there's no image to load
+            
+            if (loadedCount === shapes.length) {  // Check if all shapes (with or without images) have been processed
+                callback();  // Call the callback function when all shapes have been handled
+              
             }
         }
     });
 }
+
 
 // creates the vertical grid lines array
 let vertGridLines = [];
@@ -385,9 +392,6 @@ function isMouseInShape(x, y, shape) {
     }
 }
 
-//Bug: random dead tiles in the chain. Not sure why yet... 
-
-
 function replaceTile(shape) {
     console.log("Replace tile func has been called");
     console.log(shape)
@@ -424,7 +428,7 @@ function replaceTile(shape) {
 
     checkForStartingCell(chainArr);
     checkNeighbour('A3');
-    //loadImages(shapes, drawShapes);
+   
 }
 
 //onmousedown these functions are triggered
@@ -457,7 +461,7 @@ function mouseDown(e) {
                 //add the next tile in the array (based on type)
                 replaceTile(shape)
 
-                //loadImages(shapes, drawShapes);
+                
                 return;
 
             } else {
@@ -538,6 +542,7 @@ canvas.onmousemove = mouseMove;
 // let drawShapes = function(), this an alternative way of declaring this function. Stores the func as a variable.
 // Functions stored in variables do not need function names. They are always invoked (called) using the variable name. 
 function drawShapes() {
+    //console.log("Draw shapes has been called")
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     drawHorizGrid();
     drawVertGrid();
@@ -549,7 +554,10 @@ function drawShapes() {
         context.translate(-shape.width / 2, -shape.height / 2); // Move back to the top left corner of the shape
 
         if (shape.image) {
-            // Draw the image
+            //Draw the image
+            //console.log(shape.image) //BUG this console log seems to fix the dead tile issue. BUT only when it is not commented out!  BUG!!!
+            //need to do something here to make sure all the tiles are changed to live....
+            //Issue could also be in the drawShapes function at line 120 ish....  
             context.drawImage(shape.image, 0, 0, shape.width, shape.height);
         } else {
             // Draw the shape with color (fallback)
@@ -724,9 +732,6 @@ function checkForStartingCell(chainArr) {
     }
 }
 
-
-//BUG: change tile to live not always converting all dead tiles to live ones. 
-// or rather the shapes are not being changed by the loadImages func call
 function changeTileToLive() {
 
     // iterates through shapes and checks and if the current shape matches it changes the image
