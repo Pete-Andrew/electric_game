@@ -116,7 +116,7 @@ shapes.push(tileName.R_Angle_4);
 
 //BUG! Occasional dead tile despite the correct imgSrc being passed into this function. Infrequent issue. 
 
-function loadImages(shapes, callback) { 
+function loadImages(shapes, drawShapesCallback) { 
     console.log("load images called");
     
     let loadedCount = 0; // Counter to track how many images have loaded
@@ -128,15 +128,16 @@ function loadImages(shapes, callback) {
                 loadedCount++;  // Increment the counter when an image is successfully loaded
                 
                 if (loadedCount === shapes.length) {  // Check if all images have been loaded (by comparing `loadedCount` to the number of shapes)
-                    callback();  // Once all images are loaded, call the `callback` function (usually `drawShapes`)
-                  
+                    drawShapesCallback();  // Once all images are loaded, call the `callback` function (usually `drawShapes`)
+                    //A callback is a function passed as an argument to another function. This technique allows a function to call another function
+                    //A callback function can run after another function has finished
                 }
             });
         } else {  // If the shape doesn’t have an image source (`imgSrc`), we still need to update the counter
             loadedCount++;  // Increment the counter even if there's no image to load
             
             if (loadedCount === shapes.length) {  // Check if all shapes (with or without images) have been processed
-                callback();  // Call the callback function when all shapes have been handled
+                drawShapesCallback();  // Call the callback function when all shapes have been handled
               
             }
         }
@@ -559,16 +560,19 @@ function drawShapes() {
             //need to do something here to make sure all the tiles are changed to live....
             //Issue could also be in the drawShapes function at line 120 ish....  
             context.drawImage(shape.image, 0, 0, shape.width, shape.height);
+            //BUG BUG BUG!!! :( 
+
         } else {
             // Draw the shape with color (fallback)
             context.fillStyle = shape.color;
             context.fillRect(0, 0, shape.width, shape.height);
-        }
-        //this section deals primarily with the rotate button:
+            console.log("Something has gone amiss")
+        } 
+        //this section deals primarily with the rotate button:   
         context.restore(); // Restore the previous state, this keeps the dot when tiles are moved. 
         drawRotateButton();
-      
     }
+    
 }
 
 //Separates out the draw button so it can also be invoked when the tile is clicked on but not moved from it's cell
