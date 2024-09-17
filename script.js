@@ -91,6 +91,7 @@ function loadImage(src, callback) {
     const img = new Image();
     //"img.onload" is an event handler that gets called when the image has finished loading successfully. The arrow function "() => callback(img)" is assigned to img.onload. 
     //This means that when the image has loaded, the function callback will be called with img (the loaded image object) as its argument.
+    //drawShapes is the callback function. 
     img.onload = () => callback(img);
     //sets the src attribute of the img object to the provided src argument. Setting img.src starts the process of loading the image from the specified URL.
     img.src = src;
@@ -127,6 +128,8 @@ function loadImages(shapes, drawShapesCallback) {
                 shape.image = img;  // Once the image is loaded, assign it to the shape’s `image` property
                 loadedCount++;  // Increment the counter when an image is successfully loaded
                 
+                //console.log(img); // console log here also seems to fix the dead 
+
                 if (loadedCount === shapes.length) {  // Check if all images have been loaded (by comparing `loadedCount` to the number of shapes)
                     drawShapesCallback();  // Once all images are loaded, call the `callback` function (usually `drawShapes`)
                     //A callback is a function passed as an argument to another function. This technique allows a function to call another function
@@ -544,6 +547,7 @@ canvas.onmousemove = mouseMove;
 // Functions stored in variables do not need function names. They are always invoked (called) using the variable name. 
 function drawShapes() {
     //console.log("Draw shapes has been called")
+    console.clear();
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     drawHorizGrid();
     drawVertGrid();
@@ -555,22 +559,24 @@ function drawShapes() {
         context.translate(-shape.width / 2, -shape.height / 2); // Move back to the top left corner of the shape
 
         if (shape.image) {
+                        
             //Draw the image
-            //console.log(shape.image) //BUG this console log seems to fix the dead tile issue. BUT only when it is not commented out!  BUG!!!
-            //need to do something here to make sure all the tiles are changed to live....
-            //Issue could also be in the drawShapes function at line 120 ish....  
-            context.drawImage(shape.image, 0, 0, shape.width, shape.height);
-            //BUG BUG BUG!!! :( 
-
+            if (!isDragging) {
+            console.log(shape.image) //BUG this console log seems to fix the dead tile issue. BUT only when it is not commented out!  BUG!!!
+            }
+            setTimeout(context.drawImage(shape.image, 0, 0, shape.width, shape.height),150);  //using a set timeout here seems to make the code more stable?  
         } else {
             // Draw the shape with color (fallback)
             context.fillStyle = shape.color;
             context.fillRect(0, 0, shape.width, shape.height);
             console.log("Something has gone amiss")
         } 
+
+        
         //this section deals primarily with the rotate button:   
         context.restore(); // Restore the previous state, this keeps the dot when tiles are moved. 
         drawRotateButton();
+        
     }
     
 }
@@ -767,6 +773,7 @@ function changeTileToLive() {
     //if check connection returns true then replace the dead tile with a live one. 
     //Make sure to only loadImages at the very end of all the other functions or you get random dead tile bug!
     loadImages(shapes, drawShapes);
+    
 }
 
 function changeTileToDead() {
@@ -795,6 +802,7 @@ function changeTileToDead() {
     }
     //if check connection returns false then replace the dead tile with a dead one. 
     loadImages(shapes, drawShapes);
+    
 }
 
 // https://www.youtube.com/watch?v=7PYvx8u_9Sk&ab_channel=BananaCoding
