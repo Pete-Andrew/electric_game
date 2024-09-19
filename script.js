@@ -31,6 +31,8 @@ let zoneStartY;
 
 let gridRef;
 
+let rotateClicked
+
 let cellCoords = {
     "A1": { x: 0, y: 0 },
     "A2": { x: 200, y: 0 },
@@ -70,6 +72,7 @@ let tileType = {
     rAngle2: { top: true, right: false, bottom: false, left: true },
     rAngle3: { top: true, right: true, bottom: false, left: false },
     rAngle4: { top: false, right: true, bottom: true, left: false },
+    lambda: {top: true, right: false, bottom: false, left: false  }
 }
 
 // cell types separates out all the various shapes to make them easier to manipulate. 
@@ -79,7 +82,7 @@ let tileName = {
     "R_Angle_2": { cellName: 'r_angle_2', x: 400, y: 400, width: 200, height: 200, color: 'black', imgSrc: 'img/r_angle_dead_2.jpg', type: tileType.rAngle2, currentCell: 'C3', lastCellValue: '', canMove: true, rotation: 0 },
     "R_Angle_3": { cellName: 'r_angle_3', x: 0, y: 0, width: 200, height: 200, color: 'blue', imgSrc: 'img/r_angle_dead_3.jpg', type: tileType.rAngle3, currentCell: 'A1', lastCellValue: '', canMove: true, rotation: 0 },
     "R_Angle_4": { cellName: 'r_angle_4', x: 200, y: 200, width: 200, height: 200, color: 'green', imgSrc: 'img/r_angle_dead_4.jpg', type: tileType.rAngle4, currentCell: 'B2', lastCellValue: '', canMove: true, rotation: 0 },
-
+    "lambda" : { cellName: 'lambda', x: 800, y: 600, width: 200, height: 200, color: 'red', imgSrc: 'img/lambda_dead.jpg', type: tileType.lambda, currentCell: 'D5', lastCellValue: '', canMove: true, rotation: 0 },
 }
 
 //JavaScript callback is a function which is to be executed after another function has finished execution
@@ -110,7 +113,7 @@ shapes.push(tileName.R_Angle_1);
 shapes.push(tileName.R_Angle_2);
 shapes.push(tileName.R_Angle_3);
 shapes.push(tileName.R_Angle_4);
-
+shapes.push(tileName.lambda);
 // Additional tiles: Straights, T's, Diodes, blank blocks, bridges, switches, end bulb
 
 //need to understand this better..... 
@@ -128,9 +131,11 @@ function loadImages(shapes, drawShapesCallback) {
                 shape.image = img;  // Once the image is loaded, assign it to the shape’s `image` property
                 loadedCount++;  // Increment the counter when an image is successfully loaded
                 
-                //console.log(img); // console log here also seems to fix the dead 
+                //console.log(img); // console log here also seems to fix the dead, not 100% fix
+                //console.clear();
 
                 if (loadedCount === shapes.length) {  // Check if all images have been loaded (by comparing `loadedCount` to the number of shapes)
+                   
                     drawShapesCallback();  // Once all images are loaded, call the `callback` function (usually `drawShapes`)
                     //A callback is a function passed as an argument to another function. This technique allows a function to call another function
                     //A callback function can run after another function has finished
@@ -140,6 +145,7 @@ function loadImages(shapes, drawShapesCallback) {
             loadedCount++;  // Increment the counter even if there's no image to load
             
             if (loadedCount === shapes.length) {  // Check if all shapes (with or without images) have been processed
+                
                 drawShapesCallback();  // Call the callback function when all shapes have been handled
               
             }
@@ -234,7 +240,7 @@ function findMiddlePoint() {
 // the check cell function looks to see which cell the active tile has been dropped in. 
 // the value of this cell is then sent to the checkNeighbour function which then searches surrounding tiles for a live connection.  
 function checkCell() {
-    console.log("Check cell has been run")
+    //console.log("Check cell has been run")
 
     chainArr = []  // see lines
 
@@ -299,8 +305,8 @@ function checkCell() {
     shapes[currentShapesIndex].currentCell = cellRef;
     //gridRef holds the value of the cell occupied by the current tile
     gridRef = shapes[currentShapesIndex].currentCell;
-    console.log("current tile is in cell", gridRef);
-    console.log("previous cell value was", lastCellVal);
+    //console.log("current tile is in cell", gridRef);
+    //console.log("previous cell value was", lastCellVal);
 
     // checks to see if the cellRef is the same as the cell co-ordinate,
     if (cellCoords[cellRef]) {
@@ -396,12 +402,10 @@ function isMouseInShape(x, y, shape) {
     }
 }
 
+//this is called when shapes are rotated
 function replaceTile(shape) {
     console.log("Replace tile func has been called");
     console.log(shape)
-
-    //Clear chain array
-    //chainArr = [];
 
     let currentCellCoord = shape.currentCell; // gives the cell co-ordinate value e.g. A2
     console.log("current cell Co-ord", currentCellCoord);
@@ -411,7 +415,6 @@ function replaceTile(shape) {
 
     //console.log(shape.currentCell);
     //BUG: shapes.push is ugly. Need to replace object with a variable that holds it's value. This doesn't seem to work. Not sure why...?
-
 
     if (shape.cellName == 'r_angle_1') {
         shapes.push({ cellName: 'r_angle_2', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/r_angle_dead_2.jpg', type: tileType.rAngle2, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
@@ -446,6 +449,8 @@ function mouseDown(e) {
         let shape = shapes[i];
         if (isMouseInShape(startX, startY, shape)) {
             if (isMouseInRotateButton(startX, startY, shape)) {
+                //console.clear();
+                rotateClicked = true;
 
                 currentShapesIndex = i; // this sets the current shapes index to be the same as the cell clicked on. 
                 // Rotate the shape 90 degrees
@@ -461,10 +466,9 @@ function mouseDown(e) {
 
                 //splice removes the tile from the array
                 shapes.splice(currentShapesIndex, 1);  // splice takes 2 arguments the index of the element you wish to remove and the index you wish to remove up to.
-
-                //add the next tile in the array (based on type)
+               
+                //add the next tile in the array (based on type) this makes it seem as if the tile has been rotated. 
                 replaceTile(shape)
-
                 
                 return;
 
@@ -484,7 +488,8 @@ function isMouseInRotateButton(x, y, shape) {
     let buttonX = shape.x + shape.width - 20;
     let buttonY = shape.y + 20;
     let distance = Math.sqrt((x - buttonX) ** 2 + (y - buttonY) ** 2);
-    return distance < 15; // 10 is the radius of the rotate button, I have made this value larger to make it a bigger target
+
+    return distance < 15; // 15 is the radius of the rotate button, I have made this value larger to make it a bigger target
 }
 
 // mouse up event
@@ -543,11 +548,27 @@ canvas.onmouseup = mouseUp;
 canvas.onmouseout = mouseOut;
 canvas.onmousemove = mouseMove;
 
-// let drawShapes = function(), this an alternative way of declaring this function. Stores the func as a variable.
-// Functions stored in variables do not need function names. They are always invoked (called) using the variable name. 
-function drawShapes() {
-    //console.log("Draw shapes has been called")
-    console.clear();
+
+
+async function drawShapes () {
+    for (let shape of shapes) {
+
+        //test before image is drawn to see if the correct values for imgSrc have arrived at the drawShapes function
+        if (!isDragging && rotateClicked == true) {
+        console.log(shape.imgSrc, "in cell", shape.currentCell ) 
+        }
+
+        if (shape.image) {
+            await new Promise(resolve => {
+                if (shape.image.complete) {
+                    resolve();
+                } else {
+                    shape.image.onload = resolve;
+                }
+            });
+        }
+        // Proceed with drawing after the image is ready
+    }
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     drawHorizGrid();
     drawVertGrid();
@@ -558,31 +579,99 @@ function drawShapes() {
         context.translate(shape.x + shape.width / 2, shape.y + shape.height / 2); // Move to the center of the shape
         context.translate(-shape.width / 2, -shape.height / 2); // Move back to the top left corner of the shape
 
-        if (shape.image) {
-                        
+        if (shape.image  && shape.image.complete) {
+
             //Draw the image
             if (!isDragging) {
-            console.log(shape.image) //BUG this console log seems to fix the dead tile issue. BUT only when it is not commented out!  BUG!!!
+                //console.log(shape.image) //BUG this console log seems to fix the dead tile issue (mostly). BUT only when it is not commented out!  BUG!!!
+                //makes the code far more stable
             }
-            setTimeout(context.drawImage(shape.image, 0, 0, shape.width, shape.height),150);  //using a set timeout here seems to make the code more stable?  
+            //setTimeout(context.drawImage(shape.image, 0, 0, shape.width, shape.height), 150);  //using a set timeout here seems to make the code more stable?  
+            context.drawImage(shape.image, 0, 0, shape.width, shape.height)
+            //console.clear();
         } else {
             // Draw the shape with color (fallback)
+            console.log(`Image not ready for tile ${shape.id}`);
             context.fillStyle = shape.color;
             context.fillRect(0, 0, shape.width, shape.height);
             console.log("Something has gone amiss")
-        } 
+        }
 
-        
         //this section deals primarily with the rotate button:   
         context.restore(); // Restore the previous state, this keeps the dot when tiles are moved. 
         drawRotateButton();
+
+        if (!isDragging && rotateClicked == true) {
+            //console.log(shape.image) //BUG this console log seems to fix the dead tile issue (mostly). BUT only when it is not commented out!  BUG!!!
+            //makes the code far more stable
+            //console.log(`imgScr for: ${shape.cellName}, in cell ${shape.currentCell}, after drawShapes has been called =`, shape.imgSrc);
+            //console.log("imgSrc values for all shapes:")
+            console.log(shape.imgSrc, "in cell", shape.currentCell ) //shows the imgSrc values of all the cells once the draw image func has been called
+            //If the imgSrc is showing the tile as "live" in the console log, but it is being drawn as "dead," this suggests that the issue is likely related to how the image is being rendered on the canvas, rather than how it's being loaded or stored in the tile object.
+
+            //THE CODE IS FINE THE RENDERING IS NOT!! OR CONTEXT RESTORE COULD BE REVERTING THE SHAPE??
+        }
         
     }
-    
-}
+    rotateClicked = false;
+};
 
-//Separates out the draw button so it can also be invoked when the tile is clicked on but not moved from it's cell
-function drawRotateButton () {
+// let drawShapes = function(), this an alternative way of declaring this function. Stores the func as a variable.
+// Functions stored in variables do not need function names. They are always invoked (called) using the variable name. 
+
+// function drawShapes() {
+//     //console.log("Draw shapes has been called")
+//     //console.clear();
+//     context.clearRect(0, 0, canvasWidth, canvasHeight);
+//     drawHorizGrid();
+//     drawVertGrid();
+
+//     for (let shape of shapes) {
+
+//         context.save(); // Save the current state
+//         context.translate(shape.x + shape.width / 2, shape.y + shape.height / 2); // Move to the center of the shape
+//         context.translate(-shape.width / 2, -shape.height / 2); // Move back to the top left corner of the shape
+
+//         if (shape.image  && shape.image.complete) {
+
+//             //Draw the image
+//             if (!isDragging) {
+//                 //console.log(shape.image) //BUG this console log seems to fix the dead tile issue (mostly). BUT only when it is not commented out!  BUG!!!
+//                 //makes the code far more stable
+//             }
+//             //setTimeout(context.drawImage(shape.image, 0, 0, shape.width, shape.height), 150);  //using a set timeout here seems to make the code more stable?  
+//             context.drawImage(shape.image, 0, 0, shape.width, shape.height)
+//             //console.clear();
+//         } else {
+//             // Draw the shape with color (fallback)
+//             console.log(`Image not ready for tile ${shape.id}`);
+//             context.fillStyle = shape.color;
+//             context.fillRect(0, 0, shape.width, shape.height);
+//             console.log("Something has gone amiss")
+//         }
+
+//         //this section deals primarily with the rotate button:   
+//         context.restore(); // Restore the previous state, this keeps the dot when tiles are moved. 
+//         drawRotateButton();
+
+//         if (!isDragging && rotateClicked == true) {
+//             //console.log(shape.image) //BUG this console log seems to fix the dead tile issue (mostly). BUT only when it is not commented out!  BUG!!!
+//             //makes the code far more stable
+//             //console.log(`imgScr for: ${shape.cellName}, in cell ${shape.currentCell}, after drawShapes has been called =`, shape.imgSrc);
+//             //console.log("imgSrc values for all shapes:")
+//             console.log(shape.imgSrc, "in cell", shape.currentCell ) //shows the imgSrc values of all the cells once the draw image func has been called
+//             //If the imgSrc is showing the tile as "live" in the console log, but it is being drawn as "dead," this suggests that the issue is likely related to how the image is being rendered on the canvas, rather than how it's being loaded or stored in the tile object.
+
+//             //THE CODE IS FINE THE RENDERING IS NOT!!
+//         }
+        
+//     }
+//     rotateClicked = false;
+
+// }
+
+function drawRotateButton () { 
+    //Separates out the draw button so it can also be invoked when the tile is clicked on but not moved from it's cell
     for (let shape of shapes) {
         // Draws the rotate button
         context.fillStyle = 'grey'; //Sets a colour
@@ -594,9 +683,9 @@ function drawRotateButton () {
 
 
 
-//Load all shapes (with their relevant images) and then draw the shapes
-//Called here this initialises the map. 
-loadImages(shapes, drawShapes)
+    //Load all shapes (with their relevant images) and then draw the shapes
+    //Called here this initialises the map. 
+    loadImages(shapes, drawShapes)
 
 //Snaps tiles to the grid
 function snapTo() {
@@ -755,25 +844,25 @@ function changeTileToLive() {
         if (chainArr.includes(shape.currentCell)) {
            
             if (shape.imgSrc == 'img/r_angle_dead_1.jpg') {
-                shape.imgSrc = 'img/r_angle_live_1.jpg';
+                shape.imgSrc = 'img/r_angle_live_1.jpg'
             }
             if (shape.imgSrc == 'img/r_angle_dead_2.jpg') {
-                shape.imgSrc = 'img/r_angle_live_2.jpg';
+                shape.imgSrc = 'img/r_angle_live_2.jpg'
             }
             if (shape.imgSrc == 'img/r_angle_dead_3.jpg') {
-                shape.imgSrc = 'img/r_angle_live_3.jpg';
+                shape.imgSrc = 'img/r_angle_live_3.jpg'
             }
             if (shape.imgSrc == 'img/r_angle_dead_4.jpg') {
-                shape.imgSrc = 'img/r_angle_live_4.jpg';
+                shape.imgSrc = 'img/r_angle_live_4.jpg'
             }
-            console.log(shape.imgSrc, shape.currentCell)
+            if (shape.imgSrc == 'img/lambda_dead.jpg') {
+                shape.imgSrc = 'img/lambda_live.jpg'
+            };
+            //console.log(shape.imgSrc, shape.currentCell)
         } 
     }
-
     //if check connection returns true then replace the dead tile with a live one. 
-    //Make sure to only loadImages at the very end of all the other functions or you get random dead tile bug!
     loadImages(shapes, drawShapes);
-    
 }
 
 function changeTileToDead() {
@@ -797,7 +886,11 @@ function changeTileToDead() {
             if (shape.imgSrc == 'img/r_angle_live_4.jpg') {
                 shape.imgSrc = 'img/r_angle_dead_4.jpg';
             }
-            console.log(shape.imgSrc, shape.currentCell)
+            if (shape.imgSrc == 'img/lambda_live.jpg') {
+                shape.imgSrc = 'img/lambda_dead.jpg'
+            };
+
+            //console.log(shape.imgSrc, shape.currentCell)
         }
     }
     //if check connection returns false then replace the dead tile with a dead one. 
