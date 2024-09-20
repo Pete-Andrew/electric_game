@@ -72,7 +72,9 @@ let tileType = {
     rAngle2: { top: true, right: false, bottom: false, left: true },
     rAngle3: { top: true, right: true, bottom: false, left: false },
     rAngle4: { top: false, right: true, bottom: true, left: false },
-    lambda: {top: true, right: false, bottom: false, left: false  }
+    lambda: {top: true, right: false, bottom: false, left: false  },
+    straightVert: {top: true, right: false, bottom: true, left: false },
+    straightHrz: { top: false, right: true, bottom: false, left: true },
 }
 
 // cell types separates out all the various shapes to make them easier to manipulate. 
@@ -82,8 +84,10 @@ let tileName = {
     "R_Angle_2": { cellName: 'r_angle_2', x: 400, y: 400, width: 200, height: 200, color: 'black', imgSrc: 'img/r_angle_dead_2.jpg', type: tileType.rAngle2, currentCell: 'C3', lastCellValue: '', canMove: true, rotation: 0 },
     "R_Angle_3": { cellName: 'r_angle_3', x: 0, y: 0, width: 200, height: 200, color: 'blue', imgSrc: 'img/r_angle_dead_3.jpg', type: tileType.rAngle3, currentCell: 'A1', lastCellValue: '', canMove: true, rotation: 0 },
     "R_Angle_4": { cellName: 'r_angle_4', x: 200, y: 200, width: 200, height: 200, color: 'green', imgSrc: 'img/r_angle_dead_4.jpg', type: tileType.rAngle4, currentCell: 'B2', lastCellValue: '', canMove: true, rotation: 0 },
-    "lambda" : { cellName: 'lambda', x: 800, y: 600, width: 200, height: 200, color: 'red', imgSrc: 'img/lambda_dead.jpg', type: tileType.lambda, currentCell: 'D5', lastCellValue: '', canMove: true, rotation: 0 },
-}
+    "Lambda" : { cellName: 'lambda', x: 800, y: 600, width: 200, height: 200, color: 'red', imgSrc: 'img/lambda_dead.jpg', type: tileType.lambda, currentCell: 'D5', lastCellValue: '', canMove: true, rotation: 0 },
+    "Straight_Vert" : { cellName: 'straight_vert', x: 200, y: 600, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_vert_dead.jpg', type: tileType.straightVert, currentCell: 'D2', lastCellValue: '', canMove: true, rotation: 0 },
+    "Straight_Hrz" : { cellName: 'straight_hrz', x: 600, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_hrz_dead.jpg', type: tileType.straightHrz, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },
+    }
 
 //JavaScript callback is a function which is to be executed after another function has finished execution
 //A callback is a function passed as an argument to another function. This technique allows a function to call another function
@@ -113,7 +117,9 @@ shapes.push(tileName.R_Angle_1);
 shapes.push(tileName.R_Angle_2);
 shapes.push(tileName.R_Angle_3);
 shapes.push(tileName.R_Angle_4);
-shapes.push(tileName.lambda);
+shapes.push(tileName.Lambda);
+shapes.push(tileName.Straight_Vert);
+shapes.push(tileName.Straight_Hrz);
 // Additional tiles: Straights, T's, Diodes, blank blocks, bridges, switches, end bulb
 
 //need to understand this better..... 
@@ -418,7 +424,6 @@ function replaceTile(shape) {
 
     if (shape.cellName == 'r_angle_1') {
         shapes.push({ cellName: 'r_angle_2', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/r_angle_dead_2.jpg', type: tileType.rAngle2, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
-
     }
     if (shape.cellName == 'r_angle_2') {
         shapes.push({ cellName: 'r_angle_3', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/r_angle_dead_3.jpg', type: tileType.rAngle3, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
@@ -431,6 +436,13 @@ function replaceTile(shape) {
     if (shape.cellName == 'r_angle_4') {
         shapes.push({ cellName: 'r_angle_1', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/r_angle_dead_1.jpg', type: tileType.rAngle1, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
 
+    }
+    if (shape.cellName == 'straight_vert') {
+        shapes.push({ cellName: 'straight_hrz', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/straight_hrz_dead.jpg', type: tileType.straightHrz, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+
+    }
+    if (shape.cellName == 'straight_hrz') {
+        shapes.push({ cellName: 'straight_vert', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/straight_vert_dead.jpg', type: tileType.straightVert, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
     }
 
     checkForStartingCell(chainArr);
@@ -606,7 +618,8 @@ async function drawShapes () {
             //makes the code far more stable
             //console.log(`imgScr for: ${shape.cellName}, in cell ${shape.currentCell}, after drawShapes has been called =`, shape.imgSrc);
             //console.log("imgSrc values for all shapes:")
-            console.log(shape.imgSrc, "in cell", shape.currentCell ) //shows the imgSrc values of all the cells once the draw image func has been called
+            
+            //console.log(shape.imgSrc, "in cell", shape.currentCell ) //shows the imgSrc values of all the cells once the draw image func has been called
             //If the imgSrc is showing the tile as "live" in the console log, but it is being drawn as "dead," this suggests that the issue is likely related to how the image is being rendered on the canvas, rather than how it's being loaded or stored in the tile object.
 
             //THE CODE IS FINE THE RENDERING IS NOT!! OR CONTEXT RESTORE COULD BE REVERTING THE SHAPE?? ONLY SEEMS TO HAPPEN WHEN SHAPES ARE ROTATED
@@ -857,7 +870,13 @@ function changeTileToLive() {
             }
             if (shape.imgSrc == 'img/lambda_dead.jpg') {
                 shape.imgSrc = 'img/lambda_live.jpg'
-            };
+            }
+            if (shape.imgSrc == 'img/straight_vert_dead.jpg') {
+                shape.imgSrc = 'img/straight_vert_live.jpg'
+            }
+            if (shape.imgSrc == 'img/straight_hrz_dead.jpg') {
+                shape.imgSrc = 'img/straight_hrz_live.jpg'
+            }
             //console.log(shape.imgSrc, shape.currentCell)
         } 
     }
@@ -888,7 +907,13 @@ function changeTileToDead() {
             }
             if (shape.imgSrc == 'img/lambda_live.jpg') {
                 shape.imgSrc = 'img/lambda_dead.jpg'
-            };
+            }
+            if (shape.imgSrc == 'img/straight_vert_live.jpg') {
+                shape.imgSrc = 'img/straight_vert_dead.jpg'
+            }
+            if (shape.imgSrc == 'img/straight_hrz_live.jpg') {
+                shape.imgSrc = 'img/straight_hrz_dead.jpg'
+            }
 
             //console.log(shape.imgSrc, shape.currentCell)
         }
