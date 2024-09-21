@@ -66,7 +66,7 @@ let cellCoords = {
 let shapes = [];
 
 let tileType = {
-    straight: { top: true, right: false, bottom: true, left: false },
+    
     power: { top: false, right: false, bottom: true, left: false },
     rAngle1: { top: false, right: false, bottom: true, left: true },
     rAngle2: { top: true, right: false, bottom: false, left: true },
@@ -75,7 +75,11 @@ let tileType = {
     lambda: {top: true, right: false, bottom: false, left: false  },
     straightVert: {top: true, right: false, bottom: true, left: false },
     straightHrz: { top: false, right: true, bottom: false, left: true },
+    led1: {top: true, right: false, bottom: true, left: false },
+    
+    
 }
+
 
 // cell types separates out all the various shapes to make them easier to manipulate. 
 let tileName = {
@@ -87,7 +91,11 @@ let tileName = {
     "Lambda" : { cellName: 'lambda', x: 800, y: 600, width: 200, height: 200, color: 'red', imgSrc: 'img/lambda_dead.jpg', type: tileType.lambda, currentCell: 'D5', lastCellValue: '', canMove: true, rotation: 0 },
     "Straight_Vert" : { cellName: 'straight_vert', x: 200, y: 600, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_vert_dead.jpg', type: tileType.straightVert, currentCell: 'D2', lastCellValue: '', canMove: true, rotation: 0 },
     "Straight_Hrz" : { cellName: 'straight_hrz', x: 600, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_hrz_dead.jpg', type: tileType.straightHrz, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },
-    }
+    "Led_1" : { cellName: 'led_1', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_1.jpg', type: tileType.led1, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
+    "Led_2" : { cellName: 'led_2', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_2.jpg', type: tileType.led1, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
+    "Led_3" : { cellName: 'led_3', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_3.jpg', type: tileType.led1, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
+    "Led_4" : { cellName: 'led_4', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_4.jpg', type: tileType.led1, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
+}
 
 //JavaScript callback is a function which is to be executed after another function has finished execution
 //A callback is a function passed as an argument to another function. This technique allows a function to call another function
@@ -120,6 +128,7 @@ shapes.push(tileName.R_Angle_4);
 shapes.push(tileName.Lambda);
 shapes.push(tileName.Straight_Vert);
 shapes.push(tileName.Straight_Hrz);
+shapes.push(tileName.Led_1);
 // Additional tiles: Straights, T's, Diodes, blank blocks, bridges, switches, end bulb
 
 //need to understand this better..... 
@@ -422,27 +431,30 @@ function replaceTile(shape) {
     //console.log(shape.currentCell);
     //BUG: shapes.push is ugly. Need to replace object with a variable that holds it's value. This doesn't seem to work. Not sure why...?
 
+    //R angle tiles
     if (shape.cellName == 'r_angle_1') {
         shapes.push({ cellName: 'r_angle_2', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/r_angle_dead_2.jpg', type: tileType.rAngle2, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
     }
     if (shape.cellName == 'r_angle_2') {
         shapes.push({ cellName: 'r_angle_3', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/r_angle_dead_3.jpg', type: tileType.rAngle3, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
-
     }
     if (shape.cellName == 'r_angle_3') {
         shapes.push({ cellName: 'r_angle_4', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/r_angle_dead_4.jpg', type: tileType.rAngle4, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
-
     }
     if (shape.cellName == 'r_angle_4') {
         shapes.push({ cellName: 'r_angle_1', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/r_angle_dead_1.jpg', type: tileType.rAngle1, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
-
     }
+    //Straight tiles
     if (shape.cellName == 'straight_vert') {
         shapes.push({ cellName: 'straight_hrz', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/straight_hrz_dead.jpg', type: tileType.straightHrz, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
 
     }
     if (shape.cellName == 'straight_hrz') {
         shapes.push({ cellName: 'straight_vert', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/straight_vert_dead.jpg', type: tileType.straightVert, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+    }
+    //Led tiles
+    if (shape.cellName == 'led_1') {
+        shapes.push({ cellName: 'r_angle_2', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/r_angle_dead_2.jpg', type: tileType.rAngle2, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
     }
 
     checkForStartingCell(chainArr);
@@ -877,6 +889,9 @@ function changeTileToLive() {
             if (shape.imgSrc == 'img/straight_hrz_dead.jpg') {
                 shape.imgSrc = 'img/straight_hrz_live.jpg'
             }
+            if (shape.imgSrc == 'img/led_dead_1.jpg') {
+                shape.imgSrc = 'img/led_live_1.jpg'
+            }
             //console.log(shape.imgSrc, shape.currentCell)
         } 
     }
@@ -914,7 +929,9 @@ function changeTileToDead() {
             if (shape.imgSrc == 'img/straight_hrz_live.jpg') {
                 shape.imgSrc = 'img/straight_hrz_dead.jpg'
             }
-
+            if (shape.imgSrc == 'img/led_live_1.jpg') {
+                shape.imgSrc = 'img/led_dead_1.jpg'
+            }
             //console.log(shape.imgSrc, shape.currentCell)
         }
     }
