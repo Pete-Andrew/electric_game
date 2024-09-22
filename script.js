@@ -76,6 +76,9 @@ let tileType = {
     straightVert: {top: true, right: false, bottom: true, left: false },
     straightHrz: { top: false, right: true, bottom: false, left: true },
     led1: {top: true, right: false, bottom: true, left: false },
+    led2: {top: false, right: true, bottom: false, left: true },
+    led3: {top: true, right: false, bottom: true, left: false },
+    led4: {top: false, right: true, bottom: false, left: true },
     
     
 }
@@ -422,6 +425,8 @@ function replaceTile(shape) {
     console.log("Replace tile func has been called");
     console.log(shape)
 
+    
+    
     let currentCellCoord = shape.currentCell; // gives the cell co-ordinate value e.g. A2
     console.log("current cell Co-ord", currentCellCoord);
 
@@ -454,7 +459,16 @@ function replaceTile(shape) {
     }
     //Led tiles
     if (shape.cellName == 'led_1') {
-        shapes.push({ cellName: 'r_angle_2', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/r_angle_dead_2.jpg', type: tileType.rAngle2, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+        shapes.push({ cellName: 'led_2', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/led_dead_2.jpg', type: tileType.led2, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+    }
+    if (shape.cellName == 'led_2') {
+        shapes.push({ cellName: 'led_3', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/led_dead_3.jpg', type: tileType.led3, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+    }
+    if (shape.cellName == 'led_3') {
+        shapes.push({ cellName: 'led_4', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/led_dead_4.jpg', type: tileType.led4, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+    }
+    if (shape.cellName == 'led_4') {
+        shapes.push({ cellName: 'led_1', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/led_dead_1.jpg', type: tileType.led1, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
     }
 
     checkForStartingCell(chainArr);
@@ -575,6 +589,11 @@ canvas.onmousemove = mouseMove;
 
 
 async function drawShapes () {
+    
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
+    drawHorizGrid();
+    drawVertGrid();
+
     for (let shape of shapes) {
 
         //test before image is drawn to see if the correct values for imgSrc have arrived at the drawShapes function
@@ -593,9 +612,7 @@ async function drawShapes () {
         }
         // Proceed with drawing after the image is ready
     }
-    context.clearRect(0, 0, canvasWidth, canvasHeight);
-    drawHorizGrid();
-    drawVertGrid();
+
 
     for (let shape of shapes) {
 
@@ -892,6 +909,15 @@ function changeTileToLive() {
             if (shape.imgSrc == 'img/led_dead_1.jpg') {
                 shape.imgSrc = 'img/led_live_1.jpg'
             }
+            if (shape.imgSrc == 'img/led_dead_2.jpg') {
+                shape.imgSrc = 'img/led_live_2.jpg'
+            }
+            if (shape.imgSrc == 'img/led_dead_3.jpg') {
+                shape.imgSrc = 'img/led_live_3.jpg'
+            }
+            if (shape.imgSrc == 'img/led_dead_4.jpg') {
+                shape.imgSrc = 'img/led_live_4.jpg'
+            }
             //console.log(shape.imgSrc, shape.currentCell)
         } 
     }
@@ -931,6 +957,15 @@ function changeTileToDead() {
             }
             if (shape.imgSrc == 'img/led_live_1.jpg') {
                 shape.imgSrc = 'img/led_dead_1.jpg'
+            }
+            if (shape.imgSrc == 'img/led_live_2.jpg') {
+                shape.imgSrc = 'img/led_dead_2.jpg'
+            }
+            if (shape.imgSrc == 'img/led_live_3.jpg') {
+                shape.imgSrc = 'img/led_dead_3.jpg'
+            }
+            if (shape.imgSrc == 'img/led_live_4.jpg') {
+                shape.imgSrc = 'img/led_dead_4.jpg'
             }
             //console.log(shape.imgSrc, shape.currentCell)
         }
