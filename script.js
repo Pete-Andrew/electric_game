@@ -79,8 +79,10 @@ let tileType = {
     led2: {top: false, right: true, bottom: false, left: true },
     led3: {top: true, right: false, bottom: true, left: false },
     led4: {top: false, right: true, bottom: false, left: true },
-    
-    
+    tSection1: {top: true, right: false, bottom: true, left: true },
+    tSection2: {top: true, right: true, bottom: false, left: true },
+    tSection3: {top: true, right: true, bottom: true, left: false },
+    tSection4: {top: false, right: true, bottom: true, left: true },
 }
 
 
@@ -98,6 +100,10 @@ let tileName = {
     "Led_2" : { cellName: 'led_2', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_2.jpg', type: tileType.led1, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
     "Led_3" : { cellName: 'led_3', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_3.jpg', type: tileType.led1, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
     "Led_4" : { cellName: 'led_4', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_4.jpg', type: tileType.led1, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
+    "T_Section_1" : {cellName: 't_section_1', x: 200, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_1.jpg', type: tileType.tSection1, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },
+    "T_Section_2" : {cellName: 't_section_2', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_2.jpg', type: tileType.tSection2, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },
+    "T_Section_3" : {cellName: 't_section_3', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_3.jpg', type: tileType.tSection3, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },
+    "T_Section_4" : {cellName: 't_section_4', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_4.jpg', type: tileType.tSection4, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },
 }
 
 //JavaScript callback is a function which is to be executed after another function has finished execution
@@ -132,6 +138,8 @@ shapes.push(tileName.Lambda);
 shapes.push(tileName.Straight_Vert);
 shapes.push(tileName.Straight_Hrz);
 shapes.push(tileName.Led_1);
+shapes.push(tileName.T_Section_2);
+shapes.push(tileName.T_Section_1);
 // Additional tiles: Straights, T's, Diodes, blank blocks, bridges, switches, end bulb
 
 //need to understand this better..... 
@@ -424,8 +432,7 @@ function isMouseInShape(x, y, shape) {
 function replaceTile(shape) {
     console.log("Replace tile func has been called");
     console.log(shape)
-
-    
+   
     
     let currentCellCoord = shape.currentCell; // gives the cell co-ordinate value e.g. A2
     console.log("current cell Co-ord", currentCellCoord);
@@ -469,6 +476,19 @@ function replaceTile(shape) {
     }
     if (shape.cellName == 'led_4') {
         shapes.push({ cellName: 'led_1', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/led_dead_1.jpg', type: tileType.led1, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+    }
+    // T shapes
+    if (shape.cellName == 't_section_1') {
+        shapes.push({ cellName: 't_section_2', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/T_section_dead_2.jpg', type: tileType.tSection2, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+    }
+    if (shape.cellName == 't_section_2') {
+        shapes.push({ cellName: 't_section_3', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/T_section_dead_3.jpg', type: tileType.tSection3, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+    }
+    if (shape.cellName == 't_section_3') {
+        shapes.push({ cellName: 't_section_4', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/T_section_dead_4.jpg', type: tileType.tSection4, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+    }
+    if (shape.cellName == 't_section_4') {
+        shapes.push({ cellName: 't_section_1', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/T_section_dead_1.jpg', type: tileType.tSection1, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
     }
 
     checkForStartingCell(chainArr);
@@ -918,6 +938,18 @@ function changeTileToLive() {
             if (shape.imgSrc == 'img/led_dead_4.jpg') {
                 shape.imgSrc = 'img/led_live_4.jpg'
             }
+            if (shape.imgSrc == 'img/T_section_dead_1.jpg') {
+                shape.imgSrc = 'img/T_section_live_1.jpg'
+            }
+            if (shape.imgSrc == 'img/T_section_dead_2.jpg') {
+                shape.imgSrc = 'img/T_section_live_2.jpg'
+            }
+            if (shape.imgSrc == 'img/T_section_dead_3.jpg') {
+                shape.imgSrc = 'img/T_section_live_3.jpg'
+            }
+            if (shape.imgSrc == 'img/T_section_dead_4.jpg') {
+                shape.imgSrc = 'img/T_section_live_4.jpg'
+            }
             //console.log(shape.imgSrc, shape.currentCell)
         } 
     }
@@ -966,6 +998,18 @@ function changeTileToDead() {
             }
             if (shape.imgSrc == 'img/led_live_4.jpg') {
                 shape.imgSrc = 'img/led_dead_4.jpg'
+            }
+            if (shape.imgSrc == 'img/T_section_live_1.jpg') {
+                shape.imgSrc = 'img/T_section_dead_1.jpg'
+            }
+            if (shape.imgSrc == 'img/T_section_live_2.jpg') {
+                shape.imgSrc = 'img/T_section_dead_2.jpg'
+            }
+            if (shape.imgSrc == 'img/T_section_live_3.jpg') {
+                shape.imgSrc = 'img/T_section_dead_3.jpg'
+            }
+            if (shape.imgSrc == 'img/T_section_live_4.jpg') {
+                shape.imgSrc = 'img/T_section_dead_4.jpg'
             }
             //console.log(shape.imgSrc, shape.currentCell)
         }
