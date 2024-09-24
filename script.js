@@ -72,7 +72,7 @@ let tileType = {
     rAngle2: { top: true, right: false, bottom: false, left: true },
     rAngle3: { top: true, right: true, bottom: false, left: false },
     rAngle4: { top: false, right: true, bottom: true, left: false },
-    lambda: {top: true, right: false, bottom: false, left: false  },
+    lambda: {top: true, right: true, bottom: false, left: true  },
     straightVert: {top: true, right: false, bottom: true, left: false },
     straightHrz: { top: false, right: true, bottom: false, left: true },
     led1: {top: true, right: false, bottom: true, left: false },
@@ -93,18 +93,27 @@ let tileName = {
     "R_Angle_2": { cellName: 'r_angle_2', x: 400, y: 400, width: 200, height: 200, color: 'black', imgSrc: 'img/r_angle_dead_2.jpg', type: tileType.rAngle2, currentCell: 'C3', lastCellValue: '', canMove: true, rotation: 0 },
     "R_Angle_3": { cellName: 'r_angle_3', x: 0, y: 0, width: 200, height: 200, color: 'blue', imgSrc: 'img/r_angle_dead_3.jpg', type: tileType.rAngle3, currentCell: 'A1', lastCellValue: '', canMove: true, rotation: 0 },
     "R_Angle_4": { cellName: 'r_angle_4', x: 200, y: 200, width: 200, height: 200, color: 'green', imgSrc: 'img/r_angle_dead_4.jpg', type: tileType.rAngle4, currentCell: 'B2', lastCellValue: '', canMove: true, rotation: 0 },
-    "Lambda" : { cellName: 'lambda', x: 800, y: 600, width: 200, height: 200, color: 'red', imgSrc: 'img/lambda_dead.jpg', type: tileType.lambda, currentCell: 'D5', lastCellValue: '', canMove: true, rotation: 0 },
+    "Lambda" : { cellName: 'lambda', x: 400, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/lambda_dead.jpg', type: tileType.lambda, currentCell: 'E3', lastCellValue: '', canMove: true, rotation: 0 },
     "Straight_Vert" : { cellName: 'straight_vert', x: 200, y: 600, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_vert_dead.jpg', type: tileType.straightVert, currentCell: 'D2', lastCellValue: '', canMove: true, rotation: 0 },
     "Straight_Hrz" : { cellName: 'straight_hrz', x: 600, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_hrz_dead.jpg', type: tileType.straightHrz, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },
-    "Led_1" : { cellName: 'led_1', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_1.jpg', type: tileType.led1, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
+    "Led_1" : { cellName: 'led_1', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_1.jpg', type: tileType.led1, currentCell: 'E5', lastCellValue: '', canMove: true, rotation: 0 },     
     "Led_2" : { cellName: 'led_2', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_2.jpg', type: tileType.led1, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
     "Led_3" : { cellName: 'led_3', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_3.jpg', type: tileType.led1, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
     "Led_4" : { cellName: 'led_4', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_4.jpg', type: tileType.led1, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
-    "T_Section_1" : {cellName: 't_section_1', x: 200, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_1.jpg', type: tileType.tSection1, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },
-    "T_Section_2" : {cellName: 't_section_2', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_2.jpg', type: tileType.tSection2, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },
+    "T_Section_1" : {cellName: 't_section_1', x: 200, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_1.jpg', type: tileType.tSection1, currentCell: 'E2', lastCellValue: '', canMove: true, rotation: 0 },
+    "T_Section_2" : {cellName: 't_section_2', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_2.jpg', type: tileType.tSection2, currentCell: 'E1', lastCellValue: '', canMove: true, rotation: 0 },
     "T_Section_3" : {cellName: 't_section_3', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_3.jpg', type: tileType.tSection3, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },
     "T_Section_4" : {cellName: 't_section_4', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_4.jpg', type: tileType.tSection4, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },
 }
+
+
+function ledStatus() {
+    //led needs to be one directional
+
+}
+
+//needs a recursive function to find the shortest possible route between start and end. 
+//add a given resistance value to each cell? 
 
 //JavaScript callback is a function which is to be executed after another function has finished execution
 //A callback is a function passed as an argument to another function. This technique allows a function to call another function
@@ -140,7 +149,8 @@ shapes.push(tileName.Straight_Hrz);
 shapes.push(tileName.Led_1);
 shapes.push(tileName.T_Section_2);
 shapes.push(tileName.T_Section_1);
-// Additional tiles: Straights, T's, Diodes, blank blocks, bridges, switches, end bulb
+
+// Additional tiles: Diodes, bridges, switches
 
 //need to understand this better..... 
 
@@ -877,7 +887,8 @@ function checkForStartingCell(chainArr) {
 
     console.log("chain array called in the 'checkForStartingCell function", chainArr);
 
-    if (chainArr.includes('A3')) {
+    //checks to see if the circuit has a beginning and an end. 
+    if (chainArr.includes('A3' && 'E3')) {
         console.log("Valid circuit");
         //console.log("chainArr =", chainArr);
         changeTileToLive();
