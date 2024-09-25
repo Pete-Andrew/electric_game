@@ -75,11 +75,11 @@ let tileType = {
     lambda: {top: true, right: true, bottom: false, left: true  },
     straightVert: {top: true, right: false, bottom: true, left: false },
     straightHrz: { top: false, right: true, bottom: false, left: true },
-    led1: {top: true, right: false, bottom: true, left: false },
-    led2: {top: false, right: true, bottom: false, left: true },
-    led3: {top: true, right: false, bottom: true, left: false },
-    led4: {top: false, right: true, bottom: false, left: true },
-    tSection1: {top: true, right: false, bottom: true, left: true },
+    led1: {top: true, right: false, bottom: true, left: false , liveEnd: 'top' },
+    led2: {top: false, right: true, bottom: false, left: true , liveEnd: 'right' },
+    led3: {top: true, right: false, bottom: true, left: false , liveEnd: 'bottom'},
+    led4: {top: false, right: true, bottom: false, left: true , liveEnd: 'left'},
+    tSection1: {top: true, right: false, bottom: true, left: true},
     tSection2: {top: true, right: true, bottom: false, left: true },
     tSection3: {top: true, right: true, bottom: true, left: false },
     tSection4: {top: false, right: true, bottom: true, left: true },
@@ -157,7 +157,7 @@ shapes.push(tileName.T_Section_1);
 //BUG! Occasional dead tile despite the correct imgSrc being passed into this function. Infrequent issue. 
 
 function loadImages(shapes, drawShapesCallback) { 
-    console.log("load images called");
+    //console.log("load images called");
     
     let loadedCount = 0; // Counter to track how many images have loaded
     
@@ -323,12 +323,12 @@ function checkCell() {
     // compares it against all existing tiles so you get a multiple console log
     for (let shape of shapes) {
         if (shape.currentCell == cellRef) {
-            console.log("overlapping cell!");
+            //console.log("overlapping cell!");
 
             //set the tiles co-ordinates to last valid cell
             // sets the currentCell property of the tile to lastCellVal
             shapes[currentShapesIndex].currentCell = lastCellVal;
-            console.log("Moving tile to last valid cell:", currentShape.currentCell);
+            //console.log("Moving tile to last valid cell:", currentShape.currentCell);
             //Need to pass in the values of the last valid cell NOT cell ref
             currentShape.x = cellCoords[lastCellVal].x
             currentShape.y = cellCoords[lastCellVal].y;
@@ -440,12 +440,11 @@ function isMouseInShape(x, y, shape) {
 
 //this is called when shapes are rotated
 function replaceTile(shape) {
-    console.log("Replace tile func has been called");
-    console.log(shape)
-   
-    
+    //console.log("Replace tile func has been called");
+    //console.log(shape)
+
     let currentCellCoord = shape.currentCell; // gives the cell co-ordinate value e.g. A2
-    console.log("current cell Co-ord", currentCellCoord);
+    //console.log("current cell Co-ord", currentCellCoord);
 
     // Access dynamic cell coordinates using bracket notation. Takes whatever value is passed into the [] and opens the reference in the cellCoord object. 
     const cellCoord = cellCoords[currentCellCoord];
@@ -522,15 +521,15 @@ function mouseDown(e) {
 
                 currentShapesIndex = i; // this sets the current shapes index to be the same as the cell clicked on. 
                 // Rotate the shape 90 degrees
-                console.log("shape rotate button clicked")
+                //console.log("shape rotate button clicked")
                 
                 chainArr = [];
-                console.log("Chain Array cleared")
+                //console.log("Chain Array cleared")
 
-                console.log("Current Shape", shape);
-                console.log("current shapes index", currentShapesIndex); //if cells are not moved it does not update this value. Reads null on start up              
-                console.log("shapes array", shapes);
-                console.log("rotate button has been clicked!")
+                //console.log("Current Shape", shape);
+                //console.log("current shapes index", currentShapesIndex); //if cells are not moved it does not update this value. Reads null on start up              
+                //console.log("shapes array", shapes);
+                //console.log("rotate button has been clicked!")
 
                 //splice removes the tile from the array
                 shapes.splice(currentShapesIndex, 1);  // splice takes 2 arguments the index of the element you wish to remove and the index you wish to remove up to.
@@ -571,7 +570,7 @@ function mouseUp(e) {
         isDragging = false;
 
         chainArr = []; //clears the chainArr array so that the array is only filled with current values
-        console.log("Chain array cleared");
+        //console.log("Chain array cleared");
     }
 }
 
@@ -628,7 +627,7 @@ async function drawShapes () {
 
         //test before image is drawn to see if the correct values for imgSrc have arrived at the drawShapes function
         if (!isDragging && rotateClicked == true) {
-        console.log(shape.imgSrc, "in cell", shape.currentCell ) 
+        //console.log(shape.imgSrc, "in cell", shape.currentCell ) 
         }
 
         if (shape.image) {
@@ -687,60 +686,6 @@ async function drawShapes () {
     }
     rotateClicked = false;
 };
-
-// let drawShapes = function(), this an alternative way of declaring this function. Stores the func as a variable.
-// Functions stored in variables do not need function names. They are always invoked (called) using the variable name. 
-
-// function drawShapes() {
-//     //console.log("Draw shapes has been called")
-//     //console.clear();
-//     context.clearRect(0, 0, canvasWidth, canvasHeight);
-//     drawHorizGrid();
-//     drawVertGrid();
-
-//     for (let shape of shapes) {
-
-//         context.save(); // Save the current state
-//         context.translate(shape.x + shape.width / 2, shape.y + shape.height / 2); // Move to the center of the shape
-//         context.translate(-shape.width / 2, -shape.height / 2); // Move back to the top left corner of the shape
-
-//         if (shape.image  && shape.image.complete) {
-
-//             //Draw the image
-//             if (!isDragging) {
-//                 //console.log(shape.image) //BUG this console log seems to fix the dead tile issue (mostly). BUT only when it is not commented out!  BUG!!!
-//                 //makes the code far more stable
-//             }
-//             //setTimeout(context.drawImage(shape.image, 0, 0, shape.width, shape.height), 150);  //using a set timeout here seems to make the code more stable?  
-//             context.drawImage(shape.image, 0, 0, shape.width, shape.height)
-//             //console.clear();
-//         } else {
-//             // Draw the shape with color (fallback)
-//             console.log(`Image not ready for tile ${shape.id}`);
-//             context.fillStyle = shape.color;
-//             context.fillRect(0, 0, shape.width, shape.height);
-//             console.log("Something has gone amiss")
-//         }
-
-//         //this section deals primarily with the rotate button:   
-//         context.restore(); // Restore the previous state, this keeps the dot when tiles are moved. 
-//         drawRotateButton();
-
-//         if (!isDragging && rotateClicked == true) {
-//             //console.log(shape.image) //BUG this console log seems to fix the dead tile issue (mostly). BUT only when it is not commented out!  BUG!!!
-//             //makes the code far more stable
-//             //console.log(`imgScr for: ${shape.cellName}, in cell ${shape.currentCell}, after drawShapes has been called =`, shape.imgSrc);
-//             //console.log("imgSrc values for all shapes:")
-//             console.log(shape.imgSrc, "in cell", shape.currentCell ) //shows the imgSrc values of all the cells once the draw image func has been called
-//             //If the imgSrc is showing the tile as "live" in the console log, but it is being drawn as "dead," this suggests that the issue is likely related to how the image is being rendered on the canvas, rather than how it's being loaded or stored in the tile object.
-
-//             //THE CODE IS FINE THE RENDERING IS NOT!!
-//         }
-        
-//     }
-//     rotateClicked = false;
-
-// }
 
 function drawRotateButton () { 
     //Separates out the draw button so it can also be invoked when the tile is clicked on but not moved from it's cell
@@ -831,14 +776,18 @@ function checkNeighbour(gridRef) {
     // Check each valid neighbouring cell for possible connections
     validCells.forEach(cell => {
         let matchingShape = shapes.find(shape => shape.currentCell === cell && !chainArr.includes(cell));
-
+    
         if (matchingShape) {
             // Check if the shapes can connect based on the connection logic
             if (canConnect(gridRef, cell)) {
                 // Add the cell to the chain array
                 chainArr.push(cell);
-                console.log(`Connecting to ${cell}`);
-                console.log("chain Array =", chainArr);
+               
+                //tiles get checked one at a time, B3 always gets pushed fist followed by A3 but after that the func moves one cell at a time
+
+                //console.log(`Connecting to ${cell}`);
+                if(chainArr.includes('E3')) 
+                    {console.log("chain Array =", chainArr);}
                 // Recursively check this cell's neighbours
                 checkNeighbour(cell);
             }
@@ -849,6 +798,7 @@ function checkNeighbour(gridRef) {
     // checks to see if A3 is included in the array
     checkForStartingCell(chainArr);
 }
+
 
 function canConnect(gridRef, neighbourCell) {
     // Determine the positions around the current cell
@@ -885,18 +835,18 @@ function canConnect(gridRef, neighbourCell) {
 //runs to see if the start tile exists in the array
 function checkForStartingCell(chainArr) {
 
-    console.log("chain array called in the 'checkForStartingCell function", chainArr);
+    //console.log("chain array called in the 'checkForStartingCell function", chainArr);
 
     //checks to see if the circuit has a beginning and an end. 
     if (chainArr.includes('A3' && 'E3')) {
-        console.log("Valid circuit");
+        //console.log("Valid circuit");
         //console.log("chainArr =", chainArr);
         changeTileToLive();
     }
 
     //if the chainArr does not include A3 then all of it will be dead
     if (!chainArr.includes('A3')) {
-        console.log("not a valid circuit")
+        //console.log("not a valid circuit")
         // console.log("valid circuit =", validCircuit);
         changeTileToDead();
         //If the chain array doesn't include A3 then mark the whole circuit as dead
@@ -969,9 +919,7 @@ function changeTileToLive() {
 }
 
 function changeTileToDead() {
-
-    console.log("ChangeTileToDead function being called")
-
+    //console.log("ChangeTileToDead function being called")
     for (let shape of shapes) {
         if (!chainArr.includes(shape.currentCell)) {
             //only apply this function to shapes NOT in the current array.
