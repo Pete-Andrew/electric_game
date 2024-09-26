@@ -106,15 +106,6 @@ let tileName = {
     "T_Section_4" : {cellName: 't_section_4', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_4.jpg', type: tileType.tSection4, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },
 }
 
-
-function ledStatus() {
-    //led needs to be one directional
-
-}
-
-//needs a recursive function to find the shortest possible route between start and end. 
-//add a given resistance value to each cell? 
-
 //JavaScript callback is a function which is to be executed after another function has finished execution
 //A callback is a function passed as an argument to another function. This technique allows a function to call another function
 //A callback function can run after another function has finished
@@ -154,7 +145,7 @@ shapes.push(tileName.T_Section_1);
 
 //need to understand this better..... 
 
-//BUG! Occasional dead tile despite the correct imgSrc being passed into this function. Infrequent issue. 
+//BUG! Occasional dead tile despite the correct imgSrc being passed into this function
 
 function loadImages(shapes, drawShapesCallback) { 
     //console.log("load images called");
@@ -225,7 +216,7 @@ function drawHorizGrid() {
 }
 drawHorizGrid();
 
-//for using an image rather than a js drawn grid NOT IN USE CURRENTLY
+//for using an image rather than a js drawn grid ----------- NOT IN USE CURRENTLY ----------------
 function backgroundCanvasImg() {
     base_image = new Image();
     base_image.src = 'img/fiveByFiveGrid.gif'
@@ -521,11 +512,9 @@ function mouseDown(e) {
 
                 currentShapesIndex = i; // this sets the current shapes index to be the same as the cell clicked on. 
                 // Rotate the shape 90 degrees
-                //console.log("shape rotate button clicked")
-                
+                //console.log("shape rotate button clicked")             
                 chainArr = [];
                 //console.log("Chain Array cleared")
-
                 //console.log("Current Shape", shape);
                 //console.log("current shapes index", currentShapesIndex); //if cells are not moved it does not update this value. Reads null on start up              
                 //console.log("shapes array", shapes);
@@ -698,8 +687,6 @@ function drawRotateButton () {
         }
     }
 
-
-
     //Load all shapes (with their relevant images) and then draw the shapes
     //Called here this initialises the map. 
     loadImages(shapes, drawShapes)
@@ -746,6 +733,15 @@ function getNextLetter(letter) {
     const precedingLetter = String.fromCharCode(precedingCharCode)
     return precedingLetter;
 }
+
+//What do I need to do! BUG!
+//need to check to see if the next tile in the array is an LED
+//If the LED is facing the correct direction in relation to the power source then illuminate.
+//if the nearest face is open, carry on - how would I check the value of the nearest face? 
+//OR check tile relative position, if current tile is above the next tile (e.g. A < B .... letter from currentCell value) AND the next tiles 'liveEnd' == top, mark live and carry on. 
+//Else, check other possibilities
+//Open side needs to be the one facing the power source
+//if not, return
 
 //checkNeighbour is called in the checkCell function
 function checkNeighbour(gridRef) {
