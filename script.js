@@ -97,9 +97,9 @@ let tileName = {
     "Straight_Vert" : { cellName: 'straight_vert', x: 200, y: 600, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_vert_dead.jpg', type: tileType.straightVert, currentCell: 'D2', lastCellValue: '', canMove: true, rotation: 0 },
     "Straight_Hrz" : { cellName: 'straight_hrz', x: 600, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_hrz_dead.jpg', type: tileType.straightHrz, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },
     "Led_1" : { cellName: 'led_1', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_1.jpg', type: tileType.led1, currentCell: 'E5', lastCellValue: '', canMove: true, rotation: 0 },     
-    "Led_2" : { cellName: 'led_2', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_2.jpg', type: tileType.led1, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
-    "Led_3" : { cellName: 'led_3', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_3.jpg', type: tileType.led1, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
-    "Led_4" : { cellName: 'led_4', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_4.jpg', type: tileType.led1, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
+    "Led_2" : { cellName: 'led_2', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_2.jpg', type: tileType.led2, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
+    "Led_3" : { cellName: 'led_3', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_3.jpg', type: tileType.led3, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
+    "Led_4" : { cellName: 'led_4', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_4.jpg', type: tileType.led4, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
     "T_Section_1" : {cellName: 't_section_1', x: 200, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_1.jpg', type: tileType.tSection1, currentCell: 'E2', lastCellValue: '', canMove: true, rotation: 0 },
     "T_Section_2" : {cellName: 't_section_2', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_2.jpg', type: tileType.tSection2, currentCell: 'E1', lastCellValue: '', canMove: true, rotation: 0 },
     "T_Section_3" : {cellName: 't_section_3', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_3.jpg', type: tileType.tSection3, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },
@@ -737,11 +737,23 @@ function getNextLetter(letter) {
 //What do I need to do! BUG!
 //need to check to see if the next tile in the array is an LED
 //If the LED is facing the correct direction in relation to the power source then illuminate.
-//if the nearest face is open, carry on - how would I check the value of the nearest face? 
-//OR check tile relative position, if current tile is above the next tile (e.g. A < B .... letter from currentCell value) AND the next tiles 'liveEnd' == top, mark live and carry on. 
+//check tile relative position, if current tile is above the next tile (e.g. A < B .... letter from currentCell value) AND the next tiles 'liveEnd' == top, mark live and carry on. 
+
 //Else, check other possibilities
 //Open side needs to be the one facing the power source
 //if not, return
+
+function isLED (cell) {
+    for (let shape of shapes) {
+        if (shape.currentCell == cell && (['led_1', 'led_2', 'led_3', 'led_4'].includes(shape.cellName)) ? shape.cellName : false) //ternary, before the ? is the condition, after the ? the options to follow depending on the condition
+            { // and shape.name includes Led... 
+            console.log(shape);
+            
+            //do a shape orientation test
+        }
+    }
+
+}
 
 //checkNeighbour is called in the checkCell function
 function checkNeighbour(gridRef) {
@@ -769,6 +781,9 @@ function checkNeighbour(gridRef) {
             parseInt(cell.charAt(1)) >= 1 && parseInt(cell.charAt(1)) <= 5;
     });
 
+    //need to log out the value of each tile
+    //find tile with currentCell == cell
+
     // Check each valid neighbouring cell for possible connections
     validCells.forEach(cell => {
         let matchingShape = shapes.find(shape => shape.currentCell === cell && !chainArr.includes(cell));
@@ -780,6 +795,8 @@ function checkNeighbour(gridRef) {
                 chainArr.push(cell);
                
                 //tiles get checked one at a time, B3 always gets pushed fist followed by A3 but after that the func moves one cell at a time
+
+                isLED(cell);
 
                 //console.log(`Connecting to ${cell}`);
                 if(chainArr.includes('E3')) 
