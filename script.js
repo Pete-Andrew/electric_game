@@ -747,9 +747,21 @@ function isLED (cell) {
     for (let shape of shapes) {
         if (shape.currentCell == cell && (['led_1', 'led_2', 'led_3', 'led_4'].includes(shape.cellName)) ? shape.cellName : false) //ternary, before the ? is the condition, after the ? the options to follow depending on the condition
             { // and shape.name includes Led... 
-            console.log(shape);
+            console.log("cell containing LED", shape.currentCell);
+
+            //this removes A3 from the Array
+            chainArr = chainArr.filter(item => item !== 'A3'); //item !== 'a3': This is the condition. It checks whether the current item in the array is not equal to 'a3'. If the item is not 'a3', the condition evaluates to true, and the item is kept in the new array. If the item is 'a3', the condition evaluates to false, and the item is excluded from the new array.
+
+            //adds A3 to the beginning of the array
+            chainArr.unshift('A3');
+
+            let previousChainArrVal = chainArr[chainArr.length-2];
+            console.log("Cell preceding LED",previousChainArrVal) //minor bug, A3 is always pushed to the chainArr as a the second value... 
+            //look for the previous tile in the chainArr
             
-            //do a shape orientation test
+            //if previous tile (e.g. tile which matches previousChainArrVal) is above AND led liveEnd == above, then carry on. Else exit the function, 
+            
+
         }
     }
 
@@ -798,18 +810,33 @@ function checkNeighbour(gridRef) {
 
                 isLED(cell);
 
+
                 //console.log(`Connecting to ${cell}`);
                 if(chainArr.includes('E3')) 
-                    {console.log("chain Array =", chainArr);}
+                    {
+                        //chainArr.unshift('A3');
+                        //chainArr.splice(1,2);
+                        console.log("chain Array =", chainArr);
+                        
+                    }
+                
+                
                 // Recursively check this cell's neighbours
                 checkNeighbour(cell);
             }
         }
     });
 
-    // Once the recursive function has been run to check the neighbours for each cell the checkForStartingCell func is run to see if A3 is present
-    // checks to see if A3 is included in the array
+    //BUG need to make sure A3 is at the start of the array. Currently it always appears second
+    
     checkForStartingCell(chainArr);
+
+    //chainArr.unshift('A3');
+    //chainArr.splice(1,2);
+
+    // Once the recursive function has been run to check the neighbours for each cell the checkForStartingCell func is run to see if A3 is present  
+    // checks to see if A3 is included in the array
+    
 }
 
 
