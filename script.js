@@ -897,7 +897,7 @@ function checkForStartingCell(chainArr) {
 
 function changeTileToLive() {
 
-    // iterates through shapes and checks and if the current shape matches it changes the image
+    // iterates through shapes and checks and if the current shape matches it changes the image 
     // if the values in the chainArr match a cell's currentCell property then run this function. 
 
     for (let shape of shapes) {
