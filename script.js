@@ -761,6 +761,7 @@ function isLED (cell) {
             
             //if previous tile (e.g. tile which matches previousChainArrVal) is above AND led liveEnd == above, then carry on. Else exit the function, 
             
+            //Runs into issues if there is a circuit with 2 branches that both end up at the end tile
 
         }
     }
