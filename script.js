@@ -85,30 +85,40 @@ let tileType = {
     tSection4: {top: false, right: true, bottom: true, left: true },
 }
 
-
 // cell types separates out all the various shapes to make them easier to manipulate. 
 let tileName = {
-    "Power": { cellName: 'power', x: 400, y: 0, width: 200, height: 200, color: 'green', imgSrc: 'img/power.jpg', type: tileType.power, currentCell: 'A3', lastCellValue: '', canMove: false, rotation: 0 },
-    "R_Angle_1": { cellName: 'r_angle_1', x: 400, y: 200, width: 200, height: 200, color: 'red', imgSrc: 'img/r_angle_dead_1.jpg', type: tileType.rAngle1, currentCell: 'B3', lastCellValue: '', canMove: true, rotation: 0 },
-    "R_Angle_2": { cellName: 'r_angle_2', x: 400, y: 400, width: 200, height: 200, color: 'black', imgSrc: 'img/r_angle_dead_2.jpg', type: tileType.rAngle2, currentCell: 'C3', lastCellValue: '', canMove: true, rotation: 0 },
-    "R_Angle_3": { cellName: 'r_angle_3', x: 0, y: 0, width: 200, height: 200, color: 'blue', imgSrc: 'img/r_angle_dead_3.jpg', type: tileType.rAngle3, currentCell: 'A1', lastCellValue: '', canMove: true, rotation: 0 },
-    "R_Angle_4": { cellName: 'r_angle_4', x: 200, y: 200, width: 200, height: 200, color: 'green', imgSrc: 'img/r_angle_dead_4.jpg', type: tileType.rAngle4, currentCell: 'B2', lastCellValue: '', canMove: true, rotation: 0 },
-    "Lambda" : { cellName: 'lambda', x: 400, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/lambda_dead.jpg', type: tileType.lambda, currentCell: 'E3', lastCellValue: '', canMove: true, rotation: 0 },
-    "Straight_Vert" : { cellName: 'straight_vert', x: 200, y: 600, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_vert_dead.jpg', type: tileType.straightVert, currentCell: 'D2', lastCellValue: '', canMove: true, rotation: 0 },
-    "Straight_Hrz" : { cellName: 'straight_hrz', x: 600, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_hrz_dead.jpg', type: tileType.straightHrz, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },
-    "Led_1" : { cellName: 'led_1', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_1.jpg', type: tileType.led1, currentCell: 'E5', lastCellValue: '', canMove: true, rotation: 0 },     
-    "Led_2" : { cellName: 'led_2', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_2.jpg', type: tileType.led2, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
-    "Led_3" : { cellName: 'led_3', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_3.jpg', type: tileType.led3, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
-    "Led_4" : { cellName: 'led_4', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_4.jpg', type: tileType.led4, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },     
-    "T_Section_1" : {cellName: 't_section_1', x: 200, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_1.jpg', type: tileType.tSection1, currentCell: 'E2', lastCellValue: '', canMove: true, rotation: 0 },
-    "T_Section_2" : {cellName: 't_section_2', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_2.jpg', type: tileType.tSection2, currentCell: 'E1', lastCellValue: '', canMove: true, rotation: 0 },
-    "T_Section_3" : {cellName: 't_section_3', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_3.jpg', type: tileType.tSection3, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },
-    "T_Section_4" : {cellName: 't_section_4', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_4.jpg', type: tileType.tSection4, currentCell: 'E4', lastCellValue: '', canMove: true, rotation: 0 },
+    "Power":        {cellName: 'power',     x: 400, y: 0, width: 200, height: 200,      color: 'green', imgSrc: 'img/power.jpg', type: tileType.power, currentCell: 'A3', lastCellValue: '', canMove: false, isConnected: true, connectionsNum: 0},
+    "R_Angle_1":    {cellName: 'r_angle_1', x: 400, y: 200, width: 200, height: 200,    color: 'red',   imgSrc: 'img/r_angle_dead_1.jpg', type: tileType.rAngle1, currentCell: 'B3', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
+    "R_Angle_2":    {cellName: 'r_angle_2', x: 400, y: 400, width: 200, height: 200,    color: 'black', imgSrc: 'img/r_angle_dead_2.jpg', type: tileType.rAngle2, currentCell: 'C3', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
+    "R_Angle_3":    {cellName: 'r_angle_3', x: 0, y: 0, width: 200, height: 200,        color: 'blue',  imgSrc: 'img/r_angle_dead_3.jpg', type: tileType.rAngle3, currentCell: 'A1', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
+    "R_Angle_4":    {cellName: 'r_angle_4', x: 200, y: 200, width: 200, height: 200,    color: 'green', imgSrc: 'img/r_angle_dead_4.jpg', type: tileType.rAngle4, currentCell: 'B2', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
+    "Lambda" :      {cellName: 'lambda',    x: 400, y: 800, width: 200, height: 200,    color: 'red',   imgSrc: 'img/lambda_dead.jpg', type: tileType.lambda, currentCell: 'E3', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
+    "Straight_Vert":{cellName: 'straight_vert', x: 200, y: 600, width: 200, height:200, color: 'red',   imgSrc: 'img/straight_vert_dead.jpg', type: tileType.straightVert, currentCell: 'D2', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
+    "Straight_Hrz": {cellName: 'straight_hrz',  x: 600, y: 800, width: 200, height:200, color: 'red',   imgSrc: 'img/straight_hrz_dead.jpg',  type: tileType.straightHrz, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
+    "Led_1" :       {cellName: 'led_1', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_1.jpg', type: tileType.led1, currentCell: 'E5', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },     
+    "Led_2" :       {cellName: 'led_2', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_2.jpg', type: tileType.led2, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },     
+    "Led_3" :       {cellName: 'led_3', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_3.jpg', type: tileType.led3, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },     
+    "Led_4" :       {cellName: 'led_4', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_4.jpg', type: tileType.led4, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },     
+    "T_Section_1" : {cellName: 't_section_1', x: 200, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_1.jpg', type: tileType.tSection1, currentCell: 'E2', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
+    "T_Section_2" : {cellName: 't_section_2', x: 0,   y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_2.jpg', type: tileType.tSection2, currentCell: 'E1', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
+    "T_Section_3" : {cellName: 't_section_3', x: 0,   y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_3.jpg', type: tileType.tSection3, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
+    "T_Section_4" : {cellName: 't_section_4', x: 0,   y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_4.jpg', type: tileType.tSection4, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
 }
+
+//ctrl+shift+L allows you to select all similar values, use with caution!
 
 //JavaScript callback is a function which is to be executed after another function has finished execution
 //A callback is a function passed as an argument to another function. This technique allows a function to call another function
 //A callback function can run after another function has finished
+
+//set a value for isLive if the cell is connected to a live one - each cell in the chainArr will be made live currently.
+//function that checks each tile to see how many connections it has.
+//needs to checkNeighbours > checkConnections > ForEach cell in the chainArr   
+//set a value for number of connections, per connection tileConnectionsNum++
+
+
+//if the tile has only 1 connection turn it dead --> repeat the test to see if any other tiles have only one connection. 
+//need to make this a recursive function that checks all tiles each time one is turned dead. > set exceptions > not start or end tile
 
 function loadImage(src, callback) {
     //creates a new HTML Image element/image object using the 'new Image()' constructor.
@@ -141,10 +151,11 @@ shapes.push(tileName.Led_1);
 shapes.push(tileName.T_Section_2);
 shapes.push(tileName.T_Section_1);
 
-// Additional tiles: Diodes, bridges, switches
+// Additional tiles: 2 Corner LEDs, 1 blank, 1 x, 1 switch, 1 bridge.
 
 //need to understand this better..... 
-
+//need to mark 
+//to kill off dead branches > find all tiles with only one live connection > mark dead 
 //BUG! Occasional dead tile despite the correct imgSrc being passed into this function
 
 function loadImages(shapes, drawShapesCallback) { 
@@ -734,6 +745,10 @@ function getNextLetter(letter) {
     return precedingLetter;
 }
 
+//how to test for dead branches
+//need to find cells with only one connection (as they are a dead end)
+//
+
 //What do I need to do! BUG!
 //need to check to see if the next tile in the array is an LED
 //If the LED is facing the correct direction in relation to the power source then illuminate.
@@ -756,7 +771,7 @@ function isLED (cell) {
             chainArr.unshift('A3');
 
             let previousChainArrVal = chainArr[chainArr.length-2];
-            console.log("Cell preceding LED",previousChainArrVal) //minor bug, A3 is always pushed to the chainArr as a the second value... 
+            console.log("Cell preceding LED",previousChainArrVal) //minor bug, A3 is always pushed to the chainArr as a the second value. Code has been built to stop this. 
             //look for the previous tile in the chainArr
             
             //if previous tile (e.g. tile which matches previousChainArrVal) is above AND led liveEnd == above, then carry on. Else exit the function, 
@@ -768,13 +783,12 @@ function isLED (cell) {
 
 }
 
+let neighbourShape
+let tileConnections = {}
+
 //checkNeighbour is called in the checkCell function
 function checkNeighbour(gridRef) {
-    //console.log("checkNeighbour func has been called for " + gridRef);
-    //logs the current cell taken from the objects properties. 
-    //console.log("current cell ref =", gridRef)
-    //console.log(currentShape.currentCell); // does the same thing as cell ref. 
-    // Get neighbouring cells
+    // Get neighboring cells
     let neighbours = {
         top: getPreviousLetter(gridRef.charAt(0)),
         bottom: getNextLetter(gridRef.charAt(0)),
@@ -782,6 +796,7 @@ function checkNeighbour(gridRef) {
         right: parseInt(gridRef.charAt(1)) + 1,
     };
 
+    // Turn the neighbor cell values into gridRefs
     let cellAbove = neighbours.top + gridRef.charAt(1);
     let cellBelow = neighbours.bottom + gridRef.charAt(1);
     let cellToLeft = gridRef.charAt(0) + neighbours.left;
@@ -794,57 +809,58 @@ function checkNeighbour(gridRef) {
             parseInt(cell.charAt(1)) >= 1 && parseInt(cell.charAt(1)) <= 5;
     });
 
-    //need to log out the value of each tile
-    //find tile with currentCell == cell
-
-    // Check each valid neighbouring cell for possible connections
     validCells.forEach(cell => {
         let matchingShape = shapes.find(shape => shape.currentCell === cell && !chainArr.includes(cell));
-    
+
         if (matchingShape) {
             // Check if the shapes can connect based on the connection logic
             if (canConnect(gridRef, cell)) {
-                // Add the cell to the chain array
+                // Add the connection to both tiles
+                if (!tileConnections[gridRef]) {
+                    tileConnections[gridRef] = []; // Initialize if not present
+                }
+                if (!tileConnections[cell]) {
+                    tileConnections[cell] = []; // Initialize if not present
+                }
+
+                // Add each other to their connection arrays if not already connected
+                if (!tileConnections[gridRef].includes(cell)) {
+                    tileConnections[gridRef].push(cell);
+                }
+                if (!tileConnections[cell].includes(gridRef)) {
+                    tileConnections[cell].push(gridRef);
+                }
+
+                //BUG need to clear the tileConnections Object each time a tile moves
+                
+                //console.log(`${gridRef} can connect to ${cell}`);
+                //console.log(`${cell} can connect to ${gridRef}`);
+                console.log("tileConnections obj", tileConnections);
+
                 chainArr.push(cell);
-               
-                //tiles get checked one at a time, B3 always gets pushed fist followed by A3 but after that the func moves one cell at a time
 
-                isLED(cell);
-
-
-                //console.log(`Connecting to ${cell}`);
-                if(chainArr.includes('E3')) 
-                    {
-                        //chainArr.unshift('A3');
-                        //chainArr.splice(1,2);
-                        console.log("chain Array =", chainArr);
-                        
-                    }
-                
-                
-                // Recursively check this cell's neighbours
+                // Recursively check this cell's neighbors
                 checkNeighbour(cell);
+            } else {
+                //console.log(`${gridRef} cannot connect to ${cell}`);
             }
+        } else {
+            //console.log(`${cell} is not a valid shape or already in chainArr`);
         }
     });
 
-    //BUG need to make sure A3 is at the start of the array. Currently it always appears second
-    
     checkForStartingCell(chainArr);
-
-    //chainArr.unshift('A3');
-    //chainArr.splice(1,2);
-
-    // Once the recursive function has been run to check the neighbours for each cell the checkForStartingCell func is run to see if A3 is present  
-    // checks to see if A3 is included in the array
-    
 }
 
 
+
+
+
 function canConnect(gridRef, neighbourCell) {
-    // Determine the positions around the current cell
-    let currentShape = shapes.find(shape => shape.currentCell === gridRef);
-    let neighbourShape = shapes.find(shape => shape.currentCell === neighbourCell);
+    //console.log("canConnect has run");
+
+    let currentShape = shapes.find(shape => shape.currentCell === gridRef); 
+    neighbourShape = shapes.find(shape => shape.currentCell === neighbourCell);
 
     if (!currentShape || !neighbourShape) {
         return false;
@@ -859,7 +875,7 @@ function canConnect(gridRef, neighbourCell) {
     if (neighbourRow === getPreviousLetter(gridRefRow) && neighbourCol === gridRefCol) {
         // Above
         return currentShape.type.top && neighbourShape.type.bottom;
-    } else if (neighbourRow === getNextLetter(gridRefRow) && neighbourCol === gridRefCol) {
+    } else if (neighbourRow === getNextLetter(gridRefRow) && neighbourCol === gridRefCol) { 
         // Below
         return currentShape.type.bottom && neighbourShape.type.top;
     } else if (neighbourRow === gridRefRow && neighbourCol === gridRefCol - 1) {
@@ -871,6 +887,7 @@ function canConnect(gridRef, neighbourCell) {
     }
     return false;
 }
+
 
 //runs once the recursive check neighbour function has run. 
 //runs to see if the start tile exists in the array
