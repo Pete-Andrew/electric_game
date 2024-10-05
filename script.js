@@ -25,7 +25,8 @@ let startY;
 //holds values that apply when the page is scaled (?)
 let offsetX;
 let offsetY;
-
+let neighbourShape
+let tileConnections = {}
 let zoneStartX;
 let zoneStartY;
 
@@ -520,7 +521,7 @@ function mouseDown(e) {
             if (isMouseInRotateButton(startX, startY, shape)) {
                 //console.clear();
                 rotateClicked = true;
-
+                tileConnections = {} //clears the tileConnections object so that it records connected tiles from a clean state (also cleared in the rotate func)     
                 currentShapesIndex = i; // this sets the current shapes index to be the same as the cell clicked on. 
                 // Rotate the shape 90 degrees
                 //console.log("shape rotate button clicked")             
@@ -587,6 +588,9 @@ function mouseMove(e) {
     if (!isDragging) {
         return;
     } else {
+
+        tileConnections = {} //clears the tileConnections object so that it records connected tiles from a clean state (also cleared in the rotate func)     
+
         // console.log("move with dragging");
         e.preventDefault();
         let mouseX = parseInt(e.clientX - offsetX);
@@ -783,8 +787,6 @@ function isLED (cell) {
 
 }
 
-let neighbourShape
-let tileConnections = {}
 
 //checkNeighbour is called in the checkCell function
 function checkNeighbour(gridRef) {
@@ -832,7 +834,7 @@ function checkNeighbour(gridRef) {
                 }
 
                 //BUG need to clear the tileConnections Object each time a tile moves
-                
+
                 //console.log(`${gridRef} can connect to ${cell}`);
                 //console.log(`${cell} can connect to ${gridRef}`);
                 console.log("tileConnections obj", tileConnections);
@@ -909,6 +911,7 @@ function checkForStartingCell(chainArr) {
         changeTileToDead();
         //If the chain array doesn't include A3 then mark the whole circuit as dead
         chainArr = [];
+        
     }
 }
 
