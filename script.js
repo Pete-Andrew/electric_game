@@ -545,8 +545,7 @@ function mouseDown(e) {
                 return;
             }
         }
-    }
-    
+    }   
 }
 
 // checks to see if the cursor is on the mouse rotate button
@@ -650,11 +649,16 @@ async function drawShapes () {
                 }
             });
         }
+        //*********************************************************************************** */
+        //here sits the golden console log. Killer of bugs. Defeater of asynchronous nonsense. Doesn't work 100% of the time but VASTLY improves functionality. 
         if (!isDragging) {
-        console.log("shape.image for each tile", shape.image); 
+
+        //console.log("shape.image for each tile", shape.image); //<< here it is!
+        
         } 
         //console.log here forces the update but you end up with thousands of console.logs, almost forces the browser to acknowledge the tile imgSrc's
         //Proceed with drawing after the image is ready
+        //*********************************************************************************** */
     }
 
     for (let shape of shapes) {
