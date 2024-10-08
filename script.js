@@ -26,9 +26,17 @@ let startY;
 let offsetX;
 let offsetY;
 let neighbourShape
+//holds shapes as an array
+let shapes = [];
+//makes an object that holds the tiles and associated connections per tile.
 let tileConnections = {}
 let zoneStartX;
 let zoneStartY;
+let isDragging = false;
+//sets a tile type for looking at neighbouring tiles
+let currentShapesIndex;
+// x and y declare where in the canvas the shapes are going to be drawn
+//shapes.push({ x: 140, y: 20, width: 40, height: 40, color: 'green', shapeIndex: 0}); //shape to hold the rotate button
 
 let gridRef;
 
@@ -62,12 +70,8 @@ let cellCoords = {
     "E5": { x: 800, y: 800 },
 };
 
-
-//holds shapes as an array
-let shapes = [];
-
+//tile type gives the possible connections of each tile
 let tileType = {
-    
     power: { top: false, right: false, bottom: true, left: false },
     rAngle1: { top: false, right: false, bottom: true, left: true },
     rAngle2: { top: true, right: false, bottom: false, left: true },
@@ -86,6 +90,7 @@ let tileType = {
     tSection4: {top: false, right: true, bottom: true, left: true },
 }
 
+// Additional tiles: 2 Corner LEDs, 1 blank, 1 x, 1 switch, 1 bridge.
 // cell types separates out all the various shapes to make them easier to manipulate. 
 let tileName = {
     "Power":        {cellName: 'power',     x: 400, y: 0, width: 200, height: 200,      color: 'green', imgSrc: 'img/power.jpg', type: tileType.power, currentCell: 'A3', lastCellValue: '', canMove: false, isConnected: true, connectionsNum: 0},
@@ -106,39 +111,6 @@ let tileName = {
     "T_Section_4" : {cellName: 't_section_4', x: 0,   y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_4.jpg', type: tileType.tSection4, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
 }
 
-//ctrl+shift+L allows you to select all similar values, use with caution!
-
-//JavaScript callback is a function which is to be executed after another function has finished execution
-//A callback is a function passed as an argument to another function. This technique allows a function to call another function
-//A callback function can run after another function has finished
-
-//set a value for isLive if the cell is connected to a live one - each cell in the chainArr will be made live currently.
-//function that checks each tile to see how many connections it has.
-//needs to checkNeighbours > checkConnections > ForEach cell in the chainArr   
-//set a value for number of connections, per connection tileConnectionsNum++
-
-
-//if the tile has only 1 connection turn it dead --> repeat the test to see if any other tiles have only one connection. 
-//need to make this a recursive function that checks all tiles each time one is turned dead. > set exceptions > not start or end tile
-
-function loadImage(src, callback) {
-    //creates a new HTML Image element/image object using the 'new Image()' constructor.
-    const img = new Image();
-    //"img.onload" is an event handler that gets called when the image has finished loading successfully. The arrow function "() => callback(img)" is assigned to img.onload. 
-    //This means that when the image has loaded, the function callback will be called with img (the loaded image object) as its argument.
-    //drawShapes is the callback function. 
-    img.onload = () => callback(img);
-    //sets the src attribute of the img object to the provided src argument. Setting img.src starts the process of loading the image from the specified URL.
-    img.src = src;
-}
-
-let isDragging = false;
-//sets a tile type for looking at neighbouring tiles
-
-let currentShapesIndex;
-// x and y declare where in the canvas the shapes are going to be drawn
-//shapes.push({ x: 140, y: 20, width: 40, height: 40, color: 'green', shapeIndex: 0}); //shape to hold the rotate button
-
 //pushes the tiles to the shapes array. 
 shapes.push(tileName.Power);
 shapes.push(tileName.R_Angle_1);
@@ -152,21 +124,35 @@ shapes.push(tileName.Led_1);
 shapes.push(tileName.T_Section_2);
 shapes.push(tileName.T_Section_1);
 
-// Additional tiles: 2 Corner LEDs, 1 blank, 1 x, 1 switch, 1 bridge.
 
-//need to understand this better..... 
-//need to mark 
-//to kill off dead branches > find all tiles with only one live connection > mark dead 
+//ctrl+shift+L allows you to select all similar values, use with caution!
+
+//JavaScript callback is a function which is to be executed after another function has finished execution
+//A callback is a function passed as an argument to another function. This technique allows a function to call another function
+//A callback function can run after another function has finished
+
+function loadImage(src, callback) {
+    //creates a new HTML Image element/image object using the 'new Image()' constructor.
+    //console.log("values of shapes array being called in the loadImage function", shapes) //this proves that the imgSrc are correct.
+    const img = new Image();
+    //"img.onload" is an event handler that gets called when the image has finished loading successfully. The arrow function "() => callback(img)" is assigned to img.onload. 
+    //This means that when the image has loaded, the function callback will be called with img (the loaded image object) as its argument.
+    //drawShapes is the callback function. 
+    img.onload = () => callback(img);
+    //sets the src attribute of the img object to the provided src argument. Setting img.src starts the process of loading the image from the specified URL.
+    img.src = src;
+}
+
 //BUG! Occasional dead tile despite the correct imgSrc being passed into this function
 
+//load Images, does as it says, it loads the images > then the drawShapes function is called which renders the images. 
 function loadImages(shapes, drawShapesCallback) { 
     //console.log("load images called");
-    
     let loadedCount = 0; // Counter to track how many images have loaded
     
-    shapes.forEach(shape => {  // Loop through each shape in the `shapes` array
+    shapes.forEach(shape => {  // Loop through each shape in the `shapes` array, 
         if (shape.imgSrc) { // Check if the shape has an `imgSrc` property
-            loadImage(shape.imgSrc, (img) => {  // Asynchronously load the image using `loadImage`
+            loadImage(shape.imgSrc, (img) => {  // Asynchronously load the image using `loadImage` function above
                 shape.image = img;  // Once the image is loaded, assign it to the shape’s `image` property
                 loadedCount++;  // Increment the counter when an image is successfully loaded
                 
@@ -280,7 +266,7 @@ function findMiddlePoint() {
 // the value of this cell is then sent to the checkNeighbour function which then searches surrounding tiles for a live connection.  
 function checkCell() {
     //console.log("Check cell has been run")
-
+    
     chainArr = []  // see lines
 
     let squareX = middlePointLocation.x;
@@ -358,15 +344,17 @@ function checkCell() {
     }
     snapTo();
     //updates the value of the shapes x and y co-ordinates 
+
+
     
     //calls the checkNeighbour func to see if there are surrounding tiles, uses A3 as a start point to iterate from. 
     checkNeighbour('A3');
+    //
     checkForStartingCell(chainArr);
     
     // calling the change tile to dead here makes sure that all non-connected tiles are made dead. Argument passed in needs to be the start tile
     // don't use gridRef as a this does not start the chain at the start point but rather the tile that was moved > Breaks the code.
     changeTileToDead();
-
     //checkNeighbour('A3');
 
 }
@@ -441,7 +429,7 @@ function isMouseInShape(x, y, shape) {
     }
 }
 
-//this is called when shapes are rotated
+//this is called when shapes are rotated, the mouseDown function calls this (if the button has been clicked)
 function replaceTile(shape) {
     //console.log("Replace tile func has been called");
     //console.log(shape)
@@ -503,9 +491,15 @@ function replaceTile(shape) {
         shapes.push({ cellName: 't_section_1', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/T_section_dead_1.jpg', type: tileType.tSection1, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
     }
 
-    checkForStartingCell(chainArr);
-    checkNeighbour('A3');
+    //checkNeighbour needs to be called before the checkForStartingCell as clicking on the rotate button clears the chainArr   
+    
+    chainArr = []  //empties ChainArr, so each movement starts with a blank array
    
+    changeTileToDead(); //changes all tiles do dead (as this function excluded and tiles in the chainArr, which is currently empty)
+    
+    checkNeighbour('A3'); //calls the recursive checkNeighbour function which iterates through cells starting at A3 an looks for neighbouring tiles that can connect
+    checkForStartingCell(chainArr); //checks to make sure the chainArr contains the start and end cell. If it does not, every tile is marked as dead. 
+    console.log("chainArr called by the replace tile func", chainArr)   
 }
 
 //onmousedown these functions are triggered
@@ -525,7 +519,10 @@ function mouseDown(e) {
                 currentShapesIndex = i; // this sets the current shapes index to be the same as the cell clicked on. 
                 // Rotate the shape 90 degrees
                 //console.log("shape rotate button clicked")             
-                chainArr = [];
+                
+                //chainArr = []; // Now called in the replaceTile 
+
+                //console.log("Chain array cleared on mouse down");
                 //console.log("Chain Array cleared")
                 //console.log("Current Shape", shape);
                 //console.log("current shapes index", currentShapesIndex); //if cells are not moved it does not update this value. Reads null on start up              
@@ -537,7 +534,8 @@ function mouseDown(e) {
                
                 //add the next tile in the array (based on type) this makes it seem as if the tile has been rotated. 
                 replaceTile(shape)
-                
+
+                            
                 return;
 
             } else {
@@ -570,8 +568,14 @@ function mouseUp(e) {
         checkCell(); // This calls checkNeighbour func. Kick starts the whole checking for surrounding tiles process. 
         isDragging = false;
 
-        chainArr = []; //clears the chainArr array so that the array is only filled with current values
-        //console.log("Chain array cleared");
+        chainArr = []  //empties ChainArr, so each movement starts with a blank array
+        changeTileToDead(); //changes all tiles srcImg's to dead (as this function excluded and tiles in the chainArr, which is currently empty)
+        
+        checkNeighbour('A3'); //calls the recursive checkNeighbour function which iterates through cells starting at A3 an looks for neighbouring tiles that can connect
+        checkForStartingCell(chainArr); //checks to make sure the chainArr contains the start and end cell. If it does not, every tile is marked as dead. 
+        console.log("chainArr called by the mouse up func", chainArr) //this will contain values as checkNeighbour has run (which populates the chainArr)
+
+        //console.log("Chain array cleared on mouse up");
     }
 }
 
@@ -619,21 +623,24 @@ canvas.onmouseup = mouseUp;
 canvas.onmouseout = mouseOut;
 canvas.onmousemove = mouseMove;
 
-
-
 async function drawShapes () {
     
+    //console.log(tileName);
+
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     drawHorizGrid();
-    drawVertGrid();
+    drawVertGrid();  
 
     for (let shape of shapes) {
 
         //test before image is drawn to see if the correct values for imgSrc have arrived at the drawShapes function
         if (!isDragging && rotateClicked == true) {
-        //console.log(shape.imgSrc, "in cell", shape.currentCell ) 
+       //console.log(shape.imgSrc, "in cell", shape.currentCell ) 
         }
+        
+       //console.log(shape.image); console.log here forces the update but you end up with thousands of console.logs
 
+        //force the function to wait until each shape has a shape.image
         if (shape.image) {
             await new Promise(resolve => {
                 if (shape.image.complete) {
@@ -643,9 +650,12 @@ async function drawShapes () {
                 }
             });
         }
-        // Proceed with drawing after the image is ready
+        if (!isDragging) {
+        console.log("shape.image for each tile", shape.image); 
+        } 
+        //console.log here forces the update but you end up with thousands of console.logs, almost forces the browser to acknowledge the tile imgSrc's
+        //Proceed with drawing after the image is ready
     }
-
 
     for (let shape of shapes) {
 
@@ -658,8 +668,8 @@ async function drawShapes () {
             //Draw the image
             if (!isDragging) {
                 //console.log(shape.image) //BUG this console log seems to fix the dead tile issue (mostly). BUT only when it is not commented out!  BUG!!!
-                //makes the code far more stable
-            }
+                //makes the code far more stable    
+            }            
             //setTimeout(context.drawImage(shape.image, 0, 0, shape.width, shape.height), 150);  //using a set timeout here seems to make the code more stable?  
             context.drawImage(shape.image, 0, 0, shape.width, shape.height)
             //console.clear();
@@ -725,7 +735,7 @@ function snapTo() {
     }
 }
 
-//This part of the code works out what the surrounding letters are to the current cell
+//This part of the code works out what the surrounding letters are the current cell
 //take a letter in as a parameter and return the previous letter
 function getPreviousLetter(letter) {
     // Convert the letter to its ASCII code
@@ -775,11 +785,12 @@ function isLED (cell) {
             chainArr.unshift('A3');
 
             let previousChainArrVal = chainArr[chainArr.length-2];
-            console.log("Cell preceding LED",previousChainArrVal) //minor bug, A3 is always pushed to the chainArr as a the second value. Code has been built to stop this. 
+            console.log("Cell preceding LED",previousChainArrVal) 
+            //minor bug, A3 is always pushed to the chainArr as a the second value. Code has been built to stop this. 
             //look for the previous tile in the chainArr
-            
+            //TO DO: 
+
             //if previous tile (e.g. tile which matches previousChainArrVal) is above AND led liveEnd == above, then carry on. Else exit the function, 
-            
             //Runs into issues if there is a circuit with 2 branches that both end up at the end tile
 
         }
@@ -788,8 +799,11 @@ function isLED (cell) {
 }
 
 
-//checkNeighbour is called in the checkCell function
+//checkNeighbour is called in the checkCell function, it looks to see if each tile has as neighbour that it can connect to.
+//And pushes the values of those tiles to the chainArr.  
 function checkNeighbour(gridRef) {
+
+    //console.log("checkNeighbour has been called")
     // Get neighboring cells
     let neighbours = {
         top: getPreviousLetter(gridRef.charAt(0)),
@@ -816,7 +830,7 @@ function checkNeighbour(gridRef) {
 
         if (matchingShape) {
             // Check if the shapes can connect based on the connection logic
-            if (canConnect(gridRef, cell)) {
+            if (canConnect(gridRef, cell)) { // if can connect returns true...
                 // Add the connection to both tiles
                 if (!tileConnections[gridRef]) {
                     tileConnections[gridRef] = []; // Initialize if not present
@@ -833,13 +847,13 @@ function checkNeighbour(gridRef) {
                     tileConnections[cell].push(gridRef);
                 }
 
-                //BUG need to clear the tileConnections Object each time a tile moves
-
                 //console.log(`${gridRef} can connect to ${cell}`);
                 //console.log(`${cell} can connect to ${gridRef}`);
-                console.log("tileConnections obj", tileConnections);
+                //console.log("tileConnections obj", tileConnections);
+                
+                //console.log(`tile ${gridRef} has ${tileConnections[gridRef].length}`)              
 
-                chainArr.push(cell);
+                chainArr.push(cell); //only place where values are pushed to the chain array
 
                 // Recursively check this cell's neighbors
                 checkNeighbour(cell);
@@ -849,15 +863,24 @@ function checkNeighbour(gridRef) {
         } else {
             //console.log(`${cell} is not a valid shape or already in chainArr`);
         }
+         
+        
     });
 
-    checkForStartingCell(chainArr);
+    //need check for starting cell to be called once this iterative function has been completed
+    //have moved it below the function so it will be called in order once the checkNeighbour function has completed.
+    //checkForStartingCell(chainArr);
+    //console.log("chainArr",chainArr)
+    //BUG! moving checkForStartingCell out of this array prevents the rotation func from working - async issues might be causing this. 
+    
 }
 
 
+//console.log("chainArr",chainArr)
+//checkForStartingCell(chainArr);
 
-
-
+//if canConnect then this function returns true, if the tile can't connect then it returns false
+//it is called by the checkNeighbour function. 
 function canConnect(gridRef, neighbourCell) {
     //console.log("canConnect has run");
 
@@ -890,35 +913,72 @@ function canConnect(gridRef, neighbourCell) {
     return false;
 }
 
+//check for dead branches is called
+function checKForDeadBranches () {
+    //checks to make sure there is anything to console log
+    if (Object.keys(tileConnections).length !== 0) { 
+
+    console.log("tileConnections BEFORE checkForDeadBrances", tileConnections);
+    //need to iterate through the pairs in the tileConnections object.
+
+    //for any pair in the array if the number of connections <2 (excluding A3 and E3) remove them from the tileConnections obj AND remove the key value from any other pairs array
+    //run this test again for each. 
+    //if no tiles in the tilesConnections object <2 connections, return. 
+
+    Object.keys(tileConnections).forEach(key => {
+        if (tileConnections[key].length < 2) {
+            delete tileConnections[key];
+            //TO DO: 
+            //search for the value of the deleted key in any of the remaining arrays and delete it. 
+            //repeat this
+            //chainArr needs to be the same as the remaining keys in the tileConnections obj
+        }
+    });
+    
+    console.log("tileConnections AFTER checkForDeadBranches func has run", tileConnections);  // Output the updated object
+    }
+}
 
 //runs once the recursive check neighbour function has run. 
-//runs to see if the start tile exists in the array
+//runs to see if the start tile and end tile exists in the array
 function checkForStartingCell(chainArr) {
 
+    //console.log("check for starting cell has been called")
+
+    //remove dead branches by finding each tile with <2 connections (excluding A3 and E3)
+    checKForDeadBranches();
+    console.log(chainArr);
     //console.log("chain array called in the 'checkForStartingCell function", chainArr);
 
     //checks to see if the circuit has a beginning and an end. 
     if (chainArr.includes('A3' && 'E3')) {
         //console.log("Valid circuit");
         //console.log("chainArr =", chainArr);
-        changeTileToLive();
+        changeTileToLive(); // this is the only place where this function is called.
     }
 
-    //if the chainArr does not include A3 then all of it will be dead
-    if (!chainArr.includes('A3')) {
-        //console.log("not a valid circuit")
+    //if the chainArr does not include A3 and E3 then all of it will be dead
+    if (!chainArr.includes('A3' && 'E3')) {
+        console.log("not a valid circuit")
         // console.log("valid circuit =", validCircuit);
-        changeTileToDead();
-        //If the chain array doesn't include A3 then mark the whole circuit as dead
+        //If the chain array doesn't include A3 then empty the chainArr and mark the whole circuit as dead
         chainArr = [];
-        
+        //console.log("chainArr cleared as no A3 or E3", chainArr);
+        changeTileToDead();
+
     }
 }
+
+//These functions replace the target of the imgSrc for tiles before the tiles are drawn. 
 
 function changeTileToLive() {
 
     // iterates through shapes and checks and if the current shape matches it changes the image 
     // if the values in the chainArr match a cell's currentCell property then run this function. 
+    console.log("ChainArr called in the changeTileToLive func", chainArr)
+    console.log("shapes array passed to changeTileToLive func", shapes) //holds all the shapes in the current live array
+    //shows that the imgSrc of the tiles is live even if they are not render as live. Which is strange! 
+
 
     for (let shape of shapes) {
 
@@ -926,7 +986,7 @@ function changeTileToLive() {
         // if not ignore the tile and check the others. 
 
         if (chainArr.includes(shape.currentCell)) {
-           
+          
             if (shape.imgSrc == 'img/r_angle_dead_1.jpg') {
                 shape.imgSrc = 'img/r_angle_live_1.jpg'
             }
@@ -976,18 +1036,24 @@ function changeTileToLive() {
         } 
     }
     //if check connection returns true then replace the dead tile with a live one. 
+
     loadImages(shapes, drawShapes);
+       
+   
 }
 
+
 function changeTileToDead() {
+
+    //console.log("ChainArr called in the changeTileToDead func", chainArr)
+    console.log("shapes array passed to changeTileToDead func", shapes) 
     //console.log("ChangeTileToDead function being called")
     for (let shape of shapes) {
         if (!chainArr.includes(shape.currentCell)) {
-            //only apply this function to shapes NOT in the current array.
+            //only apply this function to shapes NOT in the current array.If the chainArr has been cleared then all shapes should be changed to a dead imgSrc
 
             if (shape.imgSrc == 'img/r_angle_live_1.jpg') {
                 shape.imgSrc = 'img/r_angle_dead_1.jpg';
-                //turns off the cell and marks connections as false   
             }
             if (shape.imgSrc == 'img/r_angle_live_2.jpg') {
                 shape.imgSrc = 'img/r_angle_dead_2.jpg';
