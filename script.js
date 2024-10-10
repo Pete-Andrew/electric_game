@@ -939,11 +939,10 @@ function checkForDeadBranches () {
         //if a matching value is present e.g. D4 then, then remove it. 
             
         //Look for any values that match in the keysToDelete array and the remaining value arrays
-        Object.values(tileConnections).forEach(values => {
-            if (values.includes(keysToDelete[0])) {
-                console.log("tileConnections obj includes", keysToDelete[0] )
-            }
-        })
+        Object.keys(tileConnections).forEach(key => {
+            // Filter the connections array to remove any value that matches a key in keysToDelete
+            tileConnections[key] = tileConnections[key].filter(connection => !keysToDelete.includes(connection));
+        });
         //loop these two functions until there are no tiles with less than 2 connections. 
         //when this occurs, delete the tileConnections[key] that match any value in the keysToDelete array. 
         
