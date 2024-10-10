@@ -33,6 +33,8 @@ let tileConnections = {}
 let zoneStartX;
 let zoneStartY;
 let isDragging = false;
+let keysToDelete = [];
+
 //sets a tile type for looking at neighbouring tiles
 let currentShapesIndex;
 // x and y declare where in the canvas the shapes are going to be drawn
@@ -494,7 +496,7 @@ function replaceTile(shape) {
     //checkNeighbour needs to be called before the checkForStartingCell as clicking on the rotate button clears the chainArr   
     
     chainArr = []  //empties ChainArr, so each movement starts with a blank array
-   
+    keysToDelete = []; //empties the keysToDelete array so it starts from an empty array each tile move.
     changeTileToDead(); //changes all tiles do dead (as this function excluded and tiles in the chainArr, which is currently empty)
     
     checkNeighbour('A3'); //calls the recursive checkNeighbour function which iterates through cells starting at A3 an looks for neighbouring tiles that can connect
@@ -566,13 +568,14 @@ function mouseUp(e) {
         findMiddlePoint();
         checkCell(); // This calls checkNeighbour func. Kick starts the whole checking for surrounding tiles process. 
         isDragging = false;
-
+        
+        keysToDelete = []; //empties the keysToDelete array so it starts from an empty array each tile move.
         chainArr = []  //empties ChainArr, so each movement starts with a blank array
         changeTileToDead(); //changes all tiles srcImg's to dead (as this function excluded and tiles in the chainArr, which is currently empty)
         
         checkNeighbour('A3'); //calls the recursive checkNeighbour function which iterates through cells starting at A3 an looks for neighbouring tiles that can connect
         checkForStartingCell(chainArr); //checks to make sure the chainArr contains the start and end cell. If it does not, every tile is marked as dead. 
-        console.log("chainArr called by the mouse up func", chainArr) //this will contain values as checkNeighbour has run (which populates the chainArr)
+        //console.log("chainArr called by the mouse up func", chainArr) //this will contain values as checkNeighbour has run (which populates the chainArr)
 
         //console.log("Chain array cleared on mouse up");
     }
@@ -771,6 +774,7 @@ function getNextLetter(letter) {
 //need to check to see if the next tile in the array is an LED
 //If the LED is facing the correct direction in relation to the power source then illuminate.
 //check tile relative position, if current tile is above the next tile (e.g. A < B .... letter from currentCell value) AND the next tiles 'liveEnd' == top, mark live and carry on. 
+//
 
 //Else, check other possibilities
 //Open side needs to be the one facing the power source
@@ -918,30 +922,44 @@ function canConnect(gridRef, neighbourCell) {
 }
 
 //check for dead branches is called
-function checKForDeadBranches () {
-    //checks to make sure there is anything to console log
-    if (Object.keys(tileConnections).length !== 0) { 
-
-    console.log("tileConnections BEFORE checkForDeadBrances", tileConnections);
-    //need to iterate through the pairs in the tileConnections object.
-
-    //for any pair in the array if the number of connections <2 (excluding A3 and E3) remove them from the tileConnections obj AND remove the key value from any other pairs array
-    //run this test again for each. 
-    //if no tiles in the tilesConnections object <2 connections, return. 
-
-    Object.keys(tileConnections).forEach(key => {
-        if (tileConnections[key].length < 2) {
-            delete tileConnections[key];
-            //TO DO: 
-            //search for the value of the deleted key in any of the remaining arrays and delete it. 
-            //repeat this
-            //chainArr needs to be the same as the remaining keys in the tileConnections obj
-        }
-    });
+function checkForDeadBranches () {
     
-    console.log("tileConnections AFTER checkForDeadBranches func has run", tileConnections);  // Output the updated object
+    if (Object.keys(tileConnections).length > 0) { 
+        console.log("tileConnections BEFORE checkForDeadBranches", tileConnections);
+
+        //Iterate through the keys in tileConnections, any tiles with < 2 connections get added to keysToDelete
+        Object.keys(tileConnections).forEach(key => {
+            // Exclude A3 and E3, but check if the length of connections is < 2
+            if (tileConnections[key].length < 2 && key !== "A3" && key !== "E3") {
+                keysToDelete.push(key);  // Push the key itself, not its array of connections
+            }
+        });
+
+        //need to compare the 1st value in the keysToDelete array against any value in the tileConnections values arrays. 
+        //if a matching value is present e.g. D4 then, then remove it. 
+            
+        //Look for any values that match in the keysToDelete array and the remaining value arrays
+        Object.values(tileConnections).forEach(values => {
+            if (values.includes(keysToDelete[0])) {
+                console.log("tileConnections obj includes", keysToDelete[0] )
+            }
+        })
+        //loop these two functions until there are no tiles with less than 2 connections. 
+        //when this occurs, delete the tileConnections[key] that match any value in the keysToDelete array. 
+        
+        //need to clear the keysToDelete arr each time a tile is moved or rotated - this happens outside of this func 
+
+        // Optionally, you can now remove the keys from the tileConnections object
+        keysToDelete.forEach(key => {
+            delete tileConnections[key];
+        });
+
+        //update the chainArr so that it only contains the keys from the tileConnections Array. 
+        console.log("tileConnections AFTER checkForDeadBranches func has run", tileConnections);  
+        console.log("keys to delete", keysToDelete);
     }
 }
+
 
 //runs once the recursive check neighbour function has run. 
 //runs to see if the start tile and end tile exists in the array
@@ -950,8 +968,8 @@ function checkForStartingCell(chainArr) {
     //console.log("check for starting cell has been called")
 
     //remove dead branches by finding each tile with <2 connections (excluding A3 and E3)
-    checKForDeadBranches();
-    console.log(chainArr);
+    checkForDeadBranches();
+    //console.log(chainArr);
     //console.log("chain array called in the 'checkForStartingCell function", chainArr);
 
     //checks to see if the circuit has a beginning and an end. 
@@ -963,7 +981,7 @@ function checkForStartingCell(chainArr) {
 
     //if the chainArr does not include A3 and E3 then all of it will be dead
     if (!chainArr.includes('A3' && 'E3')) {
-        console.log("not a valid circuit")
+        //console.log("not a valid circuit")
         // console.log("valid circuit =", validCircuit);
         //If the chain array doesn't include A3 then empty the chainArr and mark the whole circuit as dead
         chainArr = [];
@@ -979,8 +997,8 @@ function changeTileToLive() {
 
     // iterates through shapes and checks and if the current shape matches it changes the image 
     // if the values in the chainArr match a cell's currentCell property then run this function. 
-    console.log("ChainArr called in the changeTileToLive func", chainArr)
-    console.log("shapes array passed to changeTileToLive func", shapes) //holds all the shapes in the current live array
+    //console.log("ChainArr called in the changeTileToLive func", chainArr)
+    //console.log("shapes array passed to changeTileToLive func", shapes) //holds all the shapes in the current live array
     //shows that the imgSrc of the tiles is live even if they are not render as live. Which is strange! 
 
 
@@ -1050,7 +1068,7 @@ function changeTileToLive() {
 function changeTileToDead() {
 
     //console.log("ChainArr called in the changeTileToDead func", chainArr)
-    console.log("shapes array passed to changeTileToDead func", shapes) 
+    //console.log("shapes array passed to changeTileToDead func", shapes) 
     //console.log("ChangeTileToDead function being called")
     for (let shape of shapes) {
         if (!chainArr.includes(shape.currentCell)) {
