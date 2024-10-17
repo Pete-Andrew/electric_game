@@ -25,15 +25,17 @@ let startY;
 //holds values that apply when the page is scaled (?)
 let offsetX;
 let offsetY;
-let neighbourShape
+let neighbourShape;
 //holds shapes as an array
 let shapes = [];
 //makes an object that holds the tiles and associated connections per tile.
-let tileConnections = {}
+let tileConnections = {};
 let zoneStartX;
 let zoneStartY;
 let isDragging = false;
 let keysToDelete = [];
+let haveKeysBeenPushed = false;
+let allShapesArr = [];
 
 //sets a tile type for looking at neighbouring tiles
 let currentShapesIndex;
@@ -79,38 +81,38 @@ let tileType = {
     rAngle2: { top: true, right: false, bottom: false, left: true },
     rAngle3: { top: true, right: true, bottom: false, left: false },
     rAngle4: { top: false, right: true, bottom: true, left: false },
-    lambda: {top: true, right: true, bottom: false, left: true  },
-    straightVert: {top: true, right: false, bottom: true, left: false },
+    lambda: { top: true, right: true, bottom: false, left: true },
+    straightVert: { top: true, right: false, bottom: true, left: false },
     straightHrz: { top: false, right: true, bottom: false, left: true },
-    led1: {top: true, right: false, bottom: true, left: false , liveEnd: 'top' },
-    led2: {top: false, right: true, bottom: false, left: true , liveEnd: 'right' },
-    led3: {top: true, right: false, bottom: true, left: false , liveEnd: 'bottom'},
-    led4: {top: false, right: true, bottom: false, left: true , liveEnd: 'left'},
-    tSection1: {top: true, right: false, bottom: true, left: true},
-    tSection2: {top: true, right: true, bottom: false, left: true },
-    tSection3: {top: true, right: true, bottom: true, left: false },
-    tSection4: {top: false, right: true, bottom: true, left: true },
+    led1: { top: true, right: false, bottom: true, left: false, liveEnd: 'top' },
+    led2: { top: false, right: true, bottom: false, left: true, liveEnd: 'right' },
+    led3: { top: true, right: false, bottom: true, left: false, liveEnd: 'bottom' },
+    led4: { top: false, right: true, bottom: false, left: true, liveEnd: 'left' },
+    tSection1: { top: true, right: false, bottom: true, left: true },
+    tSection2: { top: true, right: true, bottom: false, left: true },
+    tSection3: { top: true, right: true, bottom: true, left: false },
+    tSection4: { top: false, right: true, bottom: true, left: true },
 }
 
 // Additional tiles: 2 Corner LEDs, 1 blank, 1 x, 1 switch, 1 bridge.
 // cell types separates out all the various shapes to make them easier to manipulate. 
 let tileName = {
-    "Power":        {cellName: 'power',     x: 400, y: 0, width: 200, height: 200,      color: 'green', imgSrc: 'img/power.jpg', type: tileType.power, currentCell: 'A3', lastCellValue: '', canMove: false, isConnected: true, connectionsNum: 0},
-    "R_Angle_1":    {cellName: 'r_angle_1', x: 400, y: 200, width: 200, height: 200,    color: 'red',   imgSrc: 'img/r_angle_dead_1.jpg', type: tileType.rAngle1, currentCell: 'B3', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
-    "R_Angle_2":    {cellName: 'r_angle_2', x: 400, y: 400, width: 200, height: 200,    color: 'black', imgSrc: 'img/r_angle_dead_2.jpg', type: tileType.rAngle2, currentCell: 'C3', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
-    "R_Angle_3":    {cellName: 'r_angle_3', x: 0, y: 0, width: 200, height: 200,        color: 'blue',  imgSrc: 'img/r_angle_dead_3.jpg', type: tileType.rAngle3, currentCell: 'A1', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
-    "R_Angle_4":    {cellName: 'r_angle_4', x: 200, y: 200, width: 200, height: 200,    color: 'green', imgSrc: 'img/r_angle_dead_4.jpg', type: tileType.rAngle4, currentCell: 'B2', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
-    "Lambda" :      {cellName: 'lambda',    x: 400, y: 800, width: 200, height: 200,    color: 'red',   imgSrc: 'img/lambda_dead.jpg', type: tileType.lambda, currentCell: 'E3', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
-    "Straight_Vert":{cellName: 'straight_vert', x: 200, y: 600, width: 200, height:200, color: 'red',   imgSrc: 'img/straight_vert_dead.jpg', type: tileType.straightVert, currentCell: 'D2', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
-    "Straight_Hrz": {cellName: 'straight_hrz',  x: 600, y: 800, width: 200, height:200, color: 'red',   imgSrc: 'img/straight_hrz_dead.jpg',  type: tileType.straightHrz, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
-    "Led_1" :       {cellName: 'led_1', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_1.jpg', type: tileType.led1, currentCell: 'E5', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },     
-    "Led_2" :       {cellName: 'led_2', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_2.jpg', type: tileType.led2, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },     
-    "Led_3" :       {cellName: 'led_3', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_3.jpg', type: tileType.led3, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },     
-    "Led_4" :       {cellName: 'led_4', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_4.jpg', type: tileType.led4, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },     
-    "T_Section_1" : {cellName: 't_section_1', x: 200, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_1.jpg', type: tileType.tSection1, currentCell: 'E2', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
-    "T_Section_2" : {cellName: 't_section_2', x: 0,   y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_2.jpg', type: tileType.tSection2, currentCell: 'E1', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
-    "T_Section_3" : {cellName: 't_section_3', x: 0,   y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_3.jpg', type: tileType.tSection3, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
-    "T_Section_4" : {cellName: 't_section_4', x: 0,   y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_4.jpg', type: tileType.tSection4, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected:false, connectionsNum: 0 },
+    "Power": { cellName: 'power', x: 400, y: 0, width: 200, height: 200, color: 'green', imgSrc: 'img/power.jpg', type: tileType.power, currentCell: 'A3', lastCellValue: '', canMove: false, isConnected: true, connectionsNum: 0 },
+    "R_Angle_1": { cellName: 'r_angle_1', x: 400, y: 200, width: 200, height: 200, color: 'red', imgSrc: 'img/r_angle_dead_1.jpg', type: tileType.rAngle1, currentCell: 'B3', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
+    "R_Angle_2": { cellName: 'r_angle_2', x: 400, y: 400, width: 200, height: 200, color: 'black', imgSrc: 'img/r_angle_dead_2.jpg', type: tileType.rAngle2, currentCell: 'C3', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
+    "R_Angle_3": { cellName: 'r_angle_3', x: 0, y: 0, width: 200, height: 200, color: 'blue', imgSrc: 'img/r_angle_dead_3.jpg', type: tileType.rAngle3, currentCell: 'A1', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
+    "R_Angle_4": { cellName: 'r_angle_4', x: 200, y: 200, width: 200, height: 200, color: 'green', imgSrc: 'img/r_angle_dead_4.jpg', type: tileType.rAngle4, currentCell: 'B2', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
+    "Lambda": { cellName: 'lambda', x: 400, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/lambda_dead.jpg', type: tileType.lambda, currentCell: 'E3', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
+    "Straight_Vert": { cellName: 'straight_vert', x: 200, y: 600, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_vert_dead.jpg', type: tileType.straightVert, currentCell: 'D2', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
+    "Straight_Hrz": { cellName: 'straight_hrz', x: 600, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_hrz_dead.jpg', type: tileType.straightHrz, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
+    "Led_1": { cellName: 'led_1', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_1.jpg', type: tileType.led1, currentCell: 'E5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
+    "Led_2": { cellName: 'led_2', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_2.jpg', type: tileType.led2, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
+    "Led_3": { cellName: 'led_3', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_3.jpg', type: tileType.led3, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
+    "Led_4": { cellName: 'led_4', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_4.jpg', type: tileType.led4, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
+    "T_Section_1": { cellName: 't_section_1', x: 200, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_1.jpg', type: tileType.tSection1, currentCell: 'E2', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
+    "T_Section_2": { cellName: 't_section_2', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_2.jpg', type: tileType.tSection2, currentCell: 'E1', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
+    "T_Section_3": { cellName: 't_section_3', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_3.jpg', type: tileType.tSection3, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
+    "T_Section_4": { cellName: 't_section_4', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_4.jpg', type: tileType.tSection4, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
 }
 
 //pushes the tiles to the shapes array. 
@@ -148,21 +150,21 @@ function loadImage(src, callback) {
 //BUG! Occasional dead tile despite the correct imgSrc being passed into this function
 
 //load Images, does as it says, it loads the images > then the drawShapes function is called which renders the images. 
-function loadImages(shapes, drawShapesCallback) { 
+function loadImages(shapes, drawShapesCallback) {
     //console.log("load images called");
     let loadedCount = 0; // Counter to track how many images have loaded
-    
+
     shapes.forEach(shape => {  // Loop through each shape in the `shapes` array, 
         if (shape.imgSrc) { // Check if the shape has an `imgSrc` property
             loadImage(shape.imgSrc, (img) => {  // Asynchronously load the image using `loadImage` function above
                 shape.image = img;  // Once the image is loaded, assign it to the shape’s `image` property
                 loadedCount++;  // Increment the counter when an image is successfully loaded
-                
+
                 //console.log(img); // console log here also seems to fix the dead, not 100% fix
                 //console.clear();
 
                 if (loadedCount === shapes.length) {  // Check if all images have been loaded (by comparing `loadedCount` to the number of shapes)
-                   
+
                     drawShapesCallback();  // Once all images are loaded, call the `callback` function (usually `drawShapes`)
                     //A callback is a function passed as an argument to another function. This technique allows a function to call another function
                     //A callback function can run after another function has finished
@@ -170,11 +172,11 @@ function loadImages(shapes, drawShapesCallback) {
             });
         } else {  // If the shape doesn’t have an image source (`imgSrc`), we still need to update the counter
             loadedCount++;  // Increment the counter even if there's no image to load
-            
+
             if (loadedCount === shapes.length) {  // Check if all shapes (with or without images) have been processed
-                
+
                 drawShapesCallback();  // Call the callback function when all shapes have been handled
-              
+
             }
         }
     });
@@ -268,7 +270,7 @@ function findMiddlePoint() {
 // the value of this cell is then sent to the checkNeighbour function which then searches surrounding tiles for a live connection.  
 function checkCell() {
     //console.log("Check cell has been run")
-    
+
     chainArr = []  // see lines
 
     let squareX = middlePointLocation.x;
@@ -348,12 +350,12 @@ function checkCell() {
     //updates the value of the shapes x and y co-ordinates 
 
 
-    
+
     //calls the checkNeighbour func to see if there are surrounding tiles, uses A3 as a start point to iterate from. 
     checkNeighbour('A3');
     //
     checkForStartingCell(chainArr);
-    
+
     // calling the change tile to dead here makes sure that all non-connected tiles are made dead. Argument passed in needs to be the start tile
     // don't use gridRef as a this does not start the chain at the start point but rather the tile that was moved > Breaks the code.
     changeTileToDead();
@@ -494,14 +496,14 @@ function replaceTile(shape) {
     }
 
     //checkNeighbour needs to be called before the checkForStartingCell as clicking on the rotate button clears the chainArr   
-    
+
     chainArr = []  //empties ChainArr, so each movement starts with a blank array
     keysToDelete = []; //empties the keysToDelete array so it starts from an empty array each tile move.
     changeTileToDead(); //changes all tiles do dead (as this function excluded and tiles in the chainArr, which is currently empty)
-    
+
     checkNeighbour('A3'); //calls the recursive checkNeighbour function which iterates through cells starting at A3 an looks for neighbouring tiles that can connect
     checkForStartingCell(chainArr); //checks to make sure the chainArr contains the start and end cell. If it does not, every tile is marked as dead. 
-    console.log("chainArr called by the replace tile func", chainArr)   
+    console.log("chainArr called by the replace tile func", chainArr)
 }
 
 //onmousedown these functions are triggered
@@ -521,7 +523,7 @@ function mouseDown(e) {
                 currentShapesIndex = i; // this sets the current shapes index to be the same as the cell clicked on. 
                 // Rotate the shape 90 degrees
                 //console.log("shape rotate button clicked")             
-                
+
                 //chainArr = []; // Now called in the replaceTile 
 
                 //console.log("Chain array cleared on mouse down");
@@ -533,11 +535,11 @@ function mouseDown(e) {
 
                 //splice removes the tile from the array
                 shapes.splice(currentShapesIndex, 1);  // splice takes 2 arguments the index of the element you wish to remove and the index you wish to remove up to.
-               
+
                 //add the next tile in the array (based on type) this makes it seem as if the tile has been rotated. 
                 replaceTile(shape)
 
-                            
+
                 return;
 
             } else {
@@ -547,7 +549,7 @@ function mouseDown(e) {
                 return;
             }
         }
-    }   
+    }
 }
 
 // checks to see if the cursor is on the mouse rotate button
@@ -568,11 +570,11 @@ function mouseUp(e) {
         findMiddlePoint();
         checkCell(); // This calls checkNeighbour func. Kick starts the whole checking for surrounding tiles process. 
         isDragging = false;
-        
+
         keysToDelete = []; //empties the keysToDelete array so it starts from an empty array each tile move.
         chainArr = []  //empties ChainArr, so each movement starts with a blank array
         changeTileToDead(); //changes all tiles srcImg's to dead (as this function excluded and tiles in the chainArr, which is currently empty)
-        
+
         checkNeighbour('A3'); //calls the recursive checkNeighbour function which iterates through cells starting at A3 an looks for neighbouring tiles that can connect
         checkForStartingCell(chainArr); //checks to make sure the chainArr contains the start and end cell. If it does not, every tile is marked as dead. 
         //console.log("chainArr called by the mouse up func", chainArr) //this will contain values as checkNeighbour has run (which populates the chainArr)
@@ -625,22 +627,22 @@ canvas.onmouseup = mouseUp;
 canvas.onmouseout = mouseOut;
 canvas.onmousemove = mouseMove;
 
-async function drawShapes () {
-    
+async function drawShapes() {
+
     //console.log(tileName);
 
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     drawHorizGrid();
-    drawVertGrid();  
+    drawVertGrid();
 
     for (let shape of shapes) {
 
         //test before image is drawn to see if the correct values for imgSrc have arrived at the drawShapes function
         if (!isDragging && rotateClicked == true) {
-       //console.log(shape.imgSrc, "in cell", shape.currentCell ) 
+            //console.log(shape.imgSrc, "in cell", shape.currentCell ) 
         }
-        
-       //console.log(shape.image); console.log here forces the update but you end up with thousands of console.logs
+
+        //console.log(shape.image); console.log here forces the update but you end up with thousands of console.logs
 
         //force the function to wait until each shape has a shape.image
         if (shape.image) {
@@ -656,9 +658,9 @@ async function drawShapes () {
         //here sits the golden console log. Killer of bugs. Defeater of asynchronous nonsense. Doesn't work 100% of the time but VASTLY improves functionality. 
         if (!isDragging) {
 
-        //console.log("shape.image for each tile", shape.image); //<< here it is!
-        
-        } 
+            //console.log("shape.image for each tile", shape.image); //<< here it is!
+
+        }
         //console.log here forces the update but you end up with thousands of console.logs, almost forces the browser to acknowledge the tile imgSrc's
         //Proceed with drawing after the image is ready
         //*********************************************************************************** */
@@ -670,13 +672,13 @@ async function drawShapes () {
         context.translate(shape.x + shape.width / 2, shape.y + shape.height / 2); // Move to the center of the shape
         context.translate(-shape.width / 2, -shape.height / 2); // Move back to the top left corner of the shape
 
-        if (shape.image  && shape.image.complete) {
+        if (shape.image && shape.image.complete) {
 
             //Draw the image
             if (!isDragging) {
                 //console.log(shape.image) //BUG this console log seems to fix the dead tile issue (mostly). BUT only when it is not commented out!  BUG!!!
                 //makes the code far more stable    
-            }            
+            }
             //setTimeout(context.drawImage(shape.image, 0, 0, shape.width, shape.height), 150);  //using a set timeout here seems to make the code more stable?  
             context.drawImage(shape.image, 0, 0, shape.width, shape.height)
             //console.clear();
@@ -697,18 +699,18 @@ async function drawShapes () {
             //makes the code far more stable
             //console.log(`imgScr for: ${shape.cellName}, in cell ${shape.currentCell}, after drawShapes has been called =`, shape.imgSrc);
             //console.log("imgSrc values for all shapes:")
-            
+
             //console.log(shape.imgSrc, "in cell", shape.currentCell ) //shows the imgSrc values of all the cells once the draw image func has been called
             //If the imgSrc is showing the tile as "live" in the console log, but it is being drawn as "dead," this suggests that the issue is likely related to how the image is being rendered on the canvas, rather than how it's being loaded or stored in the tile object.
 
             //THE CODE IS FINE THE RENDERING IS NOT!! OR CONTEXT RESTORE COULD BE REVERTING THE SHAPE?? ONLY SEEMS TO HAPPEN WHEN SHAPES ARE ROTATED
         }
-        
+
     }
     rotateClicked = false;
 };
 
-function drawRotateButton () { 
+function drawRotateButton() {
     //Separates out the draw button so it can also be invoked when the tile is clicked on but not moved from it's cell
     for (let shape of shapes) {
         // Draws the rotate button
@@ -716,19 +718,19 @@ function drawRotateButton () {
         context.beginPath();        //initiates the drawing?
         context.arc(shape.x + shape.width - 20, shape.y + 20, 10, 0, 2 * Math.PI); // sets the location for the dot to be drawn in each tile. And sets out the mathematical shape for the dot 
         context.fill(); //Fills the shape, Comment this out to hide the buttons
-        }
     }
+}
 
-    //Load all shapes (with their relevant images) and then draw the shapes
-    //Called here this initialises the map. 
-    loadImages(shapes, drawShapes)
+//Load all shapes (with their relevant images) and then draw the shapes
+//Called here this initialises the map. 
+loadImages(shapes, drawShapes)
 
 //Snaps tiles to the grid
 function snapTo() {
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     drawHorizGrid();
     drawVertGrid();
-    
+
     for (let shape of shapes) {
         if (shape.image) {
             // Draw the image
@@ -766,24 +768,19 @@ function getNextLetter(letter) {
     return precedingLetter;
 }
 
-//how to test for dead branches
-//need to find cells with only one connection (as they are a dead end)
-//
-
 //What do I need to do! BUG!
 //need to check to see if the next tile in the array is an LED
 //If the LED is facing the correct direction in relation to the power source then illuminate.
 //check tile relative position, if current tile is above the next tile (e.g. A < B .... letter from currentCell value) AND the next tiles 'liveEnd' == top, mark live and carry on. 
-//
 
 //Else, check other possibilities
 //Open side needs to be the one facing the power source
 //if not, return
 
-function isLED (cell) {
+function isLED(cell) {
     for (let shape of shapes) {
         if (shape.currentCell == cell && (['led_1', 'led_2', 'led_3', 'led_4'].includes(shape.cellName)) ? shape.cellName : false) //ternary, before the ? is the condition, after the ? the options to follow depending on the condition
-            { // and shape.name includes Led... 
+        { // and shape.name includes Led... 
             console.log("cell containing LED", shape.currentCell);
 
             //this removes A3 from the Array
@@ -792,8 +789,8 @@ function isLED (cell) {
             //adds A3 to the beginning of the array
             chainArr.unshift('A3');
 
-            let previousChainArrVal = chainArr[chainArr.length-2];
-            console.log("Cell preceding LED",previousChainArrVal) 
+            let previousChainArrVal = chainArr[chainArr.length - 2];
+            console.log("Cell preceding LED", previousChainArrVal)
             //minor bug, A3 is always pushed to the chainArr as a the second value. Code has been built to stop this. 
             //look for the previous tile in the chainArr
             //TO DO: 
@@ -805,7 +802,6 @@ function isLED (cell) {
     }
 
 }
-
 
 //checkNeighbour is called in the checkCell function, it looks to see if each tile has as neighbour that it can connect to.
 //And pushes the values of those tiles to the chainArr.  
@@ -833,66 +829,93 @@ function checkNeighbour(gridRef) {
             parseInt(cell.charAt(1)) >= 1 && parseInt(cell.charAt(1)) <= 5;
     });
 
+    //checks each surrounding cell of the current one (with the cell value being passed into the function by gridref)
     validCells.forEach(cell => {
+        //The find() method returns the value of the first element that passes a test.
+        //The find() method executes a function for each array element.
         let matchingShape = shapes.find(shape => shape.currentCell === cell && !chainArr.includes(cell));
 
-        if (matchingShape) {
-            // Check if the shapes can connect based on the connection logic
-            if (canConnect(gridRef, cell)) { // if can connect returns true...
-                // Add the connection to both tiles
-                if (!tileConnections[gridRef]) {
-                    tileConnections[gridRef] = []; // Initialize if not present
-                }
-                if (!tileConnections[cell]) {
-                    tileConnections[cell] = []; // Initialize if not present
-                }
+        if (matchingShape && canConnect(gridRef, cell)) {
+            chainArr.push(cell); // Add to the chainArr
 
-                // Add each other to their connection arrays if not already connected
-                if (!tileConnections[gridRef].includes(cell)) {
-                    tileConnections[gridRef].push(cell);
-                }
-                if (!tileConnections[cell].includes(gridRef)) {
-                    tileConnections[cell].push(gridRef);
-                }
-
-                //console.log(`${gridRef} can connect to ${cell}`);
-                //console.log(`${cell} can connect to ${gridRef}`);
-                //console.log("tileConnections obj", tileConnections);
-                
-                //console.log(`tile ${gridRef} has ${tileConnections[gridRef].length}`)              
-
-                chainArr.push(cell); //only place where values are pushed to the chain array
-
-                // Recursively check this cell's neighbors
-                checkNeighbour(cell);
-            } else {
-                //console.log(`${gridRef} cannot connect to ${cell}`);
-            }
-        } else {
-            //console.log(`${cell} is not a valid shape or already in chainArr`);
+            // Recursively check this cell's neighbours
+            checkNeighbour(cell);
         }
-         
-        
     });
 
-    //need check for starting cell to be called once this iterative function has been completed
-    //have moved it below the function so it will be called in order once the checkNeighbour function has completed.
-    //checkForStartingCell(chainArr);
-    //console.log("chainArr",chainArr)
-    //BUG! moving checkForStartingCell out of this array prevents the rotation func from working - async issues might be causing this. 
-    
+    // After recursion completes and the chainArr is populated, update the tileConnections object using the separate function
+    updateTileConnections(chainArr, tileConnections);
+    console.log("chainArr from the checkNeighbours func", chainArr);
+    console.log("tileConnections from the checkNeighbours func", tileConnections);
 }
 
+//this function takes the chainArr and checks every cell it contains to see if they have valid neighbours to connect to. 
+//the tile and it's connections are then passed to the tileConnections obj. 
+function updateTileConnections(chainArr, tileConnections) {
+    //The forEach() method calls a function for each element in an array
+    //Checks if the current cell contains a tile
+    //The some() method checks if any array elements pass a test (provided as a callback function).
+    //The some() method executes the callback function once for each array element.
+    //The some() method returns true (and stops) if the function returns true for one of the array elements.
+    //The some() method returns false if the function returns false for all of the array elements.
+    chainArr.forEach(gridRef => {
+
+        let hasTile = shapes.some(shape => shape.currentCell === gridRef);
+        if (!hasTile) {
+            return; // Skip cells that don't contain tiles
+        }
+
+        // Get neighboring cells from chainArr
+        let neighbours = {
+            top: getPreviousLetter(gridRef.charAt(0)),
+            bottom: getNextLetter(gridRef.charAt(0)),
+            left: parseInt(gridRef.charAt(1)) - 1,
+            right: parseInt(gridRef.charAt(1)) + 1,
+        };
+
+        let cellAbove = neighbours.top + gridRef.charAt(1);
+        let cellBelow = neighbours.bottom + gridRef.charAt(1);
+        let cellToLeft = gridRef.charAt(0) + neighbours.left;
+        let cellToRight = gridRef.charAt(0) + neighbours.right;
+
+        let validCells = [cellAbove, cellBelow, cellToLeft, cellToRight].filter(cell => {
+            // Ensure the cell is within valid bounds, contains a tile, and can connect
+            return cell.length === 2 &&
+                cell.charAt(0) >= 'A' && cell.charAt(0) <= 'E' &&
+                parseInt(cell.charAt(1)) >= 1 && parseInt(cell.charAt(1)) <= 5 &&
+                shapes.some(shape => shape.currentCell === cell) && // Only include cells with tiles
+                canConnect(gridRef, cell); // Check if the tiles can connect
+        });
+
+        validCells.forEach(cell => {
+            // Initialize tileConnections for both tiles if not already present
+            if (!tileConnections[gridRef]) {
+                tileConnections[gridRef] = [];
+            }
+            if (!tileConnections[cell]) {
+                tileConnections[cell] = [];
+            }
+
+            // Add each other to their connection arrays if not already connected
+            if (!tileConnections[gridRef].includes(cell)) {
+                tileConnections[gridRef].push(cell);
+            }
+            if (!tileConnections[cell].includes(gridRef)) {
+                tileConnections[cell].push(gridRef);
+            }
+        });
+    });
+}
 
 //console.log("chainArr",chainArr)
-//checkForStartingCell(chainArr);
+//checkForStartingCell(chainArr); 
 
 //if canConnect then this function returns true, if the tile can't connect then it returns false
 //it is called by the checkNeighbour function. 
 function canConnect(gridRef, neighbourCell) {
     //console.log("canConnect has run");
 
-    let currentShape = shapes.find(shape => shape.currentCell === gridRef); 
+    let currentShape = shapes.find(shape => shape.currentCell === gridRef);
     neighbourShape = shapes.find(shape => shape.currentCell === neighbourCell);
 
     if (!currentShape || !neighbourShape) {
@@ -908,7 +931,7 @@ function canConnect(gridRef, neighbourCell) {
     if (neighbourRow === getPreviousLetter(gridRefRow) && neighbourCol === gridRefCol) {
         // Above
         return currentShape.type.top && neighbourShape.type.bottom;
-    } else if (neighbourRow === getNextLetter(gridRefRow) && neighbourCol === gridRefCol) { 
+    } else if (neighbourRow === getNextLetter(gridRefRow) && neighbourCol === gridRefCol) {
         // Below
         return currentShape.type.bottom && neighbourShape.type.top;
     } else if (neighbourRow === gridRefRow && neighbourCol === gridRefCol - 1) {
@@ -921,44 +944,61 @@ function canConnect(gridRef, neighbourCell) {
     return false;
 }
 
-//check for dead branches is called
-function checkForDeadBranches () {
-    
-    if (Object.keys(tileConnections).length > 0) { 
-        console.log("tileConnections BEFORE checkForDeadBranches", tileConnections);
+//check for dead branches is called. 
+//This looks for tiles with only a single connection, it removes these and any incidence of them from the 'tileConnections' array. 
+//It then iterates back until it gets to a tile with a minimum of 2 connections (e.g. a T-section).
+//It creates an array of dead branch tiles to be removed. 
+//BUG: it has issues with circular circuits where there is more than one route between the start and end tiles ...
+//
+function checkForDeadBranches() {
+
+    console.log("ChainArr passed into checkForDeadBranches", chainArr) //for some reason tiles in a loop that appear in the chainArr are not being pushed into the tileConnections arr
+    console.log("tileConnections BEFORE checkForDeadBranches", tileConnections);
+    //BUG!! This breaks down when the circuit forms a loop.. not sure why... TILE CONNECTIONS IS NOT HOLDING EVERY TILE IF THERE IS A LOOP
+
+    if (Object.keys(tileConnections).length > 0) {
 
         //Iterate through the keys in tileConnections, any tiles with < 2 connections get added to keysToDelete
         Object.keys(tileConnections).forEach(key => {
             // Exclude A3 and E3, but check if the length of connections is < 2
             if (tileConnections[key].length < 2 && key !== "A3" && key !== "E3") {
                 keysToDelete.push(key);  // Push the key itself, not its array of connections
+                haveKeysBeenPushed = true;
+            }
+            else {
+                haveKeysBeenPushed = false
             }
         });
 
-        //need to compare the 1st value in the keysToDelete array against any value in the tileConnections values arrays. 
-        //if a matching value is present e.g. D4 then, then remove it. 
-            
         //Look for any values that match in the keysToDelete array and the remaining value arrays
         Object.keys(tileConnections).forEach(key => {
             // Filter the connections array to remove any value that matches a key in keysToDelete
             tileConnections[key] = tileConnections[key].filter(connection => !keysToDelete.includes(connection));
         });
         //loop these two functions until there are no tiles with less than 2 connections. 
-        //when this occurs, delete the tileConnections[key] that match any value in the keysToDelete array. 
-        
-        //need to clear the keysToDelete arr each time a tile is moved or rotated - this happens outside of this func 
+        //when this occurs, delete the tileConnections[key] that match any value in the keysToDelete array.   
+        //keysToDelete arr is cleared each time a tile is moved or rotated - this happens outside of this func 
 
-        // Optionally, you can now remove the keys from the tileConnections object
+        //remove the keys from the tileConnections object
         keysToDelete.forEach(key => {
             delete tileConnections[key];
         });
-
-        //update the chainArr so that it only contains the keys from the tileConnections Array. 
-        console.log("tileConnections AFTER checkForDeadBranches func has run", tileConnections);  
         console.log("keys to delete", keysToDelete);
+
+        //loop the above until there are no tiles with less than 2 connections remaining (haveKeysBeenPushed will return false)
+        //if a key has been pushed call the checkDeadBranches func again
+        if (haveKeysBeenPushed == true) {
+            checkForDeadBranches();
+        } else {
+            console.log("there are no more dead ends");
+            console.log("tileConnections AFTER checkForDeadBranches func has run", tileConnections);
+            //TO DO:
+            //update the chainArr so that it only contains the keys from the tileConnections Array > 
+            //e.g. remove the keysToDelete from the chainArr THEN chainArr can be passed to the checkForStartingCell() func.                  
+            //return
+        }
     }
 }
-
 
 //runs once the recursive check neighbour function has run. 
 //runs to see if the start tile and end tile exists in the array
@@ -968,7 +1008,7 @@ function checkForStartingCell(chainArr) {
 
     //remove dead branches by finding each tile with <2 connections (excluding A3 and E3)
     checkForDeadBranches();
-    //console.log(chainArr);
+    console.log("Chain Arr from check for starting cell", chainArr);
     //console.log("chain array called in the 'checkForStartingCell function", chainArr);
 
     //checks to see if the circuit has a beginning and an end. 
@@ -1000,14 +1040,13 @@ function changeTileToLive() {
     //console.log("shapes array passed to changeTileToLive func", shapes) //holds all the shapes in the current live array
     //shows that the imgSrc of the tiles is live even if they are not render as live. Which is strange! 
 
-
     for (let shape of shapes) {
 
         // if statement to see if the currentCell property matches any of the values in the chainArr array. 
         // if not ignore the tile and check the others. 
 
         if (chainArr.includes(shape.currentCell)) {
-          
+
             if (shape.imgSrc == 'img/r_angle_dead_1.jpg') {
                 shape.imgSrc = 'img/r_angle_live_1.jpg'
             }
@@ -1054,13 +1093,10 @@ function changeTileToLive() {
                 shape.imgSrc = 'img/T_section_live_4.jpg'
             }
             //console.log(shape.imgSrc, shape.currentCell)
-        } 
+        }
     }
     //if check connection returns true then replace the dead tile with a live one. 
-
     loadImages(shapes, drawShapes);
-       
-   
 }
 
 
@@ -1123,7 +1159,29 @@ function changeTileToDead() {
     }
     //if check connection returns false then replace the dead tile with a dead one. 
     loadImages(shapes, drawShapes);
-    
+
 }
 
+//Glossary of methods:
+//.forEach
+//.some
+//.includes
+//.charAr
+//.push
+//.onload
+//.drawImage
+//.filter
+//.unshift
+//object.keys
+//.fromCharCode
+//.save
+//.sqrt
+//.getContext
+//
+//Other bits:
+//Arrow functions
+// for (let thing of things) {}
+// iteration through objects and arrays
+
+//https://medium.com/@mandeepkaur1/a-list-of-javascript-array-methods-145d09dd19a0
 // https://www.youtube.com/watch?v=7PYvx8u_9Sk&ab_channel=BananaCoding
