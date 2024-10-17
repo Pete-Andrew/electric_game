@@ -397,7 +397,6 @@ function mouseDownInZone(e) {
         } else {
             // console.log("in zone === no");
         }
-        // zoneIndex++; //commented out as not needed?? 
     }
 };
 
@@ -705,7 +704,6 @@ async function drawShapes() {
 
             //THE CODE IS FINE THE RENDERING IS NOT!! OR CONTEXT RESTORE COULD BE REVERTING THE SHAPE?? ONLY SEEMS TO HAPPEN WHEN SHAPES ARE ROTATED
         }
-
     }
     rotateClicked = false;
 };
@@ -797,7 +795,6 @@ function isLED(cell) {
 
             //if previous tile (e.g. tile which matches previousChainArrVal) is above AND led liveEnd == above, then carry on. Else exit the function, 
             //Runs into issues if there is a circuit with 2 branches that both end up at the end tile
-
         }
     }
 
@@ -992,9 +989,13 @@ function checkForDeadBranches() {
         } else {
             console.log("there are no more dead ends");
             console.log("tileConnections AFTER checkForDeadBranches func has run", tileConnections);
-            //TO DO:
+            //TO DO:          
             //update the chainArr so that it only contains the keys from the tileConnections Array > 
             //e.g. remove the keysToDelete from the chainArr THEN chainArr can be passed to the checkForStartingCell() func.                  
+            let chainArrWithOutDeadBranches = chainArr.filter(arrayElement => !keysToDelete.includes(arrayElement));
+            console.log("chainArrWithOutDeadBranches", chainArrWithOutDeadBranches);
+            //this updates the chain array so dead branches are not illuminated
+            //chainArr = chainArrWithOutDeadBranches;
             //return
         }
     }
@@ -1005,7 +1006,6 @@ function checkForDeadBranches() {
 function checkForStartingCell(chainArr) {
 
     //console.log("check for starting cell has been called")
-
     //remove dead branches by finding each tile with <2 connections (excluding A3 and E3)
     checkForDeadBranches();
     console.log("Chain Arr from check for starting cell", chainArr);
@@ -1026,7 +1026,6 @@ function checkForStartingCell(chainArr) {
         chainArr = [];
         //console.log("chainArr cleared as no A3 or E3", chainArr);
         changeTileToDead();
-
     }
 }
 
@@ -1099,7 +1098,6 @@ function changeTileToLive() {
     loadImages(shapes, drawShapes);
 }
 
-
 function changeTileToDead() {
 
     //console.log("ChainArr called in the changeTileToDead func", chainArr)
@@ -1159,7 +1157,6 @@ function changeTileToDead() {
     }
     //if check connection returns false then replace the dead tile with a dead one. 
     loadImages(shapes, drawShapes);
-
 }
 
 //Glossary of methods:
@@ -1177,11 +1174,10 @@ function changeTileToDead() {
 //.save
 //.sqrt
 //.getContext
-//
 //Other bits:
-//Arrow functions
-// for (let thing of things) {}
-// iteration through objects and arrays
+//Arrow functions ( =>)
+//for (let thing of things) {}
+//iteration through objects and arrays
 
 //https://medium.com/@mandeepkaur1/a-list-of-javascript-array-methods-145d09dd19a0
 // https://www.youtube.com/watch?v=7PYvx8u_9Sk&ab_channel=BananaCoding
