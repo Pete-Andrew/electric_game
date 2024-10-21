@@ -502,7 +502,9 @@ function replaceTile(shape) {
 
     checkNeighbour('A3'); //calls the recursive checkNeighbour function which iterates through cells starting at A3 an looks for neighbouring tiles that can connect
     checkForStartingCell(chainArr); //checks to make sure the chainArr contains the start and end cell. If it does not, every tile is marked as dead. 
+    if (chainArr.length > 0) {
     console.log("chainArr called by the replace tile func", chainArr)
+    }
 }
 
 //onmousedown these functions are triggered
@@ -789,10 +791,7 @@ function isLED(cell) {
 
             let previousChainArrVal = chainArr[chainArr.length - 2];
             console.log("Cell preceding LED", previousChainArrVal)
-            //minor bug, A3 is always pushed to the chainArr as a the second value. Code has been built to stop this. 
-            //look for the previous tile in the chainArr
             //TO DO: 
-
             //if previous tile (e.g. tile which matches previousChainArrVal) is above AND led liveEnd == above, then carry on. Else exit the function, 
             //Runs into issues if there is a circuit with 2 branches that both end up at the end tile
         }
@@ -842,8 +841,10 @@ function checkNeighbour(gridRef) {
 
     // After recursion completes and the chainArr is populated, update the tileConnections object using the separate function
     updateTileConnections(chainArr, tileConnections);
+    if (chainArr.length > 0) {
     console.log("chainArr from the checkNeighbours func", chainArr);
     console.log("tileConnections from the checkNeighbours func", tileConnections);
+    }
 }
 
 //this function takes the chainArr and checks every cell it contains to see if they have valid neighbours to connect to. 
@@ -945,61 +946,46 @@ function canConnect(gridRef, neighbourCell) {
 //This looks for tiles with only a single connection, it removes these and any incidence of them from the 'tileConnections' array. 
 //It then iterates back until it gets to a tile with a minimum of 2 connections (e.g. a T-section).
 //It creates an array of dead branch tiles to be removed. 
-//BUG: it has issues with circular circuits where there is more than one route between the start and end tiles ...
-//
-function checkForDeadBranches() {
+//BUG: sometimes does not cull tiles with only one connection. 
+//BUG: rotation seems to cause similar issues
+//Might be because tiles are being tested in the wrong order. This would cause this error. 
 
-    console.log("ChainArr passed into checkForDeadBranches", chainArr) //for some reason tiles in a loop that appear in the chainArr are not being pushed into the tileConnections arr
-    console.log("tileConnections BEFORE checkForDeadBranches", tileConnections);
-    //BUG!! This breaks down when the circuit forms a loop.. not sure why... TILE CONNECTIONS IS NOT HOLDING EVERY TILE IF THERE IS A LOOP
+
+function checkForDeadBranches() {
+    let haveKeysBeenPushed = false;  // Moved outside the loop
 
     if (Object.keys(tileConnections).length > 0) {
 
-        //Iterate through the keys in tileConnections, any tiles with < 2 connections get added to keysToDelete
-        Object.keys(tileConnections).forEach(key => {
-            // Exclude A3 and E3, but check if the length of connections is < 2
-            if (tileConnections[key].length < 2 && key !== "A3" && key !== "E3") {
-                keysToDelete.push(key);  // Push the key itself, not its array of connections
-                haveKeysBeenPushed = true;
-            }
-            else {
-                haveKeysBeenPushed = false
-            }
-        });
+        //The do...while statements combo defines a code block to be executed once, and repeated as long as a condition is true.
+        do {
+            haveKeysBeenPushed = false;  // Reset to false at the beginning of the loop
 
-        //Look for any values that match in the keysToDelete array and the remaining value arrays
-        Object.keys(tileConnections).forEach(key => {
-            // Filter the connections array to remove any value that matches a key in keysToDelete
-            tileConnections[key] = tileConnections[key].filter(connection => !keysToDelete.includes(connection));
-        });
-        //loop these two functions until there are no tiles with less than 2 connections. 
-        //when this occurs, delete the tileConnections[key] that match any value in the keysToDelete array.   
-        //keysToDelete arr is cleared each time a tile is moved or rotated - this happens outside of this func 
+            //Iterate through the keys in tileConnections
+            Object.keys(tileConnections).forEach(key => {
+                if (tileConnections[key].length < 2 && key !== "A3" && key !== "E3") {
+                    keysToDelete.push(key);
+                    haveKeysBeenPushed = true;  // Only set to true if a key is actually pushed
+                }
+            });
 
-        //remove the keys from the tileConnections object
-        keysToDelete.forEach(key => {
-            delete tileConnections[key];
-        });
-        console.log("keys to delete", keysToDelete);
+            //Filter connections to remove any value that matches a key in keysToDelete
+            Object.keys(tileConnections).forEach(key => {
+                tileConnections[key] = tileConnections[key].filter(connection => !keysToDelete.includes(connection));
+            });
 
-        //loop the above until there are no tiles with less than 2 connections remaining (haveKeysBeenPushed will return false)
-        //if a key has been pushed call the checkDeadBranches func again
-        if (haveKeysBeenPushed == true) {
-            checkForDeadBranches();
-        } else {
-            console.log("there are no more dead ends");
-            console.log("tileConnections AFTER checkForDeadBranches func has run", tileConnections);
-            //TO DO:          
-            //update the chainArr so that it only contains the keys from the tileConnections Array > 
-            //e.g. remove the keysToDelete from the chainArr THEN chainArr can be passed to the checkForStartingCell() func.                  
-            let chainArrWithOutDeadBranches = chainArr.filter(arrayElement => !keysToDelete.includes(arrayElement));
-            console.log("chainArrWithOutDeadBranches", chainArrWithOutDeadBranches);
-            //this updates the chain array so dead branches are not illuminated
-            //chainArr = chainArrWithOutDeadBranches;
-            //return
-        }
+            //Remove keys from the tileConnections object
+            keysToDelete.forEach(key => {
+                delete tileConnections[key];
+            });
+
+        } while (haveKeysBeenPushed);  // Continue the loop if any keys were pushed
+
+        // Update the chainArr without dead branches once the do/while loop has finished
+        let chainArrWithOutDeadBranches = chainArr.filter(arrayElement => !keysToDelete.includes(arrayElement));
+        chainArr = chainArrWithOutDeadBranches;
     }
 }
+
 
 //runs once the recursive check neighbour function has run. 
 //runs to see if the start tile and end tile exists in the array
@@ -1008,18 +994,19 @@ function checkForStartingCell(chainArr) {
     //console.log("check for starting cell has been called")
     //remove dead branches by finding each tile with <2 connections (excluding A3 and E3)
     checkForDeadBranches();
+    if (chainArr.length > 0) {
     console.log("Chain Arr from check for starting cell", chainArr);
     //console.log("chain array called in the 'checkForStartingCell function", chainArr);
-
+    }
     //checks to see if the circuit has a beginning and an end. 
-    if (chainArr.includes('A3' && 'E3')) {
+    if (chainArr.includes('A3') && chainArr.includes('E3')) {
         //console.log("Valid circuit");
         //console.log("chainArr =", chainArr);
         changeTileToLive(); // this is the only place where this function is called.
     }
 
     //if the chainArr does not include A3 and E3 then all of it will be dead
-    if (!chainArr.includes('A3' && 'E3')) {
+    if (!chainArr.includes('A3' || 'E3')) { //changed from && to ||
         //console.log("not a valid circuit")
         // console.log("valid circuit =", validCircuit);
         //If the chain array doesn't include A3 then empty the chainArr and mark the whole circuit as dead
