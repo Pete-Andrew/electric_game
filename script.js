@@ -36,6 +36,7 @@ let isDragging = false;
 let keysToDelete = [];
 let haveKeysBeenPushed = false;
 let allShapesArr = [];
+let noRotateArr = [] //holds the tiles that can't rotate.
 
 //sets a tile type for looking at neighbouring tiles
 let currentShapesIndex;
@@ -349,11 +350,8 @@ function checkCell() {
     snapTo();
     //updates the value of the shapes x and y co-ordinates 
 
-
-
     //calls the checkNeighbour func to see if there are surrounding tiles, uses A3 as a start point to iterate from. 
     checkNeighbour('A3');
-    //
     checkForStartingCell(chainArr);
 
     // calling the change tile to dead here makes sure that all non-connected tiles are made dead. Argument passed in needs to be the start tile
@@ -524,15 +522,6 @@ function mouseDown(e) {
                 currentShapesIndex = i; // this sets the current shapes index to be the same as the cell clicked on. 
                 // Rotate the shape 90 degrees
                 //console.log("shape rotate button clicked")             
-
-                //chainArr = []; // Now called in the replaceTile 
-
-                //console.log("Chain array cleared on mouse down");
-                //console.log("Chain Array cleared")
-                //console.log("Current Shape", shape);
-                //console.log("current shapes index", currentShapesIndex); //if cells are not moved it does not update this value. Reads null on start up              
-                //console.log("shapes array", shapes);
-                //console.log("rotate button has been clicked!")
 
                 //splice removes the tile from the array
                 shapes.splice(currentShapesIndex, 1);  // splice takes 2 arguments the index of the element you wish to remove and the index you wish to remove up to.
@@ -768,6 +757,14 @@ function getNextLetter(letter) {
     return precedingLetter;
 }
 
+//Final bits:
+//LED -> How!!??, needs to be one directional. 
+//Extra Tiles -> 
+//Async live tiles issue ->
+//levels ->
+//remove the move button from the start and end tiles 
+//Add resistance per tile -> standard tiles 0, LED's 1, how does this work in real life? 
+
 //What do I need to do! BUG!
 //need to check to see if the next tile in the array is an LED
 //If the LED is facing the correct direction in relation to the power source then illuminate.
@@ -777,11 +774,13 @@ function getNextLetter(letter) {
 //Open side needs to be the one facing the power source
 //if not, return
 
+
 function isLED(cell) {
     for (let shape of shapes) {
-        if (shape.currentCell == cell && (['led_1', 'led_2', 'led_3', 'led_4'].includes(shape.cellName)) ? shape.cellName : false) //ternary, before the ? is the condition, after the ? the options to follow depending on the condition
-        { // and shape.name includes Led... 
-            console.log("cell containing LED", shape.currentCell);
+        if (shape.currentCell == cell && (['led_1', 'led_2', 'led_3', 'led_4'].includes(shape.cellName)) ? shape.cellName : false) //ternary, before the ? is the condition, 
+        //after the ? the options to follow depending on the condition and shape.name includes Led... 
+        { 
+            console.log("Cell containing LED", shape.currentCell);
 
             //this removes A3 from the Array
             chainArr = chainArr.filter(item => item !== 'A3'); //item !== 'a3': This is the condition. It checks whether the current item in the array is not equal to 'a3'. If the item is not 'a3', the condition evaluates to true, and the item is kept in the new array. If the item is 'a3', the condition evaluates to false, and the item is excluded from the new array.
@@ -796,7 +795,6 @@ function isLED(cell) {
             //Runs into issues if there is a circuit with 2 branches that both end up at the end tile
         }
     }
-
 }
 
 //checkNeighbour is called in the checkCell function, it looks to see if each tile has as neighbour that it can connect to.
@@ -834,6 +832,7 @@ function checkNeighbour(gridRef) {
         if (matchingShape && canConnect(gridRef, cell)) {
             chainArr.push(cell); // Add to the chainArr
 
+            isLED(cell);
             // Recursively check this cell's neighbours
             checkNeighbour(cell);
         }
@@ -842,8 +841,8 @@ function checkNeighbour(gridRef) {
     // After recursion completes and the chainArr is populated, update the tileConnections object using the separate function
     updateTileConnections(chainArr, tileConnections);
     if (chainArr.length > 0) {
-    console.log("chainArr from the checkNeighbours func", chainArr);
-    console.log("tileConnections from the checkNeighbours func", tileConnections);
+    //console.log("chainArr from the checkNeighbours func", chainArr);
+    //console.log("tileConnections from the checkNeighbours func", tileConnections);
     }
 }
 
@@ -944,12 +943,8 @@ function canConnect(gridRef, neighbourCell) {
 
 //check for dead branches is called. 
 //This looks for tiles with only a single connection, it removes these and any incidence of them from the 'tileConnections' array. 
-//It then iterates back until it gets to a tile with a minimum of 2 connections (e.g. a T-section).
-//It creates an array of dead branch tiles to be removed. 
-//BUG: sometimes does not cull tiles with only one connection. 
-//BUG: rotation seems to cause similar issues
-//Might be because tiles are being tested in the wrong order. This would cause this error. 
-
+//It then iterates through a do while loop until no more keys are pushed to the dead tile array. 
+//It creates an array of dead branch tiles to be removed. This is then passed to the drawTiles func 
 
 function checkForDeadBranches() {
     let haveKeysBeenPushed = false;  // Moved outside the loop
@@ -985,7 +980,6 @@ function checkForDeadBranches() {
         chainArr = chainArrWithOutDeadBranches;
     }
 }
-
 
 //runs once the recursive check neighbour function has run. 
 //runs to see if the start tile and end tile exists in the array
@@ -1161,10 +1155,12 @@ function changeTileToDead() {
 //.save
 //.sqrt
 //.getContext
+//.splice
 //Other bits:
 //Arrow functions ( =>)
 //for (let thing of things) {}
 //iteration through objects and arrays
+//Do while loop
 
 //https://medium.com/@mandeepkaur1/a-list-of-javascript-array-methods-145d09dd19a0
 // https://www.youtube.com/watch?v=7PYvx8u_9Sk&ab_channel=BananaCoding
