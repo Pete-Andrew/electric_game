@@ -102,26 +102,26 @@ let tileType = {
 // Additional tiles: 2 Corner LEDs, 1 blank, 1 x, 1 switch, 1 bridge.
 // cell types separates out all the various shapes to make them easier to manipulate. 
 let tileName = {
-    "Power": { cellName: 'power', x: 400, y: 0, width: 200, height: 200, color: 'green', imgSrc: 'img/power.jpg', type: tileType.power, currentCell: 'A3', lastCellValue: '', canMove: false, isConnected: true, connectionsNum: 0 },
-    "R_Angle_1": { cellName: 'r_angle_1', x: 400, y: 200, width: 200, height: 200, color: 'red', imgSrc: 'img/r_angle_dead_1.jpg',   type: tileType.rAngle1, currentCell: 'B3', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "R_Angle_2": { cellName: 'r_angle_2', x: 400, y: 400, width: 200, height: 200, color: 'black', imgSrc: 'img/r_angle_dead_2.jpg', type: tileType.rAngle2, currentCell: 'C3', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "R_Angle_3": { cellName: 'r_angle_3', x: 0, y: 0, width: 200, height: 200, color: 'blue', imgSrc: 'img/r_angle_dead_3.jpg',      type: tileType.rAngle3, currentCell: 'A1', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "R_Angle_4": { cellName: 'r_angle_4', x: 200, y: 200, width: 200, height: 200, color: 'green', imgSrc: 'img/r_angle_dead_4.jpg', type: tileType.rAngle4, currentCell: 'B2', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "Lambda": { cellName: 'lambda', x: 400, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/lambda_dead.jpg',            type: tileType.lambda, currentCell: 'E3', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "Straight_Vert": { cellName: 'straight_vert', x: 200, y: 600, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_vert_dead.jpg', type: tileType.straightVert, currentCell: 'D2', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "Straight_Hrz": { cellName: 'straight_hrz', x: 600, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_hrz_dead.jpg',    type: tileType.straightHrz,  currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "Led_1": { cellName: 'led_1', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_1.jpg', type: tileType.led1, currentCell: 'E5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "Led_2": { cellName: 'led_2', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_2.jpg', type: tileType.led2, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "Led_3": { cellName: 'led_3', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_3.jpg', type: tileType.led3, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "Led_4": { cellName: 'led_4', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_4.jpg', type: tileType.led4, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "T_Section_1": { cellName: 't_section_1', x: 200, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_1.jpg',  type: tileType.tSection1, currentCell: 'E2', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "T_Section_2": { cellName: 't_section_2', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_2.jpg',    type: tileType.tSection2, currentCell: 'E1', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "T_Section_3": { cellName: 't_section_3', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_3.jpg',    type: tileType.tSection3, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "T_Section_4": { cellName: 't_section_4', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_4.jpg',    type: tileType.tSection4, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "Corner_LED_1": { cellName: 'corner_led_1', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_1.jpg', type: tileType.cornerLed1, currentCell: 'A5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "Corner_LED_2": { cellName: 'corner_led_2', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_2.jpg', type: tileType.cornerLed1, currentCell: 'B5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "Corner_LED_3": { cellName: 'corner_led_3', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_3.jpg', type: tileType.cornerLed1, currentCell: 'B5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
-    "Corner_LED_4": { cellName: 'corner_led_4', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_4.jpg', type: tileType.cornerLed1, currentCell: 'B5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0 },
+    "Power": { cellName: 'power', x: 400, y: 0, width: 200, height: 200, color: 'green', imgSrc: 'img/power.jpg', type: tileType.power, currentCell: 'A3', lastCellValue: '', canMove: false, isConnected: true, connectionsNum: 0, isTileAnLED: false },
+    "R_Angle_1": { cellName: 'r_angle_1', x: 400, y: 200, width: 200, height: 200, color: 'red', imgSrc: 'img/r_angle_dead_1.jpg',   type: tileType.rAngle1, currentCell: 'B3', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
+    "R_Angle_2": { cellName: 'r_angle_2', x: 400, y: 400, width: 200, height: 200, color: 'black', imgSrc: 'img/r_angle_dead_2.jpg', type: tileType.rAngle2, currentCell: 'C3', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
+    "R_Angle_3": { cellName: 'r_angle_3', x: 0, y: 0, width: 200, height: 200, color: 'blue', imgSrc: 'img/r_angle_dead_3.jpg',      type: tileType.rAngle3, currentCell: 'A1', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
+    "R_Angle_4": { cellName: 'r_angle_4', x: 200, y: 200, width: 200, height: 200, color: 'green', imgSrc: 'img/r_angle_dead_4.jpg', type: tileType.rAngle4, currentCell: 'B2', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
+    "Lambda": { cellName: 'lambda', x: 400, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/lambda_dead.jpg',            type: tileType.lambda, currentCell: 'E3', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
+    "Straight_Vert": { cellName: 'straight_vert', x: 200, y: 600, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_vert_dead.jpg', type: tileType.straightVert, currentCell: 'D2', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
+    "Straight_Hrz": { cellName: 'straight_hrz', x: 600, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_hrz_dead.jpg',    type: tileType.straightHrz,  currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
+    "Led_1": { cellName: 'led_1', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_1.jpg', type: tileType.led1, currentCell: 'E5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "Led_2": { cellName: 'led_2', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_2.jpg', type: tileType.led2, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "Led_3": { cellName: 'led_3', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_3.jpg', type: tileType.led3, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "Led_4": { cellName: 'led_4', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_4.jpg', type: tileType.led4, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "T_Section_1": { cellName: 't_section_1', x: 200, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_1.jpg',  type: tileType.tSection1, currentCell: 'E2', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
+    "T_Section_2": { cellName: 't_section_2', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_2.jpg',    type: tileType.tSection2, currentCell: 'E1', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
+    "T_Section_3": { cellName: 't_section_3', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_3.jpg',    type: tileType.tSection3, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
+    "T_Section_4": { cellName: 't_section_4', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_4.jpg',    type: tileType.tSection4, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
+    "Corner_LED_1": { cellName: 'corner_led_1', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_1.jpg', type: tileType.cornerLed1, currentCell: 'A5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "Corner_LED_2": { cellName: 'corner_led_2', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_2.jpg', type: tileType.cornerLed1, currentCell: 'B5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "Corner_LED_3": { cellName: 'corner_led_3', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_3.jpg', type: tileType.cornerLed1, currentCell: 'B5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "Corner_LED_4": { cellName: 'corner_led_4', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_4.jpg', type: tileType.cornerLed1, currentCell: 'B5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
 }
 
 //pushes the tiles to the shapes array. 
@@ -797,14 +797,15 @@ function getNextLetter(letter) {
 
 function isLED(cell) {
     for (let shape of shapes) {
-        if (shape.currentCell == cell && (['led_1', 'led_2', 'led_3', 'led_4'].includes(shape.cellName)) ? shape.cellName : false) //ternary, before the ? is the condition, 
-        //after the ? the options to follow depending on the condition and shape.name includes Led... 
+        if (shape.currentCell == cell && (['led_1', 'led_2', 'led_3', 'led_4', 'corner_led_1', 'corner_led_2', 'corner_led_3', 'corner_led_4'].includes(shape.cellName)) ? shape.cellName : false) 
+        //Ternary, after the ? the options to follow depending on the condition and shape.name includes Led... 
+        //if (shape.currentCell == cell && shape.isTileAnLED == true) // this simplified code does not seem to work for corner LED's.. not sure why... 
         { 
             console.log("Cell containing LED", shape.currentCell);
 
             //this removes A3 from the Array
             chainArr = chainArr.filter(item => item !== 'A3'); //item !== 'a3': This is the condition. It checks whether the current item in the array is not equal to 'a3'. If the item is not 'a3', the condition evaluates to true, and the item is kept in the new array. If the item is 'a3', the condition evaluates to false, and the item is excluded from the new array.
-
+ 
             //adds A3 to the beginning of the array
             chainArr.unshift('A3');
 
@@ -1205,6 +1206,7 @@ function changeTileToDead() {
 //for (let thing of things) {}
 //iteration through objects and arrays
 //Do while loop
+//ternary
 
 //https://medium.com/@mandeepkaur1/a-list-of-javascript-array-methods-145d09dd19a0
 // https://www.youtube.com/watch?v=7PYvx8u_9Sk&ab_channel=BananaCoding
