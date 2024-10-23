@@ -93,15 +93,20 @@ let tileType = {
     tSection2: { top: true, right: true, bottom: false, left: true },
     tSection3: { top: true, right: true, bottom: true, left: false },
     tSection4: { top: false, right: true, bottom: true, left: true },
-    cornerLedAC1: { top: false, right: false, bottom: true, left: true },
-    cornerLedAC2: { top: true, right: false, bottom: false, left: true },
-    cornerLedAC3: { top: true, right: true, bottom: false, left: false },
-    cornerLedAC4: { top: false, right: true, bottom: true, left: false },
-    cornerLedCW1: { top: false, right: false, bottom: true, left: true },
-    cornerLedCW2: { top: true, right: false, bottom: false, left: true },
-    cornerLedCW3: { top: true, right: true, bottom: false, left: false },
-    cornerLedCW4: { top: false, right: true, bottom: true, left: false },
+    cornerLedAC1: { top: false, right: false, bottom: true, left: true, liveEnd: 'bottom'  },
+    cornerLedAC2: { top: true, right: false, bottom: false, left: true, liveEnd: 'left' },
+    cornerLedAC3: { top: true, right: true, bottom: false, left: false, liveEnd: 'top'  },
+    cornerLedAC4: { top: false, right: true, bottom: true, left: false, liveEnd: 'right'  },
+    cornerLedCW1: { top: false, right: false, bottom: true, left: true, liveEnd: 'left'  },
+    cornerLedCW2: { top: true, right: false, bottom: false, left: true, liveEnd: 'top'  },
+    cornerLedCW3: { top: true, right: true, bottom: false, left: false, liveEnd: 'right'  },
+    cornerLedCW4: { top: false, right: true, bottom: true, left: false, liveEnd: 'bottom'  },
 }
+
+//if preceding tile is above and live end is top - make live
+//if preceding tile is to the left and live end is right - make live
+//if preceding tile is below and live end is bottom - make it live
+//if preceding tile is to the right and live end is left - make live 
 
 // Additional tiles: 2 Corner LEDs, 1 blank, 1 x, 1 switch, 1 bridge.
 // cell types separates out all the various shapes to make them easier to manipulate. 
@@ -835,9 +840,47 @@ function isLED(cell) {
 
             let previousChainArrVal = chainArr[chainArr.length - 2];
             console.log("Cell preceding LED", previousChainArrVal)
+            let precedingTileRow = previousChainArrVal.charAt(0);
+            let precedingTileColumn = previousChainArrVal.charAt(1);
+            let currentTileRow = shape.currentCell.charAt(0);
+            let currentTileColumn = shape.currentCell.charAt(1);
+            //console.log(previousChainArrVal.charAt(0)) //gives the value of the first part of the cell grid ref e.g.  A from 'A3'
+            //console.log(previousChainArrVal.charAt(1)) //gives the value of the second part of the cell grid ref e.g. 3 from 'A3'
+            //console.log(shape.currentCell.charAt(0))
+            //console.log(shape.currentCell.charAt(1))
+
             //TO DO: 
             //if previous tile (e.g. tile which matches previousChainArrVal) is above AND led liveEnd == above, then carry on. Else exit the function, 
             //Runs into issues if there is a circuit with 2 branches that both end up at the end tile
+
+            let precedingTileIsAboveLED;
+            let precedingTileIsBelowLED;
+            let precedingTileIsRightOfLED;
+            let precedingTileIsLeftOfLED;
+            //work out if the preceding tile is above/below/left/right of the led
+            //e.g. B3 > B4, B3 would be to the right
+            
+            //Preceding tile is...  
+            //Above
+            if(precedingTileRow > currentTileRow){
+                console.log("preceding Tile Is Below LED");
+                precedingTileIsAboveLED = true
+            }
+            //Below
+            if(precedingTileRow < currentTileRow){
+                console.log("preceding Tile Is Above LED");
+                precedingTileIsBelowLED = true
+            }
+            //Right 
+            if(precedingTileColumn > currentTileColumn){
+                console.log("preceding Tile Is Right of LED");
+                precedingTileIsRightOfLED = true
+            }
+            //Left
+            if(precedingTileColumn < currentTileColumn){
+                console.log("preceding Tile Is Left of LED");
+                precedingTileIsLeftOfLED = true
+            } 
         }
     }
 }
@@ -874,10 +917,14 @@ function checkNeighbour(gridRef) {
         //The find() method executes a function for each array element.
         let matchingShape = shapes.find(shape => shape.currentCell === cell && !chainArr.includes(cell));
 
-        if (matchingShape && canConnect(gridRef, cell)) {
-            chainArr.push(cell); // Add to the chainArr
+        if (matchingShape && canConnect(gridRef, cell)) {  //canConnect only returns true/false
+            
+            chainArr.push(cell); // Add to the chainArr, this needs to be done before you can check the LED
+            //if the LED can't connect remove it from the chainArr
+            //makes sense to add the isLED to the canConnect function?
 
             isLED(cell);
+            
             // Recursively check this cell's neighbours
             checkNeighbour(cell);
         }
@@ -1034,7 +1081,7 @@ function checkForStartingCell(chainArr) {
     //remove dead branches by finding each tile with <2 connections (excluding A3 and E3)
     checkForDeadBranches();
     if (chainArr.length > 0) {
-    console.log("Chain Arr from check for starting cell", chainArr);
+    //console.log("Chain Arr from check for starting cell", chainArr);
     //console.log("chain array called in the 'checkForStartingCell function", chainArr);
     }
     //checks to see if the circuit has a beginning and an end. 
