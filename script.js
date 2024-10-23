@@ -37,6 +37,7 @@ let keysToDelete = [];
 let haveKeysBeenPushed = false;
 let allShapesArr = [];
 let noRotateArr = [] //holds the tiles that can't rotate.
+let canLEDConnect;
 
 //sets a tile type for looking at neighbouring tiles
 let currentShapesIndex;
@@ -849,38 +850,29 @@ function isLED(cell) {
             //console.log(shape.currentCell.charAt(0))
             //console.log(shape.currentCell.charAt(1))
 
-            //TO DO: 
-            //if previous tile (e.g. tile which matches previousChainArrVal) is above AND led liveEnd == above, then carry on. Else exit the function, 
-            //Runs into issues if there is a circuit with 2 branches that both end up at the end tile
-
-            let precedingTileIsAboveLED;
-            let precedingTileIsBelowLED;
-            let precedingTileIsRightOfLED;
-            let precedingTileIsLeftOfLED;
             //work out if the preceding tile is above/below/left/right of the led
             //e.g. B3 > B4, B3 would be to the right
             
             //Preceding tile is...  
             //Above
-            if(precedingTileRow > currentTileRow){
-                console.log("preceding Tile Is Below LED");
-                precedingTileIsAboveLED = true
+            if(precedingTileRow > currentTileRow && shape.type.liveEnd == 'bottom'){
+                console.log("preceding Tile Is Below LED && LED can connect");
             }
             //Below
-            if(precedingTileRow < currentTileRow){
-                console.log("preceding Tile Is Above LED");
-                precedingTileIsBelowLED = true
+            if(precedingTileRow < currentTileRow && shape.type.liveEnd == 'top'){
+                console.log("preceding Tile Is Above LED && LED can connect");  
             }
             //Right 
-            if(precedingTileColumn > currentTileColumn){
-                console.log("preceding Tile Is Right of LED");
-                precedingTileIsRightOfLED = true
+            if(precedingTileColumn > currentTileColumn && shape.type.liveEnd == 'right'){
+                console.log("preceding Tile Is Right of LED && LED can connect");
             }
             //Left
-            if(precedingTileColumn < currentTileColumn){
-                console.log("preceding Tile Is Left of LED");
-                precedingTileIsLeftOfLED = true
-            } 
+            if(precedingTileColumn < currentTileColumn && shape.type.liveEnd == 'left'){
+                console.log("preceding Tile Is Left of LED && LED can connect");
+            }
+            
+            //canLEDConnect = false
+            
         }
     }
 }
@@ -924,6 +916,9 @@ function checkNeighbour(gridRef) {
             //makes sense to add the isLED to the canConnect function?
 
             isLED(cell);
+            //if canLEDConnect = false
+            
+            //if LED can't connect then remove from chainArr
             
             // Recursively check this cell's neighbours
             checkNeighbour(cell);
