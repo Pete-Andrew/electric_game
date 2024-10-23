@@ -93,10 +93,14 @@ let tileType = {
     tSection2: { top: true, right: true, bottom: false, left: true },
     tSection3: { top: true, right: true, bottom: true, left: false },
     tSection4: { top: false, right: true, bottom: true, left: true },
-    cornerLed1: { top: false, right: false, bottom: true, left: true },
-    cornerLed2: { top: true, right: false, bottom: false, left: true },
-    cornerLed3: { top: true, right: true, bottom: false, left: false },
-    cornerLed4: { top: false, right: true, bottom: true, left: false },
+    cornerLedAC1: { top: false, right: false, bottom: true, left: true },
+    cornerLedAC2: { top: true, right: false, bottom: false, left: true },
+    cornerLedAC3: { top: true, right: true, bottom: false, left: false },
+    cornerLedAC4: { top: false, right: true, bottom: true, left: false },
+    cornerLedCW1: { top: false, right: false, bottom: true, left: true },
+    cornerLedCW2: { top: true, right: false, bottom: false, left: true },
+    cornerLedCW3: { top: true, right: true, bottom: false, left: false },
+    cornerLedCW4: { top: false, right: true, bottom: true, left: false },
 }
 
 // Additional tiles: 2 Corner LEDs, 1 blank, 1 x, 1 switch, 1 bridge.
@@ -118,10 +122,14 @@ let tileName = {
     "T_Section_2": { cellName: 't_section_2', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_2.jpg',    type: tileType.tSection2, currentCell: 'E1', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
     "T_Section_3": { cellName: 't_section_3', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_3.jpg',    type: tileType.tSection3, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
     "T_Section_4": { cellName: 't_section_4', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_4.jpg',    type: tileType.tSection4, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
-    "Corner_LED_1": { cellName: 'corner_led_1', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_1.jpg', type: tileType.cornerLed1, currentCell: 'A5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
-    "Corner_LED_2": { cellName: 'corner_led_2', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_2.jpg', type: tileType.cornerLed1, currentCell: 'B5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
-    "Corner_LED_3": { cellName: 'corner_led_3', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_3.jpg', type: tileType.cornerLed1, currentCell: 'B5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
-    "Corner_LED_4": { cellName: 'corner_led_4', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_4.jpg', type: tileType.cornerLed1, currentCell: 'B5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "Corner_LED_AC_1": { cellName: 'corner_led_ac_1', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_AC_1.jpg', type: tileType.cornerLedAC1, currentCell: 'A5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "Corner_LED_AC_2": { cellName: 'corner_led_ac_2', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_AC_2.jpg', type: tileType.cornerLedAC2, currentCell: 'B5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "Corner_LED_AC_3": { cellName: 'corner_led_ac_3', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_AC_3.jpg', type: tileType.cornerLedAC3, currentCell: 'B5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "Corner_LED_AC_4": { cellName: 'corner_led_ac_4', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_AC_4.jpg', type: tileType.cornerLedAC4, currentCell: 'B5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "Corner_LED_CW_1": { cellName: 'corner_led_cw_1', x: 800, y: 400, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_CW_1.jpg', type: tileType.cornerLedCW1, currentCell: 'C5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "Corner_LED_CW_2": { cellName: 'corner_led_cw_2', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_CW_2.jpg', type: tileType.cornerLedCW1, currentCell: 'B5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "Corner_LED_CW_3": { cellName: 'corner_led_cw_3', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_CW_3.jpg', type: tileType.cornerLedCW1, currentCell: 'B5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "Corner_LED_CW_4": { cellName: 'corner_led_cw_4', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_CW_4.jpg', type: tileType.cornerLedCW1, currentCell: 'B5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
 }
 
 //pushes the tiles to the shapes array. 
@@ -136,7 +144,8 @@ shapes.push(tileName.Straight_Hrz);
 shapes.push(tileName.Led_1);
 shapes.push(tileName.T_Section_2);
 shapes.push(tileName.T_Section_1);
-shapes.push(tileName.Corner_LED_1);
+shapes.push(tileName.Corner_LED_AC_1);
+shapes.push(tileName.Corner_LED_CW_1);
 
 //ctrl+shift+L allows you to select all similar values, use with caution!
 
@@ -499,18 +508,31 @@ function replaceTile(shape) {
     if (shape.cellName == 't_section_4') {
         shapes.push({ cellName: 't_section_1', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/T_section_dead_1.jpg', type: tileType.tSection1, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
     }
-    //Corner LED's
-    if (shape.cellName == 'corner_led_1') {
-        shapes.push({ cellName: 'corner_led_2', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/corner_LED_dead_2.jpg', type: tileType.cornerLed2, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+    //Corner LED Anti-clockwise
+    if (shape.cellName == 'corner_led_ac_1') {
+        shapes.push({ cellName: 'corner_led_ac_2', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/corner_LED_dead_AC_2.jpg', type: tileType.cornerLedAC2, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
     }
-    if (shape.cellName == 'corner_led_2') {
-        shapes.push({ cellName: 'corner_led_3', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/corner_LED_dead_3.jpg', type: tileType.cornerLed3, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+    if (shape.cellName == 'corner_led_ac_2') {
+        shapes.push({ cellName: 'corner_led_ac_3', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/corner_LED_dead_AC_3.jpg', type: tileType.cornerLedAC3, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
     }
-    if (shape.cellName == 'corner_led_3') {
-        shapes.push({ cellName: 'corner_led_4', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/corner_LED_dead_4.jpg', type: tileType.cornerLed4, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+    if (shape.cellName == 'corner_led_ac_3') {
+        shapes.push({ cellName: 'corner_led_ac_4', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/corner_LED_dead_AC_4.jpg', type: tileType.cornerLedAC4, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
     }
-    if (shape.cellName == 'corner_led_4') {
-        shapes.push({ cellName: 'corner_led_1', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/corner_LED_dead_1.jpg', type: tileType.cornerLed1, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+    if (shape.cellName == 'corner_led_ac_4') {
+        shapes.push({ cellName: 'corner_led_ac_1', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/corner_LED_dead_AC_1.jpg', type: tileType.cornerLedAC1, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+    }
+    //Corner LED Clockwise
+    if (shape.cellName == 'corner_led_cw_1') {
+        shapes.push({ cellName: 'corner_led_cw_2', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/corner_LED_dead_CW_2.jpg', type: tileType.cornerLedCW2, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+    }
+    if (shape.cellName == 'corner_led_cw_2') {
+        shapes.push({ cellName: 'corner_led_cw_3', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/corner_LED_dead_CW_3.jpg', type: tileType.cornerLedCW3, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+    }
+    if (shape.cellName == 'corner_led_cw_3') {
+        shapes.push({ cellName: 'corner_led_cw_4', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/corner_LED_dead_CW_4.jpg', type: tileType.cornerLedCW4, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
+    }
+    if (shape.cellName == 'corner_led_cw_4') {
+        shapes.push({ cellName: 'corner_led_cw_1', x: cellCoord.x, y: cellCoord.y, width: 200, height: 200, imgSrc: 'img/corner_LED_dead_CW_1.jpg', type: tileType.cornerLedCW1, currentCell: currentCellCoord, lastCellValue: '', canMove: true, })
     }
 
     //checkNeighbour needs to be called before the checkForStartingCell as clicking on the rotate button clears the chainArr   
@@ -797,7 +819,9 @@ function getNextLetter(letter) {
 
 function isLED(cell) {
     for (let shape of shapes) {
-        if (shape.currentCell == cell && (['led_1', 'led_2', 'led_3', 'led_4', 'corner_led_1', 'corner_led_2', 'corner_led_3', 'corner_led_4'].includes(shape.cellName)) ? shape.cellName : false) 
+        if (shape.currentCell == cell && (
+            ['led_1', 'led_2', 'led_3', 'led_4', 'corner_led_ac_1', 'corner_led_ac_2', 'corner_led_ac_3', 'corner_led_ac_4', 'corner_led_cw_1', 'corner_led_cw_2', 'corner_led_cw_3', 'corner_led_cw_4']
+            .includes(shape.cellName)) ? shape.cellName : false) 
         //Ternary, after the ? the options to follow depending on the condition and shape.name includes Led... 
         //if (shape.currentCell == cell && shape.isTileAnLED == true) // this simplified code does not seem to work for corner LED's.. not sure why... 
         { 
@@ -1093,17 +1117,29 @@ function changeTileToLive() {
             if (shape.imgSrc == 'img/T_section_dead_4.jpg') {
                 shape.imgSrc = 'img/T_section_live_4.jpg'
             }
-            if (shape.imgSrc == 'img/corner_LED_dead_1.jpg') {
-                shape.imgSrc = 'img/corner_LED_live_1.jpg'
+            if (shape.imgSrc == 'img/corner_LED_dead_AC_1.jpg') {
+                shape.imgSrc = 'img/corner_LED_live_AC_1.jpg'
             }
-            if (shape.imgSrc == 'img/corner_LED_dead_2.jpg') {
-                shape.imgSrc = 'img/corner_LED_live_2.jpg'
+            if (shape.imgSrc == 'img/corner_LED_dead_AC_2.jpg') {
+                shape.imgSrc = 'img/corner_LED_live_AC_2.jpg'
             }
-            if (shape.imgSrc == 'img/corner_LED_dead_3.jpg') {
-                shape.imgSrc = 'img/corner_LED_live_3.jpg'
+            if (shape.imgSrc == 'img/corner_LED_dead_AC_3.jpg') {
+                shape.imgSrc = 'img/corner_LED_live_AC_3.jpg'
             }
-            if (shape.imgSrc == 'img/corner_LED_dead_4.jpg') {
-                shape.imgSrc = 'img/corner_LED_live_4.jpg'
+            if (shape.imgSrc == 'img/corner_LED_dead_AC_4.jpg') {
+                shape.imgSrc = 'img/corner_LED_live_AC_4.jpg'
+            }
+            if (shape.imgSrc == 'img/corner_LED_dead_CW_1.jpg') {
+                shape.imgSrc = 'img/corner_LED_live_CW_1.jpg'
+            }
+            if (shape.imgSrc == 'img/corner_LED_dead_CW_2.jpg') {
+                shape.imgSrc = 'img/corner_LED_live_CW_2.jpg'
+            }
+            if (shape.imgSrc == 'img/corner_LED_dead_CW_3.jpg') {
+                shape.imgSrc = 'img/corner_LED_live_CW_3.jpg'
+            }
+            if (shape.imgSrc == 'img/corner_LED_dead_CW_4.jpg') {
+                shape.imgSrc = 'img/corner_LED_live_CW_4.jpg'
             }
             //console.log(shape.imgSrc, shape.currentCell)
         }
@@ -1166,17 +1202,29 @@ function changeTileToDead() {
             if (shape.imgSrc == 'img/T_section_live_4.jpg') {
                 shape.imgSrc = 'img/T_section_dead_4.jpg'
             }
-            if (shape.imgSrc == 'img/corner_LED_live_1.jpg') {
-                shape.imgSrc = 'img/corner_LED_dead_1.jpg'
+            if (shape.imgSrc == 'img/corner_LED_live_AC_1.jpg') {
+                shape.imgSrc = 'img/corner_LED_dead_AC_1.jpg'
             }
-            if (shape.imgSrc == 'img/corner_LED_live_2.jpg') {
-                shape.imgSrc = 'img/corner_LED_dead_2.jpg'
+            if (shape.imgSrc == 'img/corner_LED_live_AC_2.jpg') {
+                shape.imgSrc = 'img/corner_LED_dead_AC_2.jpg'
             }
-            if (shape.imgSrc == 'img/corner_LED_live_3.jpg') {
-                shape.imgSrc = 'img/corner_LED_dead_3.jpg'
+            if (shape.imgSrc == 'img/corner_LED_live_AC_3.jpg') {
+                shape.imgSrc = 'img/corner_LED_dead_AC_3.jpg'
             }
-            if (shape.imgSrc == 'img/corner_LED_live_4.jpg') {
-                shape.imgSrc = 'img/corner_LED_dead_4.jpg'
+            if (shape.imgSrc == 'img/corner_LED_live_AC_4.jpg') {
+                shape.imgSrc = 'img/corner_LED_dead_AC_4.jpg'
+            }
+            if (shape.imgSrc == 'img/corner_LED_live_CW_1.jpg') {
+                shape.imgSrc = 'img/corner_LED_dead_CW_1.jpg'
+            }
+            if (shape.imgSrc == 'img/corner_LED_live_CW_2.jpg') {
+                shape.imgSrc = 'img/corner_LED_dead_CW_2.jpg'
+            }
+            if (shape.imgSrc == 'img/corner_LED_live_CW_3.jpg') {
+                shape.imgSrc = 'img/corner_LED_dead_CW_3.jpg'
+            }
+            if (shape.imgSrc == 'img/corner_LED_live_CW_4.jpg') {
+                shape.imgSrc = 'img/corner_LED_dead_CW_4.jpg'
             }
             //console.log(shape.imgSrc, shape.currentCell)
         }
