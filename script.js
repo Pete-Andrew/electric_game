@@ -550,7 +550,7 @@ function replaceTile(shape) {
     checkNeighbour('A3'); //calls the recursive checkNeighbour function which iterates through cells starting at A3 an looks for neighbouring tiles that can connect
     checkForStartingCell(chainArr); //checks to make sure the chainArr contains the start and end cell. If it does not, every tile is marked as dead. 
     if (chainArr.length > 0) {
-    console.log("chainArr called by the replace tile func", chainArr)
+    //console.log("chainArr called by the replace tile func", chainArr)
     }
 }
 
@@ -577,8 +577,6 @@ function mouseDown(e) {
 
                 //add the next tile in the array (based on type) this makes it seem as if the tile has been rotated. 
                 replaceTile(shape)
-
-
                 return;
 
             } else {
@@ -814,75 +812,7 @@ function getNextLetter(letter) {
 //remove the move button from the start and end tiles 
 //Add resistance per tile -> standard tiles 0, LED's 1, how does this work in real life? 
 
-//What do I need to do! BUG!
-//need to check to see if the next tile in the array is an LED
-//If the LED is facing the correct direction in relation to the power source then illuminate.
-//check tile relative position, if current tile is above the next tile (e.g. A < B .... letter from currentCell value) AND the next tiles 'liveEnd' == top, mark live and carry on. 
-
-//Else, check other possibilities
-//Open side needs to be the one facing the power source
-//if not, return
-
-function isLED(cell) {
-    for (let shape of shapes) {
-        if (shape.currentCell == cell && (
-            ['led_1', 'led_2', 'led_3', 'led_4', 'corner_led_ac_1', 'corner_led_ac_2', 'corner_led_ac_3', 'corner_led_ac_4', 'corner_led_cw_1', 'corner_led_cw_2', 'corner_led_cw_3', 'corner_led_cw_4']
-            .includes(shape.cellName)) ? shape.cellName : false) 
-        //Ternary, after the ? the options to follow depending on the condition and shape.name includes Led... 
-        //if (shape.currentCell == cell && shape.isTileAnLED == true) // this simplified code does not seem to work for corner LED's.. not sure why... 
-        { 
-            console.log("Cell containing LED", shape.currentCell);
-
-            //this removes A3 from the Array
-            chainArr = chainArr.filter(item => item !== 'A3'); //item !== 'a3': This is the condition. It checks whether the current item in the array is not equal to 'a3'. If the item is not 'a3', the condition evaluates to true, and the item is kept in the new array. If the item is 'a3', the condition evaluates to false, and the item is excluded from the new array.
- 
-            //adds A3 to the beginning of the array
-            chainArr.unshift('A3');
-
-            let previousChainArrVal = chainArr[chainArr.length - 2];
-            console.log("Cell preceding LED", previousChainArrVal)
-            let precedingTileRow = previousChainArrVal.charAt(0);
-            let precedingTileColumn = previousChainArrVal.charAt(1);
-            let currentTileRow = shape.currentCell.charAt(0);
-            let currentTileColumn = shape.currentCell.charAt(1);
-            //console.log(previousChainArrVal.charAt(0)) //gives the value of the first part of the cell grid ref e.g.  A from 'A3'
-            //console.log(previousChainArrVal.charAt(1)) //gives the value of the second part of the cell grid ref e.g. 3 from 'A3'
-            //console.log(shape.currentCell.charAt(0))
-            //console.log(shape.currentCell.charAt(1))
-
-            //work out if the preceding tile is above/below/left/right of the led
-            //e.g. B3 > B4, B3 would be to the right
-            
-            //Preceding tile is...  
-            //Above
-            if(precedingTileRow > currentTileRow && shape.type.liveEnd == 'bottom'){
-                console.log("preceding Tile Is Below LED && LED can connect");
-            }
-            //Below
-            if(precedingTileRow < currentTileRow && shape.type.liveEnd == 'top'){
-                console.log("preceding Tile Is Above LED && LED can connect");  
-            }
-            //Right 
-            if(precedingTileColumn > currentTileColumn && shape.type.liveEnd == 'right'){
-                console.log("preceding Tile Is Right of LED && LED can connect");
-            }
-            //Left
-            if(precedingTileColumn < currentTileColumn && shape.type.liveEnd == 'left'){
-                console.log("preceding Tile Is Left of LED && LED can connect");
-            }
-            
-            //canLEDConnect = false
-            
-        }
-    }
-}
-
-//checkNeighbour is called in the checkCell function, it looks to see if each tile has as neighbour that it can connect to.
-//And pushes the values of those tiles to the chainArr.  
 function checkNeighbour(gridRef) {
-
-    //console.log("checkNeighbour has been called")
-    // Get neighboring cells
     let neighbours = {
         top: getPreviousLetter(gridRef.charAt(0)),
         bottom: getNextLetter(gridRef.charAt(0)),
@@ -890,46 +820,129 @@ function checkNeighbour(gridRef) {
         right: parseInt(gridRef.charAt(1)) + 1,
     };
 
-    // Turn the neighbor cell values into gridRefs
     let cellAbove = neighbours.top + gridRef.charAt(1);
     let cellBelow = neighbours.bottom + gridRef.charAt(1);
     let cellToLeft = gridRef.charAt(0) + neighbours.left;
     let cellToRight = gridRef.charAt(0) + neighbours.right;
 
-    // Make sure the neighbor cells are valid (e.g., within bounds)
     let validCells = [cellAbove, cellBelow, cellToLeft, cellToRight].filter(cell => {
         return cell.length === 2 &&
             cell.charAt(0) >= 'A' && cell.charAt(0) <= 'E' &&
             parseInt(cell.charAt(1)) >= 1 && parseInt(cell.charAt(1)) <= 5;
     });
 
-    //checks each surrounding cell of the current one (with the cell value being passed into the function by gridref)
     validCells.forEach(cell => {
-        //The find() method returns the value of the first element that passes a test.
-        //The find() method executes a function for each array element.
         let matchingShape = shapes.find(shape => shape.currentCell === cell && !chainArr.includes(cell));
 
-        if (matchingShape && canConnect(gridRef, cell)) {  //canConnect only returns true/false
-            
-            chainArr.push(cell); // Add to the chainArr, this needs to be done before you can check the LED
-            //if the LED can't connect remove it from the chainArr
-            //makes sense to add the isLED to the canConnect function?
+        if (matchingShape && canConnect(gridRef, cell)) {
+            chainArr.push(cell);
 
-            isLED(cell);
-            //if canLEDConnect = false
-            
-            //if LED can't connect then remove from chainArr
-            
-            // Recursively check this cell's neighbours
+            // Pass the current cell as precedingCell to isLED for accurate position checking
+            if (!isLED(cell, gridRef)) {
+                console.log("Stopping recursion for this cell due to LED connection issue");
+                return;
+            }
+
             checkNeighbour(cell);
         }
     });
 
-    // After recursion completes and the chainArr is populated, update the tileConnections object using the separate function
     updateTileConnections(chainArr, tileConnections);
     if (chainArr.length > 0) {
-    //console.log("chainArr from the checkNeighbours func", chainArr);
-    //console.log("tileConnections from the checkNeighbours func", tileConnections);
+        console.log("chainArr from the checkNeighbours func", chainArr);
+        console.log("tileConnections from the checkNeighbours func", tileConnections);
+    }
+}
+
+function isLED(cell, precedingCell) {
+    for (let shape of shapes) {
+        if (shape.currentCell == cell && (
+            ['led_1', 'led_2', 'led_3', 'led_4', 'corner_led_ac_1', 'corner_led_ac_2', 'corner_led_ac_3', 'corner_led_ac_4', 'corner_led_cw_1', 'corner_led_cw_2', 'corner_led_cw_3', 'corner_led_cw_4']
+            .includes(shape.cellName))) {
+
+            console.log("Cell containing LED", shape.currentCell);
+
+            // Check if precedingCell is defined and valid before proceeding
+            if (!precedingCell || precedingCell.length < 2) {
+                console.warn("Invalid preceding cell reference:", precedingCell);
+                return false;  // Stop if precedingCell is invalid
+            }
+
+            let precedingTileRow = precedingCell.charAt(0);
+            let precedingTileColumn = precedingCell.charAt(1);
+            let currentTileRow = shape.currentCell.charAt(0);
+            let currentTileColumn = shape.currentCell.charAt(1);
+
+            canLEDConnect = false;
+
+            if (precedingTileRow > currentTileRow && shape.type.liveEnd == 'bottom') {
+                console.log("preceding Tile Is Below LED");
+                canLEDConnect = true;
+            } else if (precedingTileRow < currentTileRow && shape.type.liveEnd == 'top') {
+                console.log("preceding Tile Is Above LED");
+                canLEDConnect = true;
+            } else if (precedingTileColumn > currentTileColumn && shape.type.liveEnd == 'right') {
+                console.log("preceding Tile Is Right of LED");
+                canLEDConnect = true;
+            } else if (precedingTileColumn < currentTileColumn && shape.type.liveEnd == 'left') {
+                console.log("preceding Tile Is Left of LED");
+                canLEDConnect = true;
+            }
+
+            if (canLEDConnect) {
+                console.log("LED can connect");
+                return true;
+            } else {
+                console.log("LED cannot connect");
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+//checkNeighbour is called in the checkCell function, it looks to see if each tile has as neighbour that it can connect to.
+//And pushes the values of those tiles to the chainArr.  
+function checkNeighbour(gridRef, precedingCell = null) {
+    let neighbours = {
+        top: getPreviousLetter(gridRef.charAt(0)),
+        bottom: getNextLetter(gridRef.charAt(0)),
+        left: parseInt(gridRef.charAt(1)) - 1,
+        right: parseInt(gridRef.charAt(1)) + 1,
+    };
+
+    let cellAbove = neighbours.top + gridRef.charAt(1);
+    let cellBelow = neighbours.bottom + gridRef.charAt(1);
+    let cellToLeft = gridRef.charAt(0) + neighbours.left;
+    let cellToRight = gridRef.charAt(0) + neighbours.right;
+
+    let validCells = [cellAbove, cellBelow, cellToLeft, cellToRight].filter(cell => {
+        return cell.length === 2 &&
+            cell.charAt(0) >= 'A' && cell.charAt(0) <= 'E' &&
+            parseInt(cell.charAt(1)) >= 1 && parseInt(cell.charAt(1)) <= 5;
+    });
+
+    validCells.forEach(cell => {
+        let matchingShape = shapes.find(shape => shape.currentCell === cell && !chainArr.includes(cell));
+
+        if (matchingShape && canConnect(gridRef, cell)) {
+            chainArr.push(cell);
+
+            // Pass gridRef as precedingCell for each recursive call
+            if (!isLED(cell, gridRef)) {
+                console.log("Stopping recursion for this cell due to LED connection issue");
+                return;
+            }
+
+            // Recursively check this cell's neighbours, passing gridRef as the precedingCell
+            checkNeighbour(cell, gridRef);
+        }
+    });
+
+    updateTileConnections(chainArr, tileConnections);
+    if (chainArr.length > 0) {
+        console.log("chainArr from the checkNeighbours func", chainArr);
+        console.log("tileConnections from the checkNeighbours func", tileConnections);
     }
 }
 
@@ -998,12 +1011,12 @@ function updateTileConnections(chainArr, tileConnections) {
 //it is called by the checkNeighbour function. 
 function canConnect(gridRef, neighbourCell) {
     //console.log("canConnect has run");
-
+    
     let currentShape = shapes.find(shape => shape.currentCell === gridRef);
     neighbourShape = shapes.find(shape => shape.currentCell === neighbourCell);
 
     if (!currentShape || !neighbourShape) {
-        return false;
+        return false; 
     }
 
     let gridRefRow = gridRef.charAt(0);
@@ -1012,19 +1025,22 @@ function canConnect(gridRef, neighbourCell) {
     let neighbourCol = parseInt(neighbourCell.charAt(1));
 
     // Determine the direction of the neighbour relative to the current cell
+    
+    // Above
     if (neighbourRow === getPreviousLetter(gridRefRow) && neighbourCol === gridRefCol) {
-        // Above
         return currentShape.type.top && neighbourShape.type.bottom;
+
+    // Below
     } else if (neighbourRow === getNextLetter(gridRefRow) && neighbourCol === gridRefCol) {
-        // Below
         return currentShape.type.bottom && neighbourShape.type.top;
+    // Left
     } else if (neighbourRow === gridRefRow && neighbourCol === gridRefCol - 1) {
-        // Left
         return currentShape.type.left && neighbourShape.type.right;
-    } else if (neighbourRow === gridRefRow && neighbourCol === gridRefCol + 1) {
-        // Right
+    // Right
+    } else if (neighbourRow === gridRefRow && neighbourCol === gridRefCol + 1) { 
         return currentShape.type.right && neighbourShape.type.left;
     }
+
     return false;
 }
 
