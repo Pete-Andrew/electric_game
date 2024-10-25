@@ -86,14 +86,14 @@ let tileType = {
     lambda: { top: true, right: true, bottom: false, left: true },
     straightVert: { top: true, right: false, bottom: true, left: false },
     straightHrz: { top: false, right: true, bottom: false, left: true },
-    led1: { top: true, right: false, bottom: true, left: false, liveEnd: 'top' },
-    led2: { top: false, right: true, bottom: false, left: true, liveEnd: 'right' },
-    led3: { top: true, right: false, bottom: true, left: false, liveEnd: 'bottom' },
-    led4: { top: false, right: true, bottom: false, left: true, liveEnd: 'left' },
     tSection1: { top: true, right: false, bottom: true, left: true },
     tSection2: { top: true, right: true, bottom: false, left: true },
     tSection3: { top: true, right: true, bottom: true, left: false },
     tSection4: { top: false, right: true, bottom: true, left: true },
+    led1: { top: true, right: false, bottom: true, left: false, liveEnd: 'top' },
+    led2: { top: false, right: true, bottom: false, left: true, liveEnd: 'right' },
+    led3: { top: true, right: false, bottom: true, left: false, liveEnd: 'bottom' },
+    led4: { top: false, right: true, bottom: false, left: true, liveEnd: 'left' },
     cornerLedAC1: { top: false, right: false, bottom: true, left: true, liveEnd: 'bottom'  },
     cornerLedAC2: { top: true, right: false, bottom: false, left: true, liveEnd: 'left' },
     cornerLedAC3: { top: true, right: true, bottom: false, left: false, liveEnd: 'top'  },
@@ -120,14 +120,14 @@ let tileName = {
     "Lambda": { cellName: 'lambda', x: 400, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/lambda_dead.jpg',            type: tileType.lambda, currentCell: 'E3', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
     "Straight_Vert": { cellName: 'straight_vert', x: 200, y: 600, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_vert_dead.jpg', type: tileType.straightVert, currentCell: 'D2', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
     "Straight_Hrz": { cellName: 'straight_hrz', x: 600, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/straight_hrz_dead.jpg',    type: tileType.straightHrz,  currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
-    "Led_1": { cellName: 'led_1', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_1.jpg', type: tileType.led1, currentCell: 'E5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
-    "Led_2": { cellName: 'led_2', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_2.jpg', type: tileType.led2, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
-    "Led_3": { cellName: 'led_3', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_3.jpg', type: tileType.led3, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
-    "Led_4": { cellName: 'led_4', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_4.jpg', type: tileType.led4, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
     "T_Section_1": { cellName: 't_section_1', x: 200, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_1.jpg',  type: tileType.tSection1, currentCell: 'E2', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
     "T_Section_2": { cellName: 't_section_2', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_2.jpg',    type: tileType.tSection2, currentCell: 'E1', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
     "T_Section_3": { cellName: 't_section_3', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_3.jpg',    type: tileType.tSection3, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
     "T_Section_4": { cellName: 't_section_4', x: 0, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/T_section_dead_4.jpg',    type: tileType.tSection4, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: false },
+    "Led_1": { cellName: 'led_1', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_1.jpg', type: tileType.led1, currentCell: 'E5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "Led_2": { cellName: 'led_2', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_2.jpg', type: tileType.led2, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "Led_3": { cellName: 'led_3', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_3.jpg', type: tileType.led3, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
+    "Led_4": { cellName: 'led_4', x: 800, y: 800, width: 200, height: 200, color: 'red', imgSrc: 'img/led_dead_4.jpg', type: tileType.led4, currentCell: 'E4', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
     "Corner_LED_AC_1": { cellName: 'corner_led_ac_1', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_AC_1.jpg', type: tileType.cornerLedAC1, currentCell: 'A5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
     "Corner_LED_AC_2": { cellName: 'corner_led_ac_2', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_AC_2.jpg', type: tileType.cornerLedAC2, currentCell: 'B5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
     "Corner_LED_AC_3": { cellName: 'corner_led_ac_3', x: 800, y: 0, width: 200, height: 200, color: 'red', imgSrc: 'img/corner_LED_dead_AC_3.jpg', type: tileType.cornerLedAC3, currentCell: 'B5', lastCellValue: '', canMove: true, isConnected: false, connectionsNum: 0, isTileAnLED: true },
@@ -205,7 +205,6 @@ function loadImages(shapes, drawShapesCallback) {
         }
     });
 }
-
 
 // creates the vertical grid lines array
 let vertGridLines = [];
@@ -805,10 +804,10 @@ function getNextLetter(letter) {
 }
 
 //Final bits:
-//LED -> How!!??, needs to be one directional. 
 //Extra Tiles -> 
 //Async live tiles issue ->
 //levels ->
+//give tiles a resistance value - 
 //remove the move button from the start and end tiles 
 //Add resistance per tile -> standard tiles 0, LED's 1, how does this work in real life? 
 
@@ -900,6 +899,13 @@ function isLED(cell, precedingCell) {
     }
     return true;
 }
+
+//BUG - electric flows back if there is a loop made out of T sections.
+//need to give tiles resistance. 
+//need to calculate resistance per branch.
+//need to calculate the path of least resistance.
+//Proportional amounts of illumination? 
+//
 
 //checkNeighbour is called in the checkCell function, it looks to see if each tile has as neighbour that it can connect to.
 //And pushes the values of those tiles to the chainArr.  
